@@ -17,6 +17,8 @@ The application will be a simplified version of the popular app Instagram and we
     - When a user posts a picture, all users who follow them will receive a notification.
     - Include ability for users to leave comments on other users pictures.
 
-## Team Members
+## Team Members / GitHub Username
 
+    - Mark Zalass / mzal98
+  
 ## Technologies Used
