@@ -20,5 +20,9 @@ The application will be a simplified version of the popular app Instagram and we
 ## Team Members / GitHub Username
 
     - Mark Zalass / mzal98
-  
+    - David Rady
+    - Quinn Hogg / Quinn-of-England
+    - William Morin-Laberge
+    - Nikolas Darlas
+
 ## Technologies Used
