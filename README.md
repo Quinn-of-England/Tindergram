@@ -22,7 +22,7 @@ The application will be a simplified version of the popular app Instagram and we
     - Mark Zalass / mzal98
     - David Rady
     - Quinn Hogg / Quinn-of-England
-    - William Morin-Laberge
+    - William Morin-Laberge / WilliamM-L
     - Nikolas Darlas
 
 ## Technologies Used
