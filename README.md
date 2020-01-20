@@ -8,7 +8,14 @@ Develop a simplified version of the Instagram application.
 
 Browsing social media can be a fun way to meet new people, interact with friends and make your opinion and comments known. This web application will allow users to post pictures to their home page and follow friends as well as other people of interest. The application will display a notification whenever another user a person follows posts a new photo. Finally, users will also be able to comment on other users pictures as well as their own.
 
-The application will be a simplified version of the popular app Instagram and we may add other features to enhance the user experience.
+The application will be a simplified version of the popular app Instagram.
+
+We decided to create either a phone or web application that will be a combination of both instagram and tinder. Essentially since a user could swipe in 4 directions (up, down, left, right). Therefore we will have additional features for those directional swiping possibilites.
+These are a rough draft of the swiping direction idea:
+left = basic scrolling
+right = comment on a picture
+up = follow the user
+down = blacklist a.k.a stops seeing that specific user`s pictures.
 
 ## Core Features
 
@@ -20,9 +27,11 @@ The application will be a simplified version of the popular app Instagram and we
 ## Team Members / GitHub Username
 
     - Mark Zalass / mzal98
-    - David Rady
+    - David Rady / DavidRady
     - Quinn Hogg / Quinn-of-England
     - William Morin-Laberge / WilliamM-L
-    - Nikolas Darlas
+    - Nikolas Darlas / steamypotato
 
 ## Technologies Used
+
+TBD
