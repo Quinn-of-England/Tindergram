@@ -1,1 +1,5 @@
-This is to keep track of our meetings.
+The wiki contains the following information:
+
+	- Languages, tools and frameworks used
+	- High-level documentation of the code
+	- Meeting history
