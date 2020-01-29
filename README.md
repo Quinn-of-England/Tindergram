@@ -1,4 +1,4 @@
-# SOEN 341
+# SOEN 341  
 
 ## Objective
 
@@ -33,4 +33,5 @@ down = blacklist a.k.a stops seeing that specific user`s pictures.
 
 ## Technologies Used
 
-TBD
+Frontend: Java
+Backend: Android studio, Java, SQL (some sort of database language)
