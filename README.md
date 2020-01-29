@@ -33,6 +33,4 @@ down = blacklist a.k.a stops seeing that specific user`s pictures.
 
 ## Technologies Used
 
-Frontend: Java
-
-Backend: Android studio, Java, SQL (some sort of database language)
+Android studio, Java, SQL (some sort of database language)
