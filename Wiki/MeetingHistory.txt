@@ -1,5 +1,0 @@
-23rd of January, 2020:
-Duration: 45mins
-Subject: Github utilisation and procedure.
- - All members were set up with git on their machines and linked it to their GitHub accounts
- - All members performed their first pull requests
