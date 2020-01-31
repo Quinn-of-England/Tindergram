@@ -34,4 +34,5 @@ down = blacklist a.k.a stops seeing that specific user`s pictures.
 ## Technologies Used
 
 Frontend(app): Android studio (XML is already a part of it), Kotlin
-Backend(server): Android studio, SQL (some sort of database language)
+
+Backend(server): SQL (some sort of database language)
