@@ -1,33 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <include layout="@layout/content_main" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:text="Welcome to Tindergram!"
+        android:textSize="26sp"
+        android:textcolor="#000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" android:id="@+id/textView"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <Button
+        android:text="Click here to login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/click" android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView" android:layout_marginEnd="96dp"
+        android:layout_marginRight="96dp" app:layout_constraintEnd_toEndOf="@+id/textView"/>
+
+    <TextView
+        android:text="Tindergram"
+        android:textSize="26sp"
+        android:textColor="#3677d1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2" app:layout_constraintTop_toTopOf="parent"
+        app:layout_constarintStart_toStartOf="parent" android:layout_marginTop="101dp"
+        app:layout_constarintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:text="Email"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constarintStart_toStartOf="parent" android:layout_marginTop="69dp"
+        android:layout_marginLeft="6dp" android:layout_marginStart="6dp"
+        app:layout_constarintHorizontal_chainStyle="packed" app:layout_constarintEnd_toStartOf="@+id/email"
+        android:layout_marginEnd="24dp" android:layout_marginRight="24dp"/>
+
+    <TextView
+        android:text="Password"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constarintStart_toStartOf="parent" android:layout_marginTop="144dp"
+        android:layout_marginLeft="6dp" android:layout_marginStart="6dp"
+        app:layout_constarintHorizontal_chainStyle="packed" app:layout_constarintEnd_toStartOf="@+id/pass"
+        android:layout_marginEnd="24dp" android:layout_marginRight="24dp"
+        app:layout_constraintHorizontal_bias="1.0"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/email"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textView5"
+        app:layout_constraintStart_toEndOf="@+id/textView5" app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/pass"
+        app:layout_constraintStart_toStartOf="@+id/email" android:layout_marginTop="29dp"
+        app:layout_constraintTop_toBottomOf="@+id/email"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/login"
+        app:layout_constraintStart_toStartOf="@+id/pass" android:layout_marginTop="29dp"
+        android:layout_marginLeft="23dp" android:layout_marginStart="23dp"
+        app:layout_constraintTop_toBottomOf="@+id/pass"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
