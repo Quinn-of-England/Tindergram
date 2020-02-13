@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.login.LoginTest"
+            android:label="@string/title_activity_login_test"></activity>
+        <activity
             android:name=".HomeActivity"
             android:label="@string/app_name" />
         <activity
