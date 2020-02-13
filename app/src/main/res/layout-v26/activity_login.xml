@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:drawableStart="@drawable/email_icon"
-        android:drawableLeft="@drawable/email_icon"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
@@ -22,15 +21,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.974"
-        tools:targetApi="o" />
+        app:layout_constraintVertical_bias="0.974" />
 
     <EditText
         android:id="@+id/pass"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/lock_icon"
-        android:drawableLeft="@drawable/lock_icon"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
@@ -39,8 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.533"
-        tools:targetApi="o" />
+        app:layout_constraintVertical_bias="0.533" />
 
     <TextView
         android:id="@+id/loginTitle"
@@ -53,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.206" />
 
     <Button
         android:id="@+id/login"
