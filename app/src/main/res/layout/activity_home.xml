@@ -26,6 +26,12 @@
                 android:layout_height="wrap_content" />
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/UploadImageActivityButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
     </LinearLayout>
 
 
