@@ -1,15 +1,18 @@
 package com.example.soen341
 
 import android.content.Intent
-import android.os.Bundle
-import android.widget.*
+import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Toast
+import android.widget.*
 import kotlinx.android.synthetic.main.activity_login.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_login)
 
         val buttonClick = findViewById<Button>(R.id.login)
@@ -43,13 +46,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            if (ema == "abc@gmail.com" && (pas == "123456")) {
+            if (ema == "a" && (pas == "1")) {
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(applicationContext, "Wrong email or password", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(applicationContext, "Wrong email or password", Toast.LENGTH_SHORT).
+                    show()
             }
         }
+
     }
 }
