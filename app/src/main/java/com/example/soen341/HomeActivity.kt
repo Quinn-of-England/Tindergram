@@ -1,7 +1,7 @@
 package com.example.soen341
 
+
 import android.content.Intent
-import android.media.Image
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_home.*
