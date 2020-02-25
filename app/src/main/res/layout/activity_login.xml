@@ -8,16 +8,16 @@
 
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/username"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:autofillHints="@string/email"
-        android:drawableStart="@drawable/email_icon"
-        android:drawableLeft="@drawable/email_icon"
+        android:drawableStart="@drawable/user_icon"
+        android:drawableLeft="@drawable/user_icon"
         android:ems="10"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
+        android:hint="@string/username"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/pass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

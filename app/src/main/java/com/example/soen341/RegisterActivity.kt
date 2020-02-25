@@ -52,7 +52,7 @@ class RegisterActivity : AppCompatActivity() {
                         .show()
                 }
                 inPassword != inConfirmPassword -> {
-                    Toast.makeText(applicationContext, "Password does not match", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, "Email field is empty", Toast.LENGTH_SHORT)
                         .show()
                 }
             }

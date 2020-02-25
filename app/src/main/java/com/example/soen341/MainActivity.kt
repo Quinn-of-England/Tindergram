@@ -20,36 +20,36 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, login::class.java)
             startActivity(intent)
         }
-        val email = findViewById<EditText>(R.id.email)
+        val username = findViewById<EditText>(R.id.username)
         val pass = findViewById<EditText>(R.id.pass)
 
         val btnLogin = findViewById<Button>(R.id.login)
         val btnReg = findViewById<Button>(R.id.register)
 
         btnLogin.setOnClickListener {
-            val ema: String = email.text.toString()
+            val user: String = username.text.toString()
             val pas: String = pass.text.toString()
 
             when {
-                ema.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Email field is empty", Toast.LENGTH_SHORT)
+                user.trim().isEmpty() -> {
+                    Toast.makeText(applicationContext, "Username field is empty", Toast.LENGTH_SHORT)
                         .show()
                 }
                 pas.trim().isEmpty() -> {
                     Toast.makeText(applicationContext, "Password field is empty", Toast.LENGTH_SHORT)
                         .show()
                 }
-                ema.trim().isEmpty() && pas.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Email and Password fields are empty", Toast.LENGTH_SHORT)
+                user.trim().isEmpty() && pas.trim().isEmpty() -> {
+                    Toast.makeText(applicationContext, "Username and Password fields are empty", Toast.LENGTH_SHORT)
                         .show()
                 }
             }
 
-            if (ema == "a" && (pas == "1")) {
+            if (user == "a" && (pas == "1")) {
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(applicationContext, "Wrong email or password", Toast.LENGTH_SHORT)
+                Toast.makeText(applicationContext, "Wrong username or password", Toast.LENGTH_SHORT)
                     .show()
             }
         }
