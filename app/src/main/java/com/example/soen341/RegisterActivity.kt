@@ -89,8 +89,6 @@ class RegisterActivity : AppCompatActivity() {
         val inName: String = name.text.toString()
         val inEmail: String = email.text.toString()
         val inPassword: String = password.text.toString()
-        // Create request queue TODO, make an app-based queue (singleton class)
-        val queue = Volley.newRequestQueue(this)
 
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(Method.POST, url,
@@ -116,6 +114,7 @@ class RegisterActivity : AppCompatActivity() {
                 return params
             }
         }
-        queue.add(stringRequest)
+        // Using MySingleton, request queue that will live as long as the app is running
+        MySingleton.getInstance(this).addToRequestQueue(stringRequest)
     }
 }
