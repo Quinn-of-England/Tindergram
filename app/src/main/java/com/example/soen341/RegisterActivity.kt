@@ -27,7 +27,7 @@ class RegisterActivity : AppCompatActivity() {
         // User wishes to return to login page, already has an account
         val returnLogin = findViewById<TextView>(R.id.returnToLogin)
         returnLogin.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
@@ -80,7 +80,7 @@ class RegisterActivity : AppCompatActivity() {
     }
     private fun registerUser() {
         // All variables needed imported to method
-        val url = DbConstants.REGISTER_URL
+        val url = Constants.REGISTER_URL
         val name = findViewById<EditText>(R.id.username)
         val email = findViewById<EditText>(R.id.email)
         val password = findViewById<EditText>(R.id.enterPass)
@@ -95,7 +95,7 @@ class RegisterActivity : AppCompatActivity() {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_SHORT).show() // Server output printed to user
                     if (obj.getString("error") == "false") { // Server reports successful account addition
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent) // User goes to login page to login with new account
                     }// If no response / invalid response received (no message or error)
                 }catch (e: JSONException){

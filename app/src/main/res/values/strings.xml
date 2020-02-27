@@ -19,5 +19,5 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="username">Username</string>
     <string name="register">Register</string>
-    <string name="already_account">Already have an account? Click here to log in</string>
+    <string name="already_account"><u>Already have an account? Click here to log in</u></string>
 </resources>
