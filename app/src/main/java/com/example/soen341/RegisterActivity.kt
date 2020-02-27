@@ -3,6 +3,7 @@ package com.example.soen341
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -52,8 +53,12 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Username must be 4 characters or greater", Toast.LENGTH_SHORT).show()
                     canRegister = false
                 }
+                !inEmail.trim().isEmailValid() -> {
+                    Toast.makeText(applicationContext, "Email address is not valid", Toast.LENGTH_SHORT).show()
+                    canRegister = false
+                }
                 inEmail.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Email field is empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Email address field is empty", Toast.LENGTH_SHORT).show()
                     canRegister = false
                 }
                 inPassword.trim().isEmpty() -> {
@@ -97,7 +102,7 @@ class RegisterActivity : AppCompatActivity() {
                     if (obj.getString("error") == "false") { // Server reports successful account addition
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent) // User goes to login page to login with new account
-                    }// If no response / invalid response received (no message or error)
+                    }// If no response/invalid response received
                 }catch (e: JSONException){
                     e.printStackTrace()
                 }
@@ -114,5 +119,9 @@ class RegisterActivity : AppCompatActivity() {
         }
         // Request queue (using singleton for entire app)
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
+    }
+    // Check if email address is of valid format
+    private fun String.isEmailValid(): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
     }
 }
