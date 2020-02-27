@@ -6,20 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import android.widget.*
-import kotlinx.android.synthetic.main.activity_login.*
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_login)
 
-        val buttonClick = findViewById<Button>(R.id.login)
-        buttonClick.setOnClickListener {
-            val intent = Intent(this, login::class.java)
-            startActivity(intent)
-        }
         val username = findViewById<EditText>(R.id.username)
         val pass = findViewById<EditText>(R.id.pass)
 

@@ -12,35 +12,33 @@
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:autofillHints="@string/email"
         android:drawableStart="@drawable/user_icon"
-        android:drawableLeft="@drawable/user_icon"
         android:ems="10"
         android:hint="@string/username"
         android:inputType="text"
+        android:autofillHints="@string/username"
         app:layout_constraintBottom_toTopOf="@+id/pass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.974"
-        tools:targetApi="o" />
+        android:drawableLeft="@drawable/user_icon" />
 
     <EditText
         android:id="@+id/pass"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
-        android:autofillHints="@string/password"
         android:drawableStart="@drawable/lock_icon"
-        android:drawableLeft="@drawable/lock_icon"
         android:ems="10"
         android:hint="@string/password"
         android:inputType="textPassword"
+        android:autofillHints="@string/password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.533"
-        tools:targetApi="o" />
+        android:drawableLeft="@drawable/lock_icon" />
 
     <TextView
         android:id="@+id/loginTitle"
@@ -53,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.206" />
 
     <Button
         android:id="@+id/login"
@@ -74,14 +72,15 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:background="#3700b3"
         android:text="@string/register"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.824" />
+        app:layout_constraintVertical_bias="0.81" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
