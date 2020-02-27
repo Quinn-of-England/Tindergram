@@ -114,7 +114,7 @@ class RegisterActivity : AppCompatActivity() {
                 return params
             }
         }
-        // Using MySingleton, request queue that will live as long as the app is running
-        MySingleton.getInstance(this).addToRequestQueue(stringRequest)
+        // Request queue (using singleton for entire app)
+        RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
     }
 }

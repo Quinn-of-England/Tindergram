@@ -10,13 +10,13 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.Volley
 
-class MySingleton constructor(context: Context) {
+class RequestHandler constructor(context: Context) {
     companion object {
         @Volatile
-        private var INSTANCE: MySingleton? = null
+        private var INSTANCE: RequestHandler? = null
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: MySingleton(context).also {
+                INSTANCE ?: RequestHandler(context).also {
                     INSTANCE = it
                 }
             }
