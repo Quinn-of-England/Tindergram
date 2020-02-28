@@ -12,6 +12,7 @@
             if($db->loginUser($_POST['username'], $_POST['password'])) {
                 $user = $db->getUserByUsername($_POST['username']);
                 $response['error'] = false;
+                $response['message'] = "Login successful";
                 $response['id'] = $user['id'];
                 $response['email'] = $user['email'];
                 $response['username'] = $user['username'];

@@ -27,9 +27,70 @@
             }
         }
 
+        public function changeUsername($username, $id){
+            if($this->isUsernameExist($username)) {
+                return 0;
+            }else{
+                $stmt = $this->conn->prepare("UPDATE `users` SET `username` = ? WHERE `users`.`id` = ?");
+                $stmt->bind_param("si", $username, $id);
+
+                if($stmt->execute()){
+                    return 1;
+                }else{
+                    echo $this->conn->error;    
+                    return 2;
+                }
+            }
+        }
+
+        public function changePassword($password, $id){
+            $encrPassword = md5($password);
+            $stmt = $this->conn->prepare("UPDATE `users` SET `password` = ? WHERE `users`.`id` = ?");
+            $stmt->bind_param("si", $encrPassword, $id);
+
+            if($stmt->execute()){
+                return true;
+            }else{
+                echo $this->conn->error;    
+                return false;
+            }
+        }
+
+        public function changeEmail($email, $id){
+            if($this->isEmailExist($email)) {
+                return 0;
+            }else{
+                $stmt = $this->conn->prepare("UPDATE `users` SET `email` = ? WHERE `users`.`id` = ?");
+                $stmt->bind_param("si", $email, $id);
+
+                if($stmt->execute()){
+                    return 1;
+                }else{
+                    echo $this->conn->error;    
+                    return 2;
+                }
+            }
+        }
+
         private function isUserExist($username, $email) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
             $stmt->bind_param("ss", $username, $email);
+            $stmt->execute(); 
+            $stmt->store_result(); 
+            return $stmt->num_rows > 0; 
+        }
+
+        private function isUsernameExist($username) {
+            $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute(); 
+            $stmt->store_result(); 
+            return $stmt->num_rows > 0; 
+        }
+
+        private function isEmailExist($email) {
+            $stmt = $this->conn->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
             $stmt->execute(); 
             $stmt->store_result(); 
             return $stmt->num_rows > 0; 
