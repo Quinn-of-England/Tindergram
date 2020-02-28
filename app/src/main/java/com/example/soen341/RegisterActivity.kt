@@ -19,6 +19,7 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
         // Variables for extracting text from register page text fields
         val name = findViewById<EditText>(R.id.username)
         val email = findViewById<EditText>(R.id.email)
@@ -100,8 +101,14 @@ class RegisterActivity : AppCompatActivity() {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_SHORT).show() // Server output printed to user
                     if (obj.getString("error") == "false") { // Server reports successful account addition
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent) // User goes to login page to login with new account
+                        SharedPrefManager.getInstance(applicationContext).userLoginPref(
+                            obj.getInt("id"),
+                            obj.getString("username"),
+                            obj.getString("email")
+                        )
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent) // User goes to the home page
+                        finish()
                     }// If no response/invalid response received
                 }catch (e: JSONException){
                     e.printStackTrace()
@@ -117,7 +124,7 @@ class RegisterActivity : AppCompatActivity() {
                 return params
             }
         }
-        // Request queue (using singleton for entire app)
+        // Request queue
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
     }
     // Check if email address is of valid format

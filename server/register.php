@@ -10,8 +10,12 @@
             
             $result = $db->createUser($_POST['username'], $_POST['password'], $_POST['email']);
             if($result == 1){
+                $user = $db->getUserByUsername($_POST['username']);
                 $response['error'] = false;
-                $response['message'] = "Account successfully created. Login with your new account.";
+                $response['message'] = "Registration successful";
+                $response['id'] = $user['id'];
+                $response['email'] = $user['email'];
+                $response['username'] = $user['username'];
             }elseif($result == 2){
                 $response['error'] = true;
                 $response['message'] = "Error adding new account";
