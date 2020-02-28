@@ -47,35 +47,64 @@ class RegisterActivity : AppCompatActivity() {
             var canRegister = true
             when {
                 inName.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Username field is empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Username field is empty",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     canRegister = false
                 }
                 inName.trim().length < 4 -> {
-                    Toast.makeText(applicationContext, "Username must be 4 characters or greater", Toast.LENGTH_SHORT).show()
-                    canRegister = false
-                }
-                !inEmail.trim().isEmailValid() -> {
-                    Toast.makeText(applicationContext, "Email address is not valid", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Username must be 4 characters or greater",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     canRegister = false
                 }
                 inEmail.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Email address field is empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Email address field is empty",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    canRegister = false
+                }
+                !inEmail.trim().isEmailValid() -> {
+                    Toast.makeText(
+                        applicationContext,
+                        "Email address is not valid",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     canRegister = false
                 }
                 inPassword.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Password field is empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Password field is empty",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     canRegister = false
                 }
                 inPassword.trim().length < 6 -> {
-                    Toast.makeText(applicationContext, "Password must be 6 characters or greater", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Password must be 6 characters or greater",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     canRegister = false
                 }
                 inConfirmPassword.trim().isEmpty() -> {
-                    Toast.makeText(applicationContext, "Password confirmation field is empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "Password confirmation field is empty",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     canRegister = false
                 }
                 inPassword != inConfirmPassword -> {
-                    Toast.makeText(applicationContext, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Passwords do not match", Toast.LENGTH_SHORT)
+                        .show()
                     canRegister = false
                 }
             }// If all entries match requirements, account will be created
@@ -99,7 +128,7 @@ class RegisterActivity : AppCompatActivity() {
             Response.Listener<String> { response -> // JSON response from the server
                 try {
                     val obj = JSONObject(response)
-                    Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_SHORT).show() // Server output printed to user
+                    Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
                     if (obj.getString("error") == "false") { // Server reports successful account addition
                         SharedPrefManager.getInstance(applicationContext).userLoginPref(
                             obj.getInt("id"),

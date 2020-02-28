@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
 import kotlinx.android.synthetic.main.activity_settings.*
 
@@ -17,6 +18,8 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         // If not logged in, go back to login page
@@ -26,18 +29,31 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        val id = SharedPrefManager.getInstance(applicationContext).getUserID()
-
+        // Handle Buttons
         val btnUser = findViewById<Button>(R.id.change_user)
+        btnUser.setOnClickListener{
+            val intent = Intent(this, ChangeUsernameActivity::class.java)
+            startActivity(intent)
+        }
         val btnEmail = findViewById<Button>(R.id.change_email)
+        btnEmail.setOnClickListener {
+            val intent = Intent(this, ChangeEmailActivity::class.java)
+            startActivity(intent)
+        }
         val btnPass = findViewById<Button>(R.id.change_pass)
+        btnPass.setOnClickListener {
+            val intent = Intent(this, ChangePasswordActivity::class.java)
+            startActivity(intent)
+        }
 
         // Add back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // Show current username
         val user = findViewById<TextView>(R.id.show_username)
         user.text = SharedPrefManager.getInstance(applicationContext).getUserUsername()
 
+        // Show current email address
         val email = findViewById<TextView>(R.id.show_email)
         email.text = SharedPrefManager.getInstance(applicationContext).getUserEmail()
     }

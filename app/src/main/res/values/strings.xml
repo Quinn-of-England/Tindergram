@@ -33,4 +33,10 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="settings">Settings</string>
     <string name="change">Change</string>
+    <string name="title_activity_change_username">Change Username</string>
+    <string name="new_username">New Username</string>
+    <string name="new_email_address">New Email Address</string>
+    <string name="title_change_email">Change Email Address</string>
+    <string name="new_password">New Password</string>
+    <string name="titile_change_password">Change Password</string>
 </resources>

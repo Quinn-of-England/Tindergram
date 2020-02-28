@@ -1,5 +1,3 @@
-// Code adapted from Google Android Developers Documentation
-// https://developer.android.com/training/volley/requestqueue
 package com.example.soen341
 
 import android.content.Context
