@@ -13,9 +13,9 @@ import kotlinx.android.synthetic.main.activity_upload_image.*
 class ImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_upload_image);
+        setContentView(R.layout.activity_upload_image)
 
         upload_image_button.setOnClickListener {
 
@@ -25,7 +25,7 @@ class ImageActivity : AppCompatActivity() {
 
             if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
-                println("Permission denied");
+                println("Permission denied")
                 //open the permission window for this activity, specify the type of permission im asking for, and store the
                 //result code in MY_PERMISSIONS_READ_EXTERNAL_STORE which is defined at the bottom
                 ActivityCompat.requestPermissions(this,
@@ -40,8 +40,8 @@ class ImageActivity : AppCompatActivity() {
             }
         }
         upload_image_back_button.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java);
-            startActivity(intent);
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
         }
     }
     private fun pickImageFromGallery(){
@@ -81,10 +81,10 @@ class ImageActivity : AppCompatActivity() {
             MY_PERMISSIONS_READ_EXTERNAL_STORAGE -> {
                 //if grant results is empty, it means that the permission request was cancelled.
                 if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    pickImageFromGallery();
+                    pickImageFromGallery()
                 } else{
                     //Toast just open a little window on the app where you can write stuff
-                    Toast.makeText(this,"Permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,"Permission denied", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -93,8 +93,8 @@ class ImageActivity : AppCompatActivity() {
     }
 
     companion object{
-        private val MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 0;
-        private val IMAGE_PICK_CODE = 0;
+        private val MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 0
+        private val IMAGE_PICK_CODE = 0
     }
 
 
