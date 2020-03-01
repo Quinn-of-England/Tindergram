@@ -2,7 +2,7 @@
     include_once "DbConnect.php";
     
     class DbOps{
-        private $conn;
+        public $conn;
 
         function __construct(){
             $db = new DbConnect();
@@ -110,6 +110,19 @@
             $stmt->bind_param("s", $username);
             $stmt->execute();
             return $stmt->get_result()->fetch_assoc();
-        }
+	}
+
+	public function saveImage($image,$id,$likes,$comments,$name,$type){
+		$imageData = file_get_contents($image['image']["tmp_name"]);
+		$stmt = $this->conn->prepare("INSERT INTO `pictures` (`image`,`name`,`type`, `id`, `likes`, `comments`) VALUES (?,?,?,?,?,?);");
+		$stmt->bind_param("bsssss",$imageData,$name,$type,$id,$likes,$comments);
+		if($stmt->execute()){
+                    return true;
+                }else{
+                    echo $this->conn->error;
+                    return false;
+                }
+
+	}
     }
 ?>
