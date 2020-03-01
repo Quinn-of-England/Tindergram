@@ -1,6 +1,6 @@
 <?php
     include_once "DbConnect.php";
-    
+
     class DbOps{
         public $conn;
 
@@ -21,7 +21,7 @@
                 if($stmt->execute()){
                     return 1;
                 }else{
-                    echo $this->conn->error;    
+                    echo $this->conn->error;
                     return 2;
                 }
             }
@@ -37,7 +37,7 @@
                 if($stmt->execute()){
                     return 1;
                 }else{
-                    echo $this->conn->error;    
+                    echo $this->conn->error;
                     return 2;
                 }
             }
@@ -51,7 +51,7 @@
             if($stmt->execute()){
                 return true;
             }else{
-                echo $this->conn->error;    
+                echo $this->conn->error;
                 return false;
             }
         }
@@ -66,7 +66,7 @@
                 if($stmt->execute()){
                     return 1;
                 }else{
-                    echo $this->conn->error;    
+                    echo $this->conn->error;
                     return 2;
                 }
             }
@@ -75,25 +75,25 @@
         private function isUserExist($username, $email) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
             $stmt->bind_param("ss", $username, $email);
-            $stmt->execute(); 
-            $stmt->store_result(); 
-            return $stmt->num_rows > 0; 
+            $stmt->execute();
+            $stmt->store_result();
+            return $stmt->num_rows > 0;
         }
 
         private function isUsernameExist($username) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
             $stmt->bind_param("s", $username);
-            $stmt->execute(); 
-            $stmt->store_result(); 
-            return $stmt->num_rows > 0; 
+            $stmt->execute();
+            $stmt->store_result();
+            return $stmt->num_rows > 0;
         }
 
         private function isEmailExist($email) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
-            $stmt->execute(); 
-            $stmt->store_result(); 
-            return $stmt->num_rows > 0; 
+            $stmt->execute();
+            $stmt->store_result();
+            return $stmt->num_rows > 0;
         }
 
         public function loginUser($username, $password) {
@@ -101,8 +101,8 @@
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? AND password = ?");
             $stmt->bind_param("ss", $username, $encrPassword);
             $stmt->execute();
-            $stmt->store_result(); 
-            return $stmt->num_rows > 0; 
+            $stmt->store_result();
+            return $stmt->num_rows > 0;
         }
 
         public function getUserByUsername($username) {
@@ -110,19 +110,14 @@
             $stmt->bind_param("s", $username);
             $stmt->execute();
             return $stmt->get_result()->fetch_assoc();
-	}
+	      }
 
-	public function saveImage($image,$id,$likes,$comments,$name,$type){
-		$imageData = file_get_contents($image['image']["tmp_name"]);
-		$stmt = $this->conn->prepare("INSERT INTO `pictures` (`image`,`name`,`type`, `id`, `likes`, `comments`) VALUES (?,?,?,?,?,?);");
-		$stmt->bind_param("bsssss",$imageData,$name,$type,$id,$likes,$comments);
-		if($stmt->execute()){
-                    return true;
-                }else{
-                    echo $this->conn->error;
-                    return false;
-                }
-
-	}
-    }
+	      public function addComment($id,$comment,$user){
+          //should pass the comment as $comment = "user,comment|"
+          //storing old value and adding received param to it
+          $stmt = $this->conn->prepare("UPDATE `pictures` SET `comments` = CONCAT(`comments`,?) WHERE `id` = ?");
+          $stmt->bind_param("ss", $comment, $id);
+          return $stmt->execute();
+        }
+}
 ?>
