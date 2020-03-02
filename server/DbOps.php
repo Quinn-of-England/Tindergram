@@ -80,7 +80,7 @@
             return $stmt->num_rows > 0;
         }
 
-        private function isUsernameExist($username) {
+        public function isUsernameExist($username) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
             $stmt->bind_param("s", $username);
             $stmt->execute();
@@ -88,7 +88,7 @@
             return $stmt->num_rows > 0;
         }
 
-        private function isEmailExist($email) {
+        public function isEmailExist($email) {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -112,11 +112,12 @@
             return $stmt->get_result()->fetch_assoc();
 	      }
 
-	      public function addComment($id,$comment,$user){
+	      public function addComment($id,$comment,$username){
           //should pass the comment as $comment = "user,comment|"
           //storing old value and adding received param to it
+          $toAdd = $username.",".$comment."|";
           $stmt = $this->conn->prepare("UPDATE `pictures` SET `comments` = CONCAT(`comments`,?) WHERE `id` = ?");
-          $stmt->bind_param("ss", $comment, $id);
+          $stmt->bind_param("ss", $toAdd, $id);
           return $stmt->execute();
         }
 }
