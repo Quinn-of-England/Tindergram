@@ -112,6 +112,34 @@
             return $stmt->get_result()->fetch_assoc();
 	      }
 
+        public function notifyAllThatFollowId($authorId){
+            $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
+            $stmt->bind_param("s", $authorId);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($followers);
+    			  $stmt->fetch();
+            $followersArr = explode(',', $followers);
+            //for each follower in followers, change their update column
+            foreach ($followersArr as $follower) {
+              $stmt = $this->conn->prepare("UPDATE users SET followedPostedPictures = CONCAT(followedPostedPictures,?) WHERE id = ?");
+              $stmt->bind_param("ss", $authorId, $follower);
+              $stmt->execute();
+            }
+        }
+
+        public function canFollow($followerId,$followedId){
+
+        }
+
+        public function follows($followerId,$followedId){
+            //TODO checking if the user is already being followed, maybe that can be another method
+            $stmt = $this->conn->prepare("UPDATE `users` SET `isFollowedBy` = CONCAT(`isFollowedBy`,?) WHERE `id` = ?");
+            $formattedfollowerId = $followerId.",";
+            $stmt->bind_param("ss", $formattedfollowerId, $followedId);
+            return $stmt->execute();
+        }
+
 	      public function addComment($id,$comment,$username){
           //should pass the comment as $comment = "user,comment|"
           //storing old value and adding received param to it
