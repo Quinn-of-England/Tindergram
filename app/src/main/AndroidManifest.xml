@@ -20,17 +20,17 @@
             android:name=".ChangePasswordActivity"
             android:label="@string/titile_change_password"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
         <activity
             android:name=".ChangeEmailActivity"
             android:label="@string/title_change_email"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
         <activity
             android:name=".ChangeUsernameActivity"
             android:label="@string/title_activity_change_username"
             android:parentActivityName=".SettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog.Alert" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settings"

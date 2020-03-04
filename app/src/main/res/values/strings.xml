@@ -39,4 +39,5 @@
     <string name="title_change_email">Change Email Address</string>
     <string name="new_password">New Password</string>
     <string name="titile_change_password">Change Password</string>
+    <string name="cancel">Cancel</string>
 </resources>

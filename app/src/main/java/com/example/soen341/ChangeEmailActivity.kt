@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import kotlinx.android.synthetic.main.activity_change_email.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -18,13 +19,6 @@ class ChangeEmailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_email)
-
-        // Adding in toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        // Add back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // User clicks button to change email address
         val newEmail = findViewById<EditText>(R.id.new_email)
@@ -55,6 +49,12 @@ class ChangeEmailActivity : AppCompatActivity() {
             if (canChange) {
                 changeEmail()
             }
+        }
+
+        // User clicks cancel
+        val btnCancel = findViewById<Button>(R.id.cancel_button)
+        btnCancel.setOnClickListener {
+            finish()
         }
     }
 
