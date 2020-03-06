@@ -12,15 +12,57 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="122dp" />
 
+    <RelativeLayout
+        android:id="@+id/commentRelative"
+        android:layout_width="408dp"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="75dp"
+        android:background="#D3D3D3"
+        android:orientation="vertical"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_comment">
+
+        <TextView
+            android:id="@+id/post_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Post"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18dp"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </RelativeLayout>
+
     <Button
         android:id="@+id/UploadImageActivityButton"
         android:layout_width="411dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <EditText
+        android:id="@+id/add_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="456dp"
+        android:hint="Write your comment here..."
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/commentRelative"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/UploadImageActivityButton">
+
+    </EditText>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
