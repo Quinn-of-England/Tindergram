@@ -135,6 +135,28 @@
             }
         }
 
+        public function getNotification($userId){
+            $stmt = $this->conn->prepare("SELECT followedPostedPictures FROM users WHERE id = ?");
+            $stmt->bind_param("s", $userId);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($followedUsers);
+            $stmt->fetch();
+            $followedArr = explode(',', $followedUsers);
+            $resultList = "";
+            //for each follower in followers, change their update column
+            foreach ($followedArr as $followed) {
+              $stmt = $this->conn->prepare("SELECT username FROM users WHERE id = ?");
+              $stmt->bind_param("s", $followed);
+              $stmt->execute();
+              $stmt->store_result();
+              $stmt->bind_result($authorUserName);
+              $stmt->fetch();
+              $resultList = $resultList.$authorUserName.",";
+            }
+            return $resultList;
+        }
+
         public function canFollow($followerId,$followedId){
 
         }
