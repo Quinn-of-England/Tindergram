@@ -19,13 +19,6 @@ class ChangeUsernameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_username)
 
-        // Adding in toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        // Add back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         // User click button to change username
         val newName = findViewById<EditText>(R.id.new_name)
         val btnChange = findViewById<Button>(R.id.change)
@@ -55,6 +48,12 @@ class ChangeUsernameActivity : AppCompatActivity() {
             if (canChange) {
                 changeUser()
             }
+        }
+
+        // User clicks cancel
+        val btnCancel = findViewById<Button>(R.id.cancel_button)
+        btnCancel.setOnClickListener {
+            finish()
         }
     }
     private fun changeUser() {
