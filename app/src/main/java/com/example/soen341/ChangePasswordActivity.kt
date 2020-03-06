@@ -19,13 +19,6 @@ class ChangePasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_password)
 
-        // Adding in toolbar
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
-        // Add back button
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         // Values from text entries
         val newPass = findViewById<EditText>(R.id.new_password)
         val newConf = findViewById<EditText>(R.id.new_conf)
@@ -72,6 +65,12 @@ class ChangePasswordActivity : AppCompatActivity() {
             if (canChange) {
                 changePassword()
             }
+        }
+
+        // User clicks cancel
+        val btnCancel = findViewById<Button>(R.id.cancel_button)
+        btnCancel.setOnClickListener {
+            finish()
         }
     }
 

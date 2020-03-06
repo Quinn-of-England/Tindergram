@@ -3,45 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="225dp"
     tools:context=".ChangeEmailActivity">
-
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="122dp" />
 
     <EditText
         android:id="@+id/new_email"
         android:layout_width="275dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="280dp"
-        android:layout_marginBottom="45dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="4dp"
+        android:autofillHints="@string/new_email_address"
+        android:drawableStart="@drawable/email_icon"
+        android:drawableLeft="@drawable/email_icon"
         android:ems="10"
         android:hint="@string/new_email_address"
         android:inputType="textEmailAddress"
-        android:drawableStart="@drawable/email_icon"
         app:layout_constraintBottom_toTopOf="@+id/change"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        android:drawableLeft="@drawable/email_icon"
-        android:autofillHints="@string/new_email_address" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/change"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="372dp"
         android:text="@string/change"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cancel_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_email"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/new_email" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="275dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

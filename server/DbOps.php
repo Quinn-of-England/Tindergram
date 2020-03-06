@@ -15,7 +15,7 @@
                 return 0;
             }else{
                 $encrPassword = md5($password);
-                $stmt = $this->conn->prepare("INSERT INTO `users`(`username`, `email`, `password`, `following`) VALUES (?,?,?,NULL);");
+                $stmt = $this->conn->prepare("INSERT INTO `users`(`username`, `email`, `password`) VALUES (?,?,?);");
                 $stmt->bind_param("sss", $username, $email, $encrPassword);
 
                 if($stmt->execute()){

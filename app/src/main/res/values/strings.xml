@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SOEN341</string>
+    <string name="app_name">TinderGram</string>
     <string name="action_settings">Settings</string>
     <string name="login">LOGIN</string>
     <string name="login_to_tindergram">Login to Tindergram</string>
@@ -39,4 +39,5 @@
     <string name="title_change_email">Change Email Address</string>
     <string name="new_password">New Password</string>
     <string name="titile_change_password">Change Password</string>
+    <string name="cancel">Cancel</string>
 </resources>
