@@ -112,6 +112,13 @@
             return $stmt->get_result()->fetch_assoc();
 	      }
 
+        public function getIdByUsername($username) {
+            $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            return $stmt->get_result()->fetch_assoc();
+	      }
+
         public function notifyAllThatFollowId($authorId){
             $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
             $stmt->bind_param("s", $authorId);

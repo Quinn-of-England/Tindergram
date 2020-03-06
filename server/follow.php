@@ -3,26 +3,34 @@ include_once dirname(__FILE__)."/DbOps.php";
 $response = array();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(isset($_POST['followerId']) and isset($_POST['followedId'])) {
+    if(isset($_POST['followerUser']) and isset($_POST['followedUser'])) {
       $db = new DbOps();
 
-      if($db->follows($_POST['followerId'], $_POST['followedId'])){
-            // the image is now on the server, need to notify people that follow the author
-            // hence it's better in the database if the follows section contains the people that follow that person.
-            $response["error"] = 0;
-            $response["message"] = "success";
-        }else{
-            echo $db->conn->error;
-            return false;
-        }
+      if($db->isUsernameExist($_POST['followerUser']) and $db->isUsernameExist($_POST['followedUser'])){
+          $followerId = $db->getIdByUsername($_POST['followerUser']);
+          $followedId = $db->getIdByUsername($_POST['followedUser']);
+
+        if($db->follows($followerId['id'], $followedId['id'])){
+              // the image is now on the server, need to notify people that follow the author
+              // hence it's better in the database if the follows section contains the people that follow that person.
+              $response['error'] = false;
+              $response['message'] = "success";
+          }else{
+              $response['error'] = true;
+              $response['message'] = "Error following user";
+          }
+      } else {
+        $response['error'] = true;
+        $response['message'] = "user(s) don't exist";
+      }
 
 		} else {
         echo "Missing field(s)";
-        echo "[FollowerId status: ",isset($_POST['followerId']), "]";
-        echo "[FollowedId status: ",isset($_POST['followedId']), "]";
+        echo "[followerUser status: ",isset($_POST['followerUser']), "]";
+        echo "[followedUser status: ",isset($_POST['followedUser']), "]";
     }
 }else{
-    $response['error'] = 1;
+    $response['error'] = true;
     $response['message'] = "invalid request";
 }
 echo json_encode($response);
