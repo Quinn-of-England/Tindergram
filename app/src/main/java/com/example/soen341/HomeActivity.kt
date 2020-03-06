@@ -2,6 +2,7 @@ package com.example.soen341
 
 
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,6 +17,11 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        val animDrawable = root_layout.background as AnimationDrawable
+        animDrawable.setEnterFadeDuration(10)
+        animDrawable.setExitFadeDuration(5000)
+        animDrawable.start()
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
