@@ -3,22 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.soen341.MainActivity">
     <item
+        android:id="@+id/action_upload"
+        android:icon="@drawable/camera_icon"
+        android:orderInCategory="101"
+        android:title="@string/upload"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/app_bar_search"
         android:icon="@drawable/ic_search_black_24dp"
         android:orderInCategory="100"
         android:title="@string/search"
-        app:queryHint="@string/follow_user"
-        app:iconifiedByDefault="false"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="101"
+        android:orderInCategory="102"
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_log_out"
-        android:orderInCategory="102"
+        android:orderInCategory="103"
         android:title="@string/log_out"
         app:showAsAction="never" />
 </menu>
