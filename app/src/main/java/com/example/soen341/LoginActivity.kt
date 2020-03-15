@@ -9,6 +9,7 @@ import android.widget.*
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
+import com.exampl.ImageActivity
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -87,7 +88,7 @@ class LoginActivity : AppCompatActivity() {
                     canLogin = false
                 }
             }
-            if (canLogin) {
+            if (true) {
                 loginUser()
             }
         }
@@ -121,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
                             obj.getString("username"),
                             obj.getString("email")
                         )
-                        val intent = Intent(this, HomeActivity::class.java)
+                        val intent = Intent(this, ImageActivity::class.java)
                         startActivity(intent) // User goes to the homepage
                         finish()
                     }// If no response/invalid response received
