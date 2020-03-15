@@ -6,4 +6,5 @@ object Constants {
     const val LOGIN_URL = ROOT_URL+"login.php"
     const val CHANGE_URL = ROOT_URL+"changeValues.php"
     const val IMAGE_URL = ROOT_URL + "upload-image.php"
+    const val FOLLOW_URL = ROOT_URL+"follow.php"
 }

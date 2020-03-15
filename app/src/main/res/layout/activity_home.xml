@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_animation"
     tools:context=".HomeActivity">
 
     <include
@@ -12,47 +14,20 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="122dp" />
 
-    <RelativeLayout
-        android:id="@+id/commentRelative"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="150dp"
-        android:background="#D3D3D3"
-        android:orientation="vertical"
-        android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="@id/add_comment"
-        >
-
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/UploadImageActivityButton"
-        android:layout_width="411dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Upload Pictures"
-        android:backgroundTint="@color/cardview_shadow_start_color"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
     <EditText
         android:id="@+id/add_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="550dp"
-        android:layout_marginRight="120dp"
-        android:hint="Write your comment here..."
+        android:layout_width="272dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="636dp"
+        android:layout_marginBottom="32dp"
+        android:hint="@string/write_comment"
         android:padding="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/commentRelative"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/post_comment"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/UploadImageActivityButton"
-        app:layout_constraintVertical_bias="0.496">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
     </EditText>
 
@@ -60,13 +35,14 @@
         android:id="@+id/post_comment"
         android:layout_width="88dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginLeft="6dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="Post"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/add_comment"
+        app:layout_constraintBottom_toBottomOf="@+id/add_comment"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/add_comment">
 
     </Button>
