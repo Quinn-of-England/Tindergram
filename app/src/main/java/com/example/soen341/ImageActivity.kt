@@ -3,12 +3,15 @@ package com.example.soen341
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_upload_image.*
+
 
 class ImageActivity : AppCompatActivity() {
 
