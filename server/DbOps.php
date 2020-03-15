@@ -15,7 +15,7 @@
                 return 0;
             }else{
                 $encrPassword = md5($password);
-                $stmt = $this->conn->prepare("INSERT INTO `users`(`username`, `email`, `password`, `following`) VALUES (?,?,?,NULL);");
+                $stmt = $this->conn->prepare("INSERT INTO `users`(`username`, `email`, `password`) VALUES (?,?,?);");
                 $stmt->bind_param("sss", $username, $email, $encrPassword);
 
                 if($stmt->execute()){
@@ -158,15 +158,27 @@
         }
 
         public function canFollow($followerId,$followedId){
-
+          $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
+          $stmt->bind_param("s", $followedId);
+          $stmt->execute();
+          $stmt->store_result();
+          $stmt->bind_result($followers);
+          $stmt->fetch();
+          $followersArr = explode(',', $followers);
+          foreach ($followersArr as $follower) {
+            if($follower == $followerId){
+              return false;
+            }
+          }
+          return true;
         }
 
         public function follows($followerId,$followedId){
-            //TODO checking if the user is already being followed, maybe that can be another method
-            $stmt = $this->conn->prepare("UPDATE `users` SET `isFollowedBy` = CONCAT(`isFollowedBy`,?) WHERE `id` = ?");
-            $formattedfollowerId = $followerId.",";
-            $stmt->bind_param("ss", $formattedfollowerId, $followedId);
-            return $stmt->execute();
+          //TODO checking if the user is already being followed, maybe that can be another method
+          $stmt = $this->conn->prepare("UPDATE `users` SET `isFollowedBy` = CONCAT(`isFollowedBy`,?) WHERE `id` = ?");
+          $formattedfollowerId = $followerId.",";
+          $stmt->bind_param("ss", $formattedfollowerId, $followedId);
+          return $stmt->execute();
         }
 
 	      public function addComment($id,$comment,$username){

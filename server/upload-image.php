@@ -3,11 +3,11 @@ include_once dirname(__FILE__)."/DbOps.php";
 $response = array();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(isset($_FILES['image']) and isset($_POST['authorId']) and isset($_POST['likes']) and isset($_POST['comments'])) {
+    if(isset($_FILES['imageFile']) and isset($_POST['authorId']) and isset($_POST['likes']) and isset($_POST['comments'])) {
       $db = new DbOps();
-			$imageData = file_get_contents($_FILES['image']["tmp_name"]);
-      $name = $_FILES['image']["name"];
-			$type = $_FILES['image']["type"];
+ 	    $imageData = file_get_contents($_FILES['imageFile']["tmp_name"]);
+      $name = $_FILES['imageFile']["name"];
+			$type = $_FILES['imageFile']["type"];
 			$null = NULL;
 
       $stmt = $db->conn->prepare("INSERT INTO `pictures` (`image`,`name`,`type`, `authorId`, `likes`, `comments`) VALUES (?,?,?,?,?,?);");
@@ -19,10 +19,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $db->notifyAllThatFollowId($_POST['authorId']);
             $response["error"] = 0;
             $response["message"] = "success";
-        }else{
-            echo $db->conn->error;
-            return false;
-        }
+      }else{
+	         echo $db->conn->error;
+           }
 
 		} else {
         echo "Missing field(s)";
