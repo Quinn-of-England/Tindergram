@@ -40,6 +40,8 @@ class LoginTests {
         onView(withId(R.id.username)).perform(typeText("test123"))
     }
 
+
+
     @Test
     fun user_can_enter_password() {
         user_is_logged_out()
