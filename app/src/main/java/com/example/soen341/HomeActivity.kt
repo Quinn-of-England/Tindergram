@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import com.exampl.ImageActivity
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -30,7 +31,7 @@ class HomeActivity : AppCompatActivity() {
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, ImageActivity::class.java)
             startActivity(intent)
             finish()
         }
