@@ -122,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
                             obj.getString("username"),
                             obj.getString("email")
                         )
-                        val intent = Intent(this, ImageActivity::class.java)
+                        val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent) // User goes to the homepage
                         finish()
                     }// If no response/invalid response received
