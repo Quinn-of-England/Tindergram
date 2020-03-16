@@ -140,8 +140,17 @@ class ImageActivity : AppCompatActivity() {
             set.connect(image.id,ConstraintSet.BOTTOM,ConstraintSet.PARENT_ID,ConstraintSet.BOTTOM,100)
             set.connect(image.id,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,ConstraintSet.LEFT,100)
             set.connect(image.id,ConstraintSet.RIGHT,ConstraintSet.PARENT_ID,ConstraintSet.RIGHT,100)
+            var user_id : String? = null
 
-            Utilities.instance().getUserIDFromUsername("gorbachev",this)
+            Utilities.instance().getUserIDFromUsername("gorbachev",this, object : VolleyCallback{
+                override fun onSucess(result: String) {
+                    user_id = result
+                }
+
+                override fun onError(error: String) {
+                    println(error)
+                }
+            })
            // set.createHorizontalChain(ConstraintSet.PARENT_ID,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,
              //   ConstraintSet.RIGHT,images,null,ConstraintSet.CHAIN_SPREAD)
             set.applyTo(home_layout)
