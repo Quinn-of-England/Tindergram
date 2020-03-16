@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONException
 import org.json.JSONObject
 
-class HomeActivity : AppCompatActivity() {
+open class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

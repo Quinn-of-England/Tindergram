@@ -44,17 +44,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class ImageActivity : AppCompatActivity() {
+//Inherit HomeActivity because I dont want to change my layout.
+class ImageActivity : HomeActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       setContentView(R.layout.activity_home)
+
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-            //if permission is set to denied(by default it is), open a small gui to ask user for permissions
-            //When the user specifies permissions, a handler function which is overriden below will automically be called to
-            //handle this request
 
             if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
@@ -80,13 +78,9 @@ class ImageActivity : AppCompatActivity() {
     }
     fun SaveImageToServer(imageData:ByteArray?){
         val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
-                response -> try{
-            println("Network Response")
+                response ->
+            Toast.makeText(applicationContext,"Image posted!",Toast.LENGTH_SHORT)
             println(response)
-        }
-        catch (e : Exception){
-            e.printStackTrace()
-        }
         },
             Response.ErrorListener {
                     error ->
@@ -102,12 +96,15 @@ class ImageActivity : AppCompatActivity() {
             override fun getParams(): MutableMap<String, String> {
                 var params = HashMap<String,String>()
                 params.put("likes","1337")
-                params.put("comments","Trump buddy")
+                params.put("comments",GetComments())
                 params.put("authorId",SharedPrefManager.getInstance(applicationContext).getUserID().toString())
                 return params
             }
         }
         RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
+    }
+    fun GetComments() : String{
+        return add_comment.text.toString()
     }
     fun CreateImageDataFromURI(uri : Uri?) : ByteArray?{
         var imageData : ByteArray? = null;
@@ -123,10 +120,12 @@ class ImageActivity : AppCompatActivity() {
 
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
 
+
             var uri = data?.data;
             val imageData : ByteArray? = CreateImageDataFromURI(uri)
-            SaveImageToServer(imageData)
-
+            post_comment.setOnClickListener {
+                SaveImageToServer(imageData)
+            }
             val image = ImageView(this)
             image.id = View.generateViewId()
             image.setImageURI(uri)
