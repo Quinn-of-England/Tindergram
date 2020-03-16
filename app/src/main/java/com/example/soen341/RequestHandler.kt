@@ -28,3 +28,7 @@ class RequestHandler constructor(context: Context) {
         requestQueue.add(req)
     }
 }
+interface VolleyCallback{
+    fun onSucess(result:String) : String
+    fun onError(result: String) : String
+}
