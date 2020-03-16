@@ -79,7 +79,7 @@ class ImageActivity : HomeActivity() {
     fun SaveImageToServer(imageData:ByteArray?){
         val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
-            Toast.makeText(applicationContext,"Image posted!",Toast.LENGTH_SHORT)
+            Toast.makeText(this,"Image posted!",Toast.LENGTH_SHORT).show()
             println(response)
         },
             Response.ErrorListener {
@@ -89,7 +89,8 @@ class ImageActivity : HomeActivity() {
             }) {
             override fun getByteData(): MutableMap<String, FileDataPart>? {
                 var params = HashMap<String,FileDataPart>()
-                params["imageFile"] = FileDataPart("supremeleader.jpg",imageData!!,"jpeg")
+                //filename is just userID--pictureCount for now
+                params["imageFile"] = FileDataPart("imageName", imageData!!,"jpeg")
                 return params
             }
 
