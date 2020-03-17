@@ -6,12 +6,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(isset($_FILES['imageFile']) and isset($_POST['authorId']) and isset($_POST['likes']) and isset($_POST['comments'])) {
       $db = new DbOps();
  	    $imageData = file_get_contents($_FILES['imageFile']["tmp_name"]);
+      //not using name for now, it serves no purpose
       $name = $_FILES['imageFile']["name"];
 			$type = $_FILES['imageFile']["type"];
 			$null = NULL;
 
-      $stmt = $db->conn->prepare("INSERT INTO `pictures` (`image`,`name`,`type`, `authorId`, `likes`, `comments`) VALUES (?,?,?,?,?,?);");
-			$stmt->bind_param("bsssss",$null,$name,$type,$_POST['authorId'],$_POST['likes'],$_POST['comments']);
+      $stmt = $db->conn->prepare("INSERT INTO `pictures` (`image`,`type`, `authorId`, `likes`, `comments`) VALUES (?,?,?,?,?);");
+			$stmt->bind_param("bssis",$null,$type,$_POST['authorId'],$_POST['likes'],$_POST['comments']);
 			$stmt->send_long_data(0, $imageData);
       if($stmt->execute()){
           // the image is now on the server, need to notify people that follow the author
@@ -25,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		} else {
         echo "Missing field(s)";
-        echo "[image status: ",isset($_POST['image']), "]";
+        echo "[imageFile status: ",isset($_POST['imageFile']), "]";
         echo "[id status: ",isset($_POST['authorId']), "]";
         echo "[likes status: ",isset($_POST['likes']), "]";
         echo "[comments status: ",isset($_POST['comments']), "]";
