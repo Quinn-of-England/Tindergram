@@ -119,6 +119,22 @@
             return $stmt->get_result()->fetch_assoc();
 	      }
 
+        public function userAlreadyNotified($authorId, $followerId){
+            $stmt = $this->conn->prepare("SELECT followedPostedPictures FROM users WHERE id = ?");
+            $stmt->bind_param("s", $followerId);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($followedString);
+            $stmt->fetch();
+            $notificationArr = explode(',', $followedString);
+            foreach ($notificationArr as $notif) {
+              if ($notif == $authorId) {
+                return true;
+              }
+            }
+            return false;
+        }
+
         public function notifyAllThatFollowId($authorId){
             $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
             $stmt->bind_param("s", $authorId);
@@ -129,9 +145,13 @@
             $followersArr = explode(',', $followers);
             //for each follower in followers, change their update column
             foreach ($followersArr as $follower) {
-              $stmt = $this->conn->prepare("UPDATE users SET followedPostedPictures = CONCAT(followedPostedPictures,?) WHERE id = ?");
-              $stmt->bind_param("ss", $authorId, $follower);
-              $stmt->execute();
+              //notify the follower once.
+              if (!$this->userAlreadyNotified($authorId, $follower)){
+                $stmt = $this->conn->prepare("UPDATE users SET followedPostedPictures = CONCAT(followedPostedPictures,?) WHERE id = ?");
+                $formattedAuthorId = $authorId.",";
+                $stmt->bind_param("ss", $formattedAuthorId, $follower);
+                $stmt->execute();
+              }
             }
         }
 
@@ -158,15 +178,27 @@
         }
 
         public function canFollow($followerId,$followedId){
-
+          $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
+          $stmt->bind_param("s", $followedId);
+          $stmt->execute();
+          $stmt->store_result();
+          $stmt->bind_result($followers);
+          $stmt->fetch();
+          $followersArr = explode(',', $followers);
+          foreach ($followersArr as $follower) {
+            if($follower == $followerId){
+              return false;
+            }
+          }
+          return true;
         }
 
         public function follows($followerId,$followedId){
-            //TODO checking if the user is already being followed, maybe that can be another method
-            $stmt = $this->conn->prepare("UPDATE `users` SET `isFollowedBy` = CONCAT(`isFollowedBy`,?) WHERE `id` = ?");
-            $formattedfollowerId = $followerId.",";
-            $stmt->bind_param("ss", $formattedfollowerId, $followedId);
-            return $stmt->execute();
+          //TODO checking if the user is already being followed, maybe that can be another method
+          $stmt = $this->conn->prepare("UPDATE `users` SET `isFollowedBy` = CONCAT(`isFollowedBy`,?) WHERE `id` = ?");
+          $formattedfollowerId = $followerId.",";
+          $stmt->bind_param("ss", $formattedfollowerId, $followedId);
+          return $stmt->execute();
         }
 
 	      public function addComment($id,$comment,$username){
