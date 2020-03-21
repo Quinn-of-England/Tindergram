@@ -127,11 +127,8 @@ class ImageActivity : HomeActivity() {
             post_comment.setOnClickListener {
                 SaveImageToServer(imageData)
             }
-            val image = ImageView(this)
-            image.id = View.generateViewId()
-            image.setImageURI(uri)
 
-            val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)
+            /*val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)
             home_layout.addView(image,200,200)
 
             val set : ConstraintSet = ConstraintSet()
@@ -145,7 +142,7 @@ class ImageActivity : HomeActivity() {
            // set.createHorizontalChain(ConstraintSet.PARENT_ID,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,
              //   ConstraintSet.RIGHT,images,null,ConstraintSet.CHAIN_SPREAD)
             set.applyTo(home_layout)
-
+                */
         }
 
         super.onActivityResult(requestCode, resultCode, data)

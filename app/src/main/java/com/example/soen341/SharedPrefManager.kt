@@ -2,14 +2,20 @@ package com.example.soen341
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
+import java.util.*
 
 class SharedPrefManager constructor(context: Context) {
     private val PREF_NAME = "userSharedPref"
     private val KEY_USERNAME = "username"
     private val KEY_USER_ID = "user_id"
     private val KEY_USER_EMAIL = "user_email"
-    val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    private var imageQueue : Queue<ImageContainer>? = null
 
+    val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    init{
+        imageQueue = LinkedList<ImageContainer>()
+    }
     companion object {
         @Volatile
         private var INSTANCE: SharedPrefManager? = null
@@ -20,7 +26,12 @@ class SharedPrefManager constructor(context: Context) {
                 }
             }
     }
-
+    fun GetImageUri() : ImageContainer? {
+             return imageQueue?.poll()
+    }
+    fun AddToImageQueue(container : ImageContainer) : Unit{
+        imageQueue?.offer(container)
+    }
     fun userLoginPref(id:Int, username:String, email:String) {
         val editor = sharedPref.edit()
         editor.putInt(KEY_USER_ID, id)
@@ -62,3 +73,4 @@ class SharedPrefManager constructor(context: Context) {
         editor.apply()
     }
 }
+class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int)

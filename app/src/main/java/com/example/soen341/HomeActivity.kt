@@ -2,6 +2,8 @@ package com.example.soen341
 
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,14 +11,22 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import com.exampl.ImageActivity
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
+import kotlin.collections.HashMap
 
 open class HomeActivity : AppCompatActivity() {
 
@@ -47,7 +57,6 @@ open class HomeActivity : AppCompatActivity() {
 //        else {
 //            Toast.makeText(applicationContext, "ERROR: User pref is not logged in", Toast.LENGTH_SHORT).show()
 //        }
-
     }
 
     // Adding in main menu in top right
@@ -74,12 +83,15 @@ open class HomeActivity : AppCompatActivity() {
     }
 
     // Handling main menu options
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_upload -> {
                 val intent = Intent(this, ImageActivity::class.java)
-                startActivity(intent)
+
+                //home_image.setImageURI(uri)
                 return true
+
             }
             R.id.action_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
@@ -109,8 +121,9 @@ open class HomeActivity : AppCompatActivity() {
                 try {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false") { // Server reports successful username change
-                        // Follow success
+                    if (obj.getString("error") == "false") { // Server reports user follow
+
+                  // Follow success
                     }// If no response/invalid response received
                 }catch (e: JSONException){
                     e.printStackTrace()
@@ -128,4 +141,9 @@ open class HomeActivity : AppCompatActivity() {
         // Request queue
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
     }
+    private  fun UpdateFollowerImages(){
+
+    }
+
 }
+
