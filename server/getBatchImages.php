@@ -25,13 +25,17 @@ $images = array();
                           //echo 'ID: '.$row['id'].'<br>';
                           //array_push($images, $row['image']);
                           $imageIndex = 5 - $imagesLeft;
-                          $response[$imageIndex] = base64_encode($row['image']);
+                          $response[$imageIndex]['image'] = base64_encode($row['image']);
+                          $response[$imageIndex]['id'] = $row['id'];
+                          $response[$imageIndex]['authorId'] = $row['authorId'];
+                          $response[$imageIndex]['likes'] = $row['likes'];
+                          $response[$imageIndex]['comments'] = $row['comments'];
                           $imagesLeft--;
                         }
 
                         $response['error'] = 0;
                         $response['size'] = $imageIndex + 1;
-                        $response['images'] = $images;
+                        $response['message'] = "Success";
 
                         //for now, just select the first five images of the mysqli_more_results
                         //TODO ckeck the image ids to know whether they were viewed or not
