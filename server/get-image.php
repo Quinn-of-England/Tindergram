@@ -5,34 +5,31 @@ $db = new DbOps();
 
         if($_SERVER['REQUEST_METHOD'] == 'GET') {
                 if(isset($_GET['id'])) {
+                    //$db = new DbOps();
+                    $id = $_GET['id'];
 
-                        //$db = new DbOps();
-                        $id = $_GET['id'];
-
-                        $stmt = $db->conn->prepare("SELECT image FROM `pictures` WHERE id=?");
-                        $stmt->bind_param("s", $id);
-                        if($stmt->execute()){
+                    $stmt = $db->conn->prepare("SELECT image FROM `pictures` WHERE id=?");
+                    $stmt->bind_param("s", $id);
+                    if($stmt->execute()){
                           //$response["error"] = 0;
                           //$response['message'] = "success";
-			  $stmt->store_result();
-			  $stmt->bind_result($image);
-			  $stmt->fetch();
+			                    $stmt->store_result();
+			                    $stmt->bind_result($image);
+			                    $stmt->fetch();
 
-			  header("Content-Type: image/jpeg");
-			  echo $image;
-			  //readfile($image);
-			}
+			                    header("Content-Type: image/jpeg");
+			                    echo $image;
+			                    //readfile($image);
+			              }
 
                 }else{
-                        echo "Missing field";
-                        echo "[id status: ",isset($_GET['id']), "]";
-
+                    echo "Missing field";
+                    echo "[id status: ",isset($_GET['id']), "]";
                 }
 	}else{
 		echo "invalid request";
-                //$response['error'] = 1;
-                //$response['message'] = "invalid request";
+    //$response['error'] = 1;
+    //$response['message'] = "invalid request";
         }
-        //echo json_encode($response);
+//echo json_encode($response);
 ?>
-

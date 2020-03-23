@@ -32,7 +32,6 @@ class SharedPrefManager constructor(context: Context) {
     fun isUserLoggedIn() : Boolean {
         return sharedPref.getString(KEY_USERNAME, null) != null
     }
-
     fun getUserUsername() : String? {
         return sharedPref.getString(KEY_USERNAME, null)
     }
