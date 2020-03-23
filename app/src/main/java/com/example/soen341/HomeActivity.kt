@@ -34,26 +34,27 @@ import kotlin.collections.HashMap
 
 open class HomeActivity : AppCompatActivity() {
 
-    /** USE THIS FUNCTION
-     fun UpdateImage(){
+    var first : Boolean = true
+
+    fun UpdateImage(){
         var image  : ImageContainer? = SharedPrefManager.getInstance(this).GetImageContainer()
         home_image.setImageBitmap(image?.imageBitmap)
+        add_comment.setText(image?.comments)
      }
-    **/
 
     suspend fun startBackgroundProcess(){
 
         while(true) {
-            delay(5000)
-            //update Image Lists
+
             UpdateImageList()
+            delay(5000)
 
         }
     }
      fun UpdateImageList(){
          //dispatcher thread working here...
          val req = JsonObjectRequest(
-            Request.Method.GET,Constants.BATCH_IMAGES+"?id=3",null, Response.Listener {
+            Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(this).getUserID(),null, Response.Listener {
                     response ->
                 try{
                     //main thread takes over...
@@ -64,7 +65,11 @@ open class HomeActivity : AppCompatActivity() {
                         var array : JSONObject = response.getJSONObject("$i")
                         SharedPrefManager.getInstance(this).AddToImageQueue(array)
                     }
+                    if(first){
+                        UpdateImage()
+                        first = false
 
+                    }
                 }
                 catch (e : Exception){
                     e.printStackTrace()
