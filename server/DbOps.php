@@ -155,16 +155,22 @@
             }
         }
 
-        public function getNotification($userId){
+        public function getAndClearNotification($userId){
             $stmt = $this->conn->prepare("SELECT followedPostedPictures FROM users WHERE id = ?");
             $stmt->bind_param("s", $userId);
             $stmt->execute();
             $stmt->store_result();
             $stmt->bind_result($followedUsers);
             $stmt->fetch();
+            //clear the followedPostedPictures column
+            $stmt = $this->conn->prepare("UPDATE users SET followedPostedPictures = '' WHERE id = ?");
+            $stmt->bind_param("s", $userId);
+            $stmt->execute();
+
             $followedArr = explode(',', $followedUsers);
+            array_pop($followedArr);
             $resultList = "";
-            //for each follower in followers, change their update column
+            //for each of the followed user ids, get their usernames and add them to the list
             foreach ($followedArr as $followed) {
               $stmt = $this->conn->prepare("SELECT username FROM users WHERE id = ?");
               $stmt->bind_param("s", $followed);
