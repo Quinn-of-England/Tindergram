@@ -62,9 +62,13 @@ open class OnSwipeTouchListener(ctx: Context) : OnTouchListener {
 
     }
 
-    open fun onSwipeRight() {}
+    open fun onSwipeRight() {
+        println("Fuck you")
+    }
 
-    open fun onSwipeLeft() {}
+    open fun onSwipeLeft() {
+        println("Left fuck you")
+    }
 
     open fun onSwipeTop() {}
 

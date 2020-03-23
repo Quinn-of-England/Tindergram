@@ -2,7 +2,10 @@ package com.example.soen341
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Base64
 import org.json.JSONObject
 import java.util.*
 
@@ -25,10 +28,9 @@ class SharedPrefManager constructor(context: Context) {
                 }
             }
     }
-    fun GetImage() : ImageContainer? {
+    fun GetImageContainer() : ImageContainer? {
              return imageQueue?.poll()
     }
-    fun getImageQueue() : Queue<ImageContainer>? { return imageQueue;}
     fun AddToImageQueue(container : JSONObject) : Unit{
         imageQueue?.offer(ImageContainer(container.getString("image"),
             container.getInt("likes"),container.getString("comments"),
@@ -75,4 +77,13 @@ class SharedPrefManager constructor(context: Context) {
         editor.apply()
     }
 }
-class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int)
+class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int){
+    var imageBitmap : Bitmap? = null
+    private fun ConvertBase64ToBitmap(){
+        val imageBytes : ByteArray = Base64.decode(this.imageData, Base64.DEFAULT)
+        this.imageBitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
+    }
+    init{
+        ConvertBase64ToBitmap()
+    }
+}

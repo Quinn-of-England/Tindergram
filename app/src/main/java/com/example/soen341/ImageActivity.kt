@@ -36,7 +36,6 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.soen341.*
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_upload_image.*
 import kotlinx.coroutines.*
@@ -52,49 +51,14 @@ import kotlin.collections.HashMap
 
 //Inherit HomeActivity because I dont want to change my layout.
 class ImageActivity : HomeActivity() {
-    suspend fun  UpdateImageList(){
-        println("Updating list of images")
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-   /*     CoroutineScope(IO).launch {
-            while (true) {
-            delay(10000)
-                UpdateImageList()
-            }
-        } */
-
-        val req = JsonObjectRequest(Request.Method.GET,Constants.BATCH_IMAGES+"?id=3",null, Response.Listener {
-                response ->
-                    try{
-                            val size: Int = response.getInt("size")
-                            for(i in 0..size-1){
-                                var array : JSONObject = response.getJSONObject("$i")
-                                SharedPrefManager.getInstance(this).AddToImageQueue(array)
-
-                            }
-                        Toast.makeText(applicationContext,"Updated List",Toast.LENGTH_SHORT).show()
-                        val image : ImageContainer? = SharedPrefManager.getInstance(this).GetImage()
-                        val imageBytes : ByteArray = Base64.decode(image?.imageData,Base64.DEFAULT)
-                        val decodedImage = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
-                        home_image.setImageBitmap(decodedImage)
-
-                    }
-                    catch (e : Exception){
-                        e.printStackTrace()
-                    }
-            },
-            Response.ErrorListener {
-                error ->
-                        println("ERROR")
-                        println(error.toString())
-            })
-        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
-            if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
                 println("Permission denied")
                 ActivityCompat.requestPermissions(this,
@@ -103,7 +67,7 @@ class ImageActivity : HomeActivity() {
             }
             else{
                 println("Permission already granted")
-        //        pickImageFromGallery()
+                pickImageFromGallery()
             }
 
     }
