@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -38,6 +39,9 @@ open class HomeActivity : AppCompatActivity() {
         animDrawable.setEnterFadeDuration(10)
         animDrawable.setExitFadeDuration(5000)
         animDrawable.start()
+
+
+
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
@@ -88,8 +92,7 @@ open class HomeActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_upload -> {
                 val intent = Intent(this, ImageActivity::class.java)
-
-                //home_image.setImageURI(uri)
+                startActivity(intent)
                 return true
 
             }
@@ -140,9 +143,6 @@ open class HomeActivity : AppCompatActivity() {
         }
         // Request queue
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
-    }
-    private  fun UpdateFollowerImages(){
-
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.soen341
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import org.json.JSONObject
 import java.util.*
 
 class SharedPrefManager constructor(context: Context) {
@@ -10,12 +11,10 @@ class SharedPrefManager constructor(context: Context) {
     private val KEY_USERNAME = "username"
     private val KEY_USER_ID = "user_id"
     private val KEY_USER_EMAIL = "user_email"
-    private var imageQueue : Queue<ImageContainer>? = null
+    private var imageQueue : Queue<ImageContainer>? = LinkedList<ImageContainer>()
 
     val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-    init{
-        imageQueue = LinkedList<ImageContainer>()
-    }
+
     companion object {
         @Volatile
         private var INSTANCE: SharedPrefManager? = null
@@ -26,11 +25,14 @@ class SharedPrefManager constructor(context: Context) {
                 }
             }
     }
-    fun GetImageUri() : ImageContainer? {
+    fun GetImage() : ImageContainer? {
              return imageQueue?.poll()
     }
-    fun AddToImageQueue(container : ImageContainer) : Unit{
-        imageQueue?.offer(container)
+    fun getImageQueue() : Queue<ImageContainer>? { return imageQueue;}
+    fun AddToImageQueue(container : JSONObject) : Unit{
+        imageQueue?.offer(ImageContainer(container.getString("image"),
+            container.getInt("likes"),container.getString("comments"),
+            container.getString("authorId"),container.getInt("id")))
     }
     fun userLoginPref(id:Int, username:String, email:String) {
         val editor = sharedPref.edit()
