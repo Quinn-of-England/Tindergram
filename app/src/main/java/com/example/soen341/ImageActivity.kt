@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Layout
 import android.util.Base64
 import android.view.View
@@ -30,12 +31,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.soen341.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_upload_image.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.lang.Exception
@@ -53,8 +58,7 @@ class ImageActivity : HomeActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-
-            if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
                 println("Permission denied")
                 ActivityCompat.requestPermissions(this,
@@ -66,10 +70,6 @@ class ImageActivity : HomeActivity() {
                 pickImageFromGallery()
             }
 
-   /*     upload_image_back_button.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-        } */
     }
     private fun pickImageFromGallery(){
         val intent = Intent(Intent.ACTION_PICK)
@@ -80,7 +80,6 @@ class ImageActivity : HomeActivity() {
         val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
             Toast.makeText(this,"Image posted!",Toast.LENGTH_SHORT).show()
-            println(response)
         },
             Response.ErrorListener {
                     error ->

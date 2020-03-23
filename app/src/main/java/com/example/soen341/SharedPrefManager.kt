@@ -2,7 +2,11 @@ package com.example.soen341
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Base64
+import org.json.JSONObject
 import java.util.*
 
 class SharedPrefManager constructor(context: Context) {
@@ -10,12 +14,10 @@ class SharedPrefManager constructor(context: Context) {
     private val KEY_USERNAME = "username"
     private val KEY_USER_ID = "user_id"
     private val KEY_USER_EMAIL = "user_email"
-    private var imageQueue : Queue<ImageContainer>? = null
+    private var imageQueue : Queue<ImageContainer>? = LinkedList<ImageContainer>()
 
     val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-    init{
-        imageQueue = LinkedList<ImageContainer>()
-    }
+
     companion object {
         @Volatile
         private var INSTANCE: SharedPrefManager? = null
@@ -26,11 +28,13 @@ class SharedPrefManager constructor(context: Context) {
                 }
             }
     }
-    fun GetImageUri() : ImageContainer? {
+    fun GetImageContainer() : ImageContainer? {
              return imageQueue?.poll()
     }
-    fun AddToImageQueue(container : ImageContainer) : Unit{
-        imageQueue?.offer(container)
+    fun AddToImageQueue(container : JSONObject) : Unit{
+        imageQueue?.offer(ImageContainer(container.getString("image"),
+            container.getInt("likes"),container.getString("comments"),
+            container.getString("authorId"),container.getInt("id")))
     }
     fun userLoginPref(id:Int, username:String, email:String) {
         val editor = sharedPref.edit()
@@ -73,4 +77,13 @@ class SharedPrefManager constructor(context: Context) {
         editor.apply()
     }
 }
-class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int)
+class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int){
+    var imageBitmap : Bitmap? = null
+    private fun ConvertBase64ToBitmap(){
+        val imageBytes : ByteArray = Base64.decode(this.imageData, Base64.DEFAULT)
+        this.imageBitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
+    }
+    init{
+        ConvertBase64ToBitmap()
+    }
+}

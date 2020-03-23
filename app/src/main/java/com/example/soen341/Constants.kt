@@ -7,5 +7,6 @@ object Constants {
     const val CHANGE_URL = ROOT_URL+"changeValues.php"
     const val IMAGE_URL = ROOT_URL + "upload-image.php"
     const val FOLLOW_URL = ROOT_URL+"follow.php"
+    const val BATCH_IMAGES = ROOT_URL + "getBatchImages.php"
 
 }

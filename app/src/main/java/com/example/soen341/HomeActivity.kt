@@ -2,6 +2,7 @@ package com.example.soen341
 
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
+import android.net.Network
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,21 +16,68 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import com.exampl.ImageActivity
 import com.android.volley.AuthFailureError
+import com.android.volley.Request
 import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers.Main
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.HashMap
 
 open class HomeActivity : AppCompatActivity() {
 
+    /** USE THIS FUNCTION
+     fun UpdateImage(){
+        var image  : ImageContainer? = SharedPrefManager.getInstance(this).GetImageContainer()
+        home_image.setImageBitmap(image?.imageBitmap)
+     }
+    **/
+
+    suspend fun startBackgroundProcess(){
+
+        while(true) {
+            delay(5000)
+            //update Image Lists
+            UpdateImageList()
+
+        }
+    }
+     fun UpdateImageList(){
+         //dispatcher thread working here...
+         val req = JsonObjectRequest(
+            Request.Method.GET,Constants.BATCH_IMAGES+"?id=3",null, Response.Listener {
+                    response ->
+                try{
+                    //main thread takes over...
+                    println("Thread : ${Thread.currentThread().name}")
+
+                    val size: Int = response.getInt("size")
+                    for(i in 0..size-1){
+                        var array : JSONObject = response.getJSONObject("$i")
+                        SharedPrefManager.getInstance(this).AddToImageQueue(array)
+                    }
+
+                }
+                catch (e : Exception){
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener {
+                    error ->
+                println("ERROR")
+                println(error.toString())
+            })
+        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -38,6 +86,8 @@ open class HomeActivity : AppCompatActivity() {
         animDrawable.setEnterFadeDuration(10)
         animDrawable.setExitFadeDuration(5000)
         animDrawable.start()
+
+
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
@@ -49,6 +99,12 @@ open class HomeActivity : AppCompatActivity() {
         // Adding in toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        CoroutineScope(IO).launch {
+        startBackgroundProcess()
+        }
+
+
 
         // Code for debugging SharedPrefManager
 //        if (SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
@@ -88,8 +144,7 @@ open class HomeActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_upload -> {
                 val intent = Intent(this, ImageActivity::class.java)
-
-                //home_image.setImageURI(uri)
+                startActivity(intent)
                 return true
 
             }
@@ -140,9 +195,6 @@ open class HomeActivity : AppCompatActivity() {
         }
         // Request queue
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
-    }
-    private  fun UpdateFollowerImages(){
-
     }
 
 }
