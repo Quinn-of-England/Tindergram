@@ -51,13 +51,14 @@
             android:label="@string/register"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".HomeActivity"
             android:screenOrientation="portrait"
             android:label="@string/tindergram"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".ImageActivity"
+            android:name="com.exampl.ImageActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             tools:ignore="LockedOrientationActivity" />

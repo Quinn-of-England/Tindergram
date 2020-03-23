@@ -1,17 +1,35 @@
-package com.example.soen341
+package com.exampl
+
+import FileDataPart
+import VolleyImageRequest
+import com.android.volley.NetworkResponse
+import javax.xml.transform.ErrorListener
+
+
 
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.AnimationDrawable
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_home.*
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.example.soen341.*
 import kotlinx.android.synthetic.main.activity_upload_image.*
-
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.lang.Exception
+import java.net.URI
 
 class ImageActivity : AppCompatActivity() {
 
@@ -29,15 +47,11 @@ class ImageActivity : AppCompatActivity() {
             if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
                 println("Permission denied")
-                //open the permission window for this activity, specify the type of permission im asking for, and store the
-                //result code in MY_PERMISSIONS_READ_EXTERNAL_STORE which is defined at the bottom
                 ActivityCompat.requestPermissions(this,
                     arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),MY_PERMISSIONS_READ_EXTERNAL_STORAGE)
 
             }
             else{
-                //if permission already granted(permissions will always be saved unless you forcefully reset them
-                //thus from the time the permission was granted, this code will always happen from the on
                 println("Permission already granted")
                 pickImageFromGallery()
             }
@@ -48,30 +62,66 @@ class ImageActivity : AppCompatActivity() {
         }
     }
     private fun pickImageFromGallery(){
-        //this action for this intent will be a 'pick', it will by of type image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
 
-        //An image picker GUI will be automically genetared, and the result of the activity
-        // will by written to IMAGE_PICK_CODE (defined below)
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
+    fun SaveImageToServer(imageData:ByteArray?){
+        val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
+                response -> try{
+            println("Network Response")
+            println(response)
+        }
+        catch (e : Exception){
+            e.printStackTrace()
+        }
+        },
+            Response.ErrorListener {
+                    error ->
+                error("Failure")
+                println(error)
+            }) {
+            override fun getByteData(): MutableMap<String, FileDataPart>? {
+                var params = HashMap<String,FileDataPart>()
+                params["imageFile"] = FileDataPart("supremeleader.jpg",imageData!!,"jpeg")
+                return params
+            }
 
-    //handler function is overriden to handle the result of this request from the image pick activity.
+            override fun getParams(): MutableMap<String, String> {
+                var params = HashMap<String,String>()
+                params.put("likes","1337")
+                params.put("comments","Trump buddy")
+                params.put("authorId","Rocketman")
+                return params
+            }
+        }
+        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
+    }
+    fun CreateImageDataFromURI(uri : Uri?) : ByteArray?{
+        var imageData : ByteArray? = null;
+        val inputStream = contentResolver.openInputStream(uri!!)
+        inputStream?.buffered()?.use {
+            imageData = it.readBytes()
+            println("Image in bytes is : " + imageData)
+        }
+        return imageData
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        //check that the request was sucesful and we are responding to the image pick request by checking that the
-        // generated request code is equal to the user defined request code (for now it doesnt matter since this is the only request being made)
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-            //set the imageview to the data that is contained by this handler
-            image_upload.setImageURI(data?.data)
-        }
-        //This is just here by default
+
+            var uri = data?.data;
+            val imageData : ByteArray? = CreateImageDataFromURI(uri)
+            SaveImageToServer(imageData)
+            image_upload.setImageURI(uri)
+         }
+
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     //this will take care of the case when the user is prompted for permission. In essence, it will really only
-//happen once unless permissions are explicitely reset
+    //happen once unless permissions are explicitely reset
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

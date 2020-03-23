@@ -1,20 +1,16 @@
 package com.example.soen341
 
-
-import android.app.SearchManager
-
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.SearchView;
+import android.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import com.exampl.ImageActivity
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -35,7 +31,7 @@ class HomeActivity : AppCompatActivity() {
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, ImageActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -43,12 +39,6 @@ class HomeActivity : AppCompatActivity() {
         // Adding in toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        // Upload image button
-        UploadImageActivityButton.setOnClickListener {
-            val intent = Intent(this,ImageActivity::class.java)
-            startActivity(intent)
-        }
 
         // Code for debugging SharedPrefManager
 //        if (SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
@@ -65,11 +55,12 @@ class HomeActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
 
-        // Searchbar
-        val manager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        val searchItem = menu?.findItem(R.id.app_bar_search)
+        // Search bar
+        val searchItem = menu.findItem(R.id.app_bar_search)
         val searchView = searchItem?.actionView as SearchView
 
+        searchView.queryHint = "Enter User to Follow"
+        searchView.maxWidth = Integer.MAX_VALUE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
@@ -85,10 +76,15 @@ class HomeActivity : AppCompatActivity() {
     // Handling main menu options
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_upload -> {
+                val intent = Intent(this, ImageActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             R.id.action_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
-                true
+                return true
             }
             R.id.action_log_out -> {
                 SharedPrefManager.getInstance(applicationContext).userLogoutPref()
@@ -104,7 +100,7 @@ class HomeActivity : AppCompatActivity() {
     private fun followUser(query: String){
         // Variables needed
         val url = Constants.FOLLOW_URL
-        val id = SharedPrefManager.getInstance(applicationContext).getUserID().toString()
+        val user = SharedPrefManager.getInstance(applicationContext).getUserUsername().toString()
 
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(
@@ -124,8 +120,8 @@ class HomeActivity : AppCompatActivity() {
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String> { // Parameters added to POST request
                 val params = HashMap<String, String>()
-                params["followedId"] = query
-                params["followerId"] = id
+                params["followedUser"] = query
+                params["followerUser"] = user
                 return params
             }
         }
