@@ -54,9 +54,6 @@ class ImageActivity : AppCompatActivity() {
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
-    fun GetComments() : String{
-        return userImage_comment.text.toString()
-    }
 
     fun createImageDataFromURI(uri : Uri?) : ByteArray?{
         var imageData : ByteArray? = null
@@ -72,27 +69,16 @@ class ImageActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-
-
            var uri = data?.data;
             val imageData : ByteArray? = createImageDataFromURI(uri)
             userImage_imageview.setImageURI(uri)
             userImage_post.setOnClickListener {
-                RequestHandler.getInstance(this).saveImageToServer(imageData, this)
+                RequestHandler.getInstance(this).saveImageToServer(imageData, userImage_comment.text.toString(),this)
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
-
-            var uri = data?.data
-            val imageData : ByteArray? = createImageDataFromURI(uri)
-            post_comment.setOnClickListener {
-                RequestHandler.getInstance(this).saveImageToServer(imageData,this)
-            }
-
-
             }
 
         }
-
         super.onActivityResult(requestCode, resultCode, data)
     }
 
