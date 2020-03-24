@@ -1,12 +1,9 @@
-package com.exampl
+package com.example.soen341
 
 import FileDataPart
 import VolleyImageRequest
 import com.android.volley.NetworkResponse
 import javax.xml.transform.ErrorListener
-
-
-
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Intent
@@ -49,9 +46,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-//Inherit HomeActivity because I dont want to change my layout.
+//Inherit HomeActivity because I don't want to change my layout.
 class ImageActivity : HomeActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -71,13 +69,15 @@ class ImageActivity : HomeActivity() {
             }
 
     }
+
     private fun pickImageFromGallery(){
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
-    fun SaveImageToServer(imageData:ByteArray?){
-        val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
+
+    fun saveImageToServer(imageData:ByteArray?){
+        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
             Toast.makeText(this,"Image posted!",Toast.LENGTH_SHORT).show()
         },
@@ -96,18 +96,20 @@ class ImageActivity : HomeActivity() {
             override fun getParams(): MutableMap<String, String> {
                 var params = HashMap<String,String>()
                 params.put("likes","1337")
-                params.put("comments",GetComments())
-                params.put("authorId",SharedPrefManager.getInstance(applicationContext).getUserID().toString())
+                params.put("comments", getComments())
+                params.put("authorId", SharedPrefManager.getInstance(applicationContext).getUserID().toString())
                 return params
             }
         }
         RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
     }
-    fun GetComments() : String{
+
+    fun getComments() : String{
         return add_comment.text.toString()
     }
-    fun CreateImageDataFromURI(uri : Uri?) : ByteArray?{
-        var imageData : ByteArray? = null;
+
+    fun createImageDataFromURI(uri : Uri?) : ByteArray?{
+        var imageData : ByteArray? = null
         val inputStream = contentResolver.openInputStream(uri!!)
         inputStream?.buffered()?.use {
             imageData = it.readBytes()
@@ -115,16 +117,17 @@ class ImageActivity : HomeActivity() {
         }
         return imageData
     }
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
 
 
-            var uri = data?.data;
-            val imageData : ByteArray? = CreateImageDataFromURI(uri)
+            var uri = data?.data
+            val imageData : ByteArray? = createImageDataFromURI(uri)
             post_comment.setOnClickListener {
-                SaveImageToServer(imageData)
+                saveImageToServer(imageData)
             }
 
             /*val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)

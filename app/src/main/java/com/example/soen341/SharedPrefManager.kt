@@ -28,14 +28,17 @@ class SharedPrefManager constructor(context: Context) {
                 }
             }
     }
-    fun GetImageContainer() : ImageContainer? {
+
+    fun getImageContainer() : ImageContainer? {
              return imageQueue?.poll()
     }
-    fun AddToImageQueue(container : JSONObject) : Unit{
+
+    fun addToImageQueue(container : JSONObject) : Unit{
         imageQueue?.offer(ImageContainer(container.getString("image"),
             container.getInt("likes"),container.getString("comments"),
             container.getString("authorId"),container.getInt("id")))
     }
+
     fun userLoginPref(id:Int, username:String, email:String) {
         val editor = sharedPref.edit()
         editor.putInt(KEY_USER_ID, id)
@@ -47,6 +50,7 @@ class SharedPrefManager constructor(context: Context) {
     fun isUserLoggedIn() : Boolean {
         return sharedPref.getString(KEY_USERNAME, null) != null
     }
+
     fun getUserUsername() : String? {
         return sharedPref.getString(KEY_USERNAME, null)
     }
@@ -77,6 +81,7 @@ class SharedPrefManager constructor(context: Context) {
         editor.apply()
     }
 }
+
 class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int){
     var imageBitmap : Bitmap? = null
     private fun ConvertBase64ToBitmap(){
