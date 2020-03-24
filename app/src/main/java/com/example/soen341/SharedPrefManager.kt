@@ -33,10 +33,21 @@ class SharedPrefManager constructor(context: Context) {
              return imageQueue?.poll()
     }
     fun AddToImageQueue(container : JSONObject) : Unit{
+        //val likes : Int =container.getInt("likes")
+        //val comments : String = container.getString("comments")
+        val id : Int = container.getInt("id")
+
+        var lambda : (ImageContainer) -> Boolean = { it:ImageContainer -> it.imageID==id}
+        imageQueue?.forEach {
+                val res = lambda(it)
+                if(res) return
+        }
+
         imageQueue?.offer(ImageContainer(container.getString("image"),
             container.getInt("likes"),container.getString("comments"),
             container.getString("authorId"),container.getInt("id")))
     }
+
     fun userLoginPref(id:Int, username:String, email:String) {
         val editor = sharedPref.edit()
         editor.putInt(KEY_USER_ID, id)

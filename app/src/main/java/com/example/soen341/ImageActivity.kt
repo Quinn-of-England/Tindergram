@@ -37,6 +37,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.soen341.*
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_image.*
 import kotlinx.android.synthetic.main.activity_upload_image.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -50,13 +51,11 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 //Inherit HomeActivity because I dont want to change my layout.
-class ImageActivity : HomeActivity() {
+class ImageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setContentView(R.layout.activity_image)
 
          if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
@@ -77,7 +76,7 @@ class ImageActivity : HomeActivity() {
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
     fun GetComments() : String{
-        return add_comment.text.toString()
+        return userImage_comment.text.toString()
     }
     fun CreateImageDataFromURI(uri : Uri?) : ByteArray?{
         var imageData : ByteArray? = null;
@@ -96,30 +95,25 @@ class ImageActivity : HomeActivity() {
 
             var uri = data?.data;
             val imageData : ByteArray? = CreateImageDataFromURI(uri)
-            post_comment.setOnClickListener {
-                RequestHandler.getInstance(this).SaveImageToServer(imageData,this)
+            userImage_imageview.setImageURI(uri)
+            userImage_post.setOnClickListener {
+                RequestHandler.getInstance(this).SaveImageToServer(imageData,GetComments(), this)
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+
             }
 
-            /*val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)
-            home_layout.addView(image,200,200)
-
-            val set : ConstraintSet = ConstraintSet()
-            set.clone(home_layout)
-            set.connect(image.id,ConstraintSet.TOP,toolbar.id,ConstraintSet.TOP,100)
-            set.connect(image.id,ConstraintSet.BOTTOM,ConstraintSet.PARENT_ID,ConstraintSet.BOTTOM,100)
-            set.connect(image.id,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,ConstraintSet.LEFT,100)
-            set.connect(image.id,ConstraintSet.RIGHT,ConstraintSet.PARENT_ID,ConstraintSet.RIGHT,100)
-
-
-           // set.createHorizontalChain(ConstraintSet.PARENT_ID,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,
-             //   ConstraintSet.RIGHT,images,null,ConstraintSet.CHAIN_SPREAD)
-            set.applyTo(home_layout)
-                */
         }
 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onBackPressed() {
+        Toast.makeText(this,"image discarded",Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+
+    }
     //this will take care of the case when the user is prompted for permission. In essence, it will really only
     //happen once unless permissions are explicitely reset
     override fun onRequestPermissionsResult(

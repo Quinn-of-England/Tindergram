@@ -41,14 +41,14 @@ open class HomeActivity : AppCompatActivity() {
         var image  : ImageContainer? = SharedPrefManager.getInstance(this).GetImageContainer()
         home_image.setImageBitmap(image?.getImageBitmap())
         add_comment.setText(image?.comments)
-        SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
-        println(SharedPrefManager.getInstance(this).getViewedImages())
+ //       SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
+//        println(SharedPrefManager.getInstance(this).getViewedImages())
      }
     suspend fun imageBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).UpdateImageList(this)
-            delay(5000)
-            if(first) {
+            delay(1000)
+            if(true) {
                 withContext(Main) {
                     UpdateImage()
                     first = false
@@ -77,7 +77,7 @@ open class HomeActivity : AppCompatActivity() {
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
-            val intent = Intent(this, ImageActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -164,7 +164,7 @@ open class HomeActivity : AppCompatActivity() {
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(
             Method.POST, url,
-            Response.Listener<String> { response -> // JSON response from the server
+            Response.Listener<String> { response -> // String response from the server
                 try {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user

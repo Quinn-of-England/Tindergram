@@ -89,10 +89,11 @@ class RequestHandler constructor(context: Context) {
             })
         this.addToRequestQueue(req)
     }
-    fun SaveImageToServer(imageData:ByteArray? , context: Context){
+    fun SaveImageToServer(imageData:ByteArray? , comments : String , context: Context){
         val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
-            Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
+                println("image posted : $response ")
         },
             Response.ErrorListener {
                     error ->
@@ -109,7 +110,7 @@ class RequestHandler constructor(context: Context) {
             override fun getParams(): MutableMap<String, String> {
                 var params = HashMap<String,String>()
                 params.put("likes","1337")
-                params.put("comments","hardcoded for now")
+                params.put("comments",comments)
                 params.put("authorId",SharedPrefManager.getInstance(context).getUserID().toString())
                 return params
             }
