@@ -1,41 +1,17 @@
-package com.exampl
-
-import FileDataPart
-import VolleyImageRequest
-import com.android.volley.NetworkResponse
-import javax.xml.transform.ErrorListener
-
-
+package com.example.soen341
 
 import android.app.Activity
-import android.app.DownloadManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.text.Layout
-import android.util.Base64
-import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.soen341.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_image.*
 import kotlinx.android.synthetic.main.activity_upload_image.*
@@ -53,6 +29,8 @@ import kotlin.collections.HashMap
 //Inherit HomeActivity because I dont want to change my layout.
 class ImageActivity : AppCompatActivity() {
 
+
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
@@ -70,6 +48,7 @@ class ImageActivity : AppCompatActivity() {
             }
 
     }
+
     private fun pickImageFromGallery(){
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
@@ -78,8 +57,9 @@ class ImageActivity : AppCompatActivity() {
     fun GetComments() : String{
         return userImage_comment.text.toString()
     }
-    fun CreateImageDataFromURI(uri : Uri?) : ByteArray?{
-        var imageData : ByteArray? = null;
+
+    fun createImageDataFromURI(uri : Uri?) : ByteArray?{
+        var imageData : ByteArray? = null
         val inputStream = contentResolver.openInputStream(uri!!)
         inputStream?.buffered()?.use {
             imageData = it.readBytes()
@@ -87,19 +67,27 @@ class ImageActivity : AppCompatActivity() {
         }
         return imageData
     }
+
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
 
 
-            var uri = data?.data;
-            val imageData : ByteArray? = CreateImageDataFromURI(uri)
+           var uri = data?.data;
+            val imageData : ByteArray? = createImageDataFromURI(uri)
             userImage_imageview.setImageURI(uri)
             userImage_post.setOnClickListener {
-                RequestHandler.getInstance(this).SaveImageToServer(imageData,GetComments(), this)
+                RequestHandler.getInstance(this).saveImageToServer(imageData, this)
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
+
+            var uri = data?.data
+            val imageData : ByteArray? = createImageDataFromURI(uri)
+            post_comment.setOnClickListener {
+                RequestHandler.getInstance(this).saveImageToServer(imageData,this)
+            }
+
 
             }
 

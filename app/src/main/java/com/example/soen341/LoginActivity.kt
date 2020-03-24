@@ -9,7 +9,6 @@ import android.widget.*
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
-import com.exampl.ImageActivity
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -88,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
                     canLogin = false
                 }
             }
-            if (true) {
+            if (canLogin) {
                 loginUser()
             }
         }

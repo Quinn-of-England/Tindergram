@@ -3,14 +3,11 @@ package com.example.soen341
 import FileDataPart
 import VolleyImageRequest
 import android.content.Context
-import android.graphics.Bitmap
-import android.util.LruCache
 import android.view.Gravity
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.toolbox.ImageLoader
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONException
@@ -31,11 +28,13 @@ class RequestHandler constructor(context: Context) {
     val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
     }
+
     // Add any request to request queue
     fun <T> addToRequestQueue(req: Request<T>) {
         requestQueue.add(req)
     }
-    fun UpdateImageList(context: Context){
+
+    fun updateImageList(context: Context){
         //dispatcher thread working here...
         val req = JsonObjectRequest(
             Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(context).getUserID()
@@ -48,7 +47,7 @@ class RequestHandler constructor(context: Context) {
                     val size: Int = response.getInt("size")
                     for(i in 0..size-1){
                         var array : JSONObject = response.getJSONObject("$i")
-                        SharedPrefManager.getInstance(context).AddToImageQueue(array)
+                        SharedPrefManager.getInstance(context).addToImageQueue(array)
                     }
                     //when you first an image should appear, regardless of the swipe ( theres pron a better way of doing )
                 }
@@ -65,13 +64,13 @@ class RequestHandler constructor(context: Context) {
 
     }
 
-    fun UpdateNotifications(context : Context){
+    fun updateNotifications(context : Context){
         val req = JsonObjectRequest(Request.Method.GET,
             Constants.GET_NOTIFICATIONS + "?userId=" + SharedPrefManager.getInstance(context).getUserID()
             , null, Response.Listener {
                     response ->
                 try{
-                    if(response.getString("error").equals("true"))
+                    if(response.getString("error") == "true")
                         throw JSONException(response.getString("message"))
                     else {
 
@@ -89,8 +88,9 @@ class RequestHandler constructor(context: Context) {
             })
         this.addToRequestQueue(req)
     }
-    fun SaveImageToServer(imageData:ByteArray? , comments : String , context: Context){
-        val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
+
+    fun saveImageToServer(imageData:ByteArray? , context: Context){
+        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
             //Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
                 println("image posted : $response ")
@@ -109,9 +109,9 @@ class RequestHandler constructor(context: Context) {
 
             override fun getParams(): MutableMap<String, String> {
                 var params = HashMap<String,String>()
-                params.put("likes","1337")
-                params.put("comments",comments)
-                params.put("authorId",SharedPrefManager.getInstance(context).getUserID().toString())
+                 params["likes"] = "1337"
+                params["comments"] = "hardcoded for now"
+                params["authorId"] = SharedPrefManager.getInstance(context).getUserID().toString()
                 return params
             }
         }
