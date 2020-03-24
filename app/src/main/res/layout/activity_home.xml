@@ -47,5 +47,15 @@
 
     </Button>
 
+    <ImageView
+        android:id="@+id/home_image"
+        android:layout_width="259dp"
+        android:layout_height="250dp"
+        app:layout_constraintBottom_toTopOf="@+id/add_comment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:srcCompat="@drawable/gradient_center" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
