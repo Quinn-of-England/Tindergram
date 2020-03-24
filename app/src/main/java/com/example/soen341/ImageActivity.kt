@@ -76,33 +76,6 @@ class ImageActivity : HomeActivity() {
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
-    fun SaveImageToServer(imageData:ByteArray?){
-        val req = object: VolleyImageRequest(Request.Method.POST, Constants.IMAGE_URL , Response.Listener {
-                response ->
-            Toast.makeText(this,"Image posted!",Toast.LENGTH_SHORT).show()
-        },
-            Response.ErrorListener {
-                    error ->
-                error("Failure")
-                println(error)
-            }) {
-            override fun getByteData(): MutableMap<String, FileDataPart>? {
-                var params = HashMap<String,FileDataPart>()
-                //filename is just userID--pictureCount for now
-                params["imageFile"] = FileDataPart("imageName", imageData!!,"jpeg")
-                return params
-            }
-
-            override fun getParams(): MutableMap<String, String> {
-                var params = HashMap<String,String>()
-                params.put("likes","1337")
-                params.put("comments",GetComments())
-                params.put("authorId",SharedPrefManager.getInstance(applicationContext).getUserID().toString())
-                return params
-            }
-        }
-        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
-    }
     fun GetComments() : String{
         return add_comment.text.toString()
     }
@@ -124,7 +97,7 @@ class ImageActivity : HomeActivity() {
             var uri = data?.data;
             val imageData : ByteArray? = CreateImageDataFromURI(uri)
             post_comment.setOnClickListener {
-                SaveImageToServer(imageData)
+                RequestHandler.getInstance(this).SaveImageToServer(imageData,this)
             }
 
             /*val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)

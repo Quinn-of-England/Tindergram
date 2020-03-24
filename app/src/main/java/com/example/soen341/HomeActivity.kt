@@ -1,5 +1,6 @@
 package com.example.soen341
 
+import android.app.DownloadManager
 import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.net.Network
@@ -28,8 +29,8 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
-import java.lang.Exception
 import java.util.*
+import kotlin.Exception
 import kotlin.collections.HashMap
 
 open class HomeActivity : AppCompatActivity() {
@@ -38,50 +39,30 @@ open class HomeActivity : AppCompatActivity() {
 
     fun UpdateImage(){
         var image  : ImageContainer? = SharedPrefManager.getInstance(this).GetImageContainer()
-        home_image.setImageBitmap(image?.imageBitmap)
+        home_image.setImageBitmap(image?.getImageBitmap())
         add_comment.setText(image?.comments)
+        SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
+        println(SharedPrefManager.getInstance(this).getViewedImages())
      }
-
-    suspend fun startBackgroundProcess(){
-
+    suspend fun imageBackgroundProcess(){
         while(true) {
+            RequestHandler.getInstance(this).UpdateImageList(this)
+            delay(5000)
+            if(first) {
+                withContext(Main) {
+                    UpdateImage()
+                    first = false
+                }
+            }
+        }
+    }
 
-            UpdateImageList()
+    suspend fun notificationBackgroundProcess(){
+       while(true) {
+            RequestHandler.getInstance(this).UpdateNotifications(this)
             delay(5000)
 
         }
-    }
-     fun UpdateImageList(){
-         //dispatcher thread working here...
-         val req = JsonObjectRequest(
-            Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(this).getUserID(),null, Response.Listener {
-                    response ->
-                try{
-                    //main thread takes over...
-                    println("Thread : ${Thread.currentThread().name}")
-
-                    val size: Int = response.getInt("size")
-                    for(i in 0..size-1){
-                        var array : JSONObject = response.getJSONObject("$i")
-                        SharedPrefManager.getInstance(this).AddToImageQueue(array)
-                    }
-                    if(first){
-                        UpdateImage()
-                        first = false
-
-                    }
-                }
-                catch (e : Exception){
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener {
-                    error ->
-                println("ERROR")
-                println(error.toString())
-            })
-        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
-
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +87,13 @@ open class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         CoroutineScope(IO).launch {
-        startBackgroundProcess()
+            //launch two concurrent jobs
+        val job1 = launch {
+            imageBackgroundProcess()
+            }
+        val job2 = launch {
+            notificationBackgroundProcess()
+        }
         }
 
 

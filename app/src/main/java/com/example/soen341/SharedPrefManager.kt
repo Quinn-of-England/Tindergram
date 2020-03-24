@@ -18,6 +18,7 @@ class SharedPrefManager constructor(context: Context) {
 
     val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
+    private var viewed_images: String?  = ""
     companion object {
         @Volatile
         private var INSTANCE: SharedPrefManager? = null
@@ -76,14 +77,24 @@ class SharedPrefManager constructor(context: Context) {
         editor.clear()
         editor.apply()
     }
+    fun updateViewedImages(id : Int) : Unit{
+            this.viewed_images += ((id).toString() + ",")
+    }
+    fun getViewedImages() : String? {
+        return this.viewed_images
+    }
 }
 class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int){
-    var imageBitmap : Bitmap? = null
+    private var imageBitmap : Bitmap? = null
     private fun ConvertBase64ToBitmap(){
         val imageBytes : ByteArray = Base64.decode(this.imageData, Base64.DEFAULT)
         this.imageBitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
     }
     init{
+        //image is sent as a base64 string, gotta turn that into a bitmap/uri that android can use...
         ConvertBase64ToBitmap()
+    }
+    fun getImageBitmap() : Bitmap?{
+        return this.imageBitmap
     }
 }
