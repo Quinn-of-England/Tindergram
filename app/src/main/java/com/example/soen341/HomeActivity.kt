@@ -13,16 +13,14 @@ import android.widget.SearchView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import com.android.volley.AuthFailureError
-import com.android.volley.Request
 import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import org.json.JSONException
 import org.json.JSONObject
-import java.lang.Exception
 import kotlin.collections.HashMap
 
 open class HomeActivity : AppCompatActivity() {
@@ -67,57 +65,37 @@ open class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         CoroutineScope(IO).launch {
-            startBackgroundProcess()
+            //launch two concurrent jobs
+            val job1 = launch {
+                imageBackgroundProcess()
+            }
+            val job2 = launch {
+                notificationBackgroundProcess()
+            }
         }
     }
 
     fun updateImage(){
         var image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
-        home_image.setImageBitmap(image?.imageBitmap)
+        home_image.setImageBitmap(image?.getImageBitmap())
         add_comment.setText(image?.comments)
+        SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
+        println(SharedPrefManager.getInstance(this).getViewedImages())
      }
 
-    suspend fun startBackgroundProcess(){
+    suspend fun imageBackgroundProcess(){
 
         while(true) {
 
-            updateImageList()
+            RequestHandler.getInstance(this).updateImageList(this)
             delay(5000)
-
+            if(first) {
+                withContext(Main) {
+                    updateImage()
+                    first = false
+                }
+            }
         }
-    }
-
-     fun updateImageList(){
-         //dispatcher thread working here...
-         val req = JsonObjectRequest(
-            Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(this).getUserID(),null, Response.Listener {
-                    response ->
-                try{
-                    //main thread takes over...
-                    println("Thread : ${Thread.currentThread().name}")
-
-                    val size: Int = response.getInt("size")
-                    for(i in 0..size-1){
-                        var array : JSONObject = response.getJSONObject("$i")
-                        SharedPrefManager.getInstance(this).addToImageQueue(array)
-                    }
-                    if(first){
-                        updateImage()
-                        first = false
-
-                    }
-                }
-                catch (e : Exception){
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener {
-                    error ->
-                println("ERROR")
-                println(error.toString())
-            })
-        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
-
     }
 
     // Adding in main menu in top right
@@ -141,6 +119,14 @@ open class HomeActivity : AppCompatActivity() {
             }
         })
             return true
+    }
+
+    suspend fun notificationBackgroundProcess(){
+        while(true) {
+            RequestHandler.getInstance(this).updateNotifications(this)
+            delay(5000)
+
+        }
     }
 
     // Handling main menu options

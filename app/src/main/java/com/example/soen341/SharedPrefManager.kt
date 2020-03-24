@@ -34,7 +34,7 @@ class SharedPrefManager constructor(context: Context) {
              return imageQueue?.poll()
     }
 
-    fun addToImageQueue(container : JSONObject) : Unit{
+    fun addToImageQueue(container : JSONObject) {
         imageQueue?.offer(ImageContainer(container.getString("image"),
             container.getInt("likes"),container.getString("comments"),
             container.getString("authorId"),container.getInt("id")))
@@ -81,7 +81,7 @@ class SharedPrefManager constructor(context: Context) {
         editor.clear()
         editor.apply()
     }
-    fun updateViewedImages(id : Int) : Unit{
+    fun updateViewedImages(id : Int) {
             this.viewed_images += ((id).toString() + ",")
     }
     fun getViewedImages() : String? {
@@ -91,13 +91,13 @@ class SharedPrefManager constructor(context: Context) {
 
 class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int){
     private var imageBitmap : Bitmap? = null
-    private fun ConvertBase64ToBitmap(){
+    private fun convertBase64ToBitmap(){
         val imageBytes : ByteArray = Base64.decode(this.imageData, Base64.DEFAULT)
         this.imageBitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
     }
     init{
         //image is sent as a base64 string, gotta turn that into a bitmap/uri that android can use...
-        ConvertBase64ToBitmap()
+        convertBase64ToBitmap()
     }
     fun getImageBitmap() : Bitmap?{
         return this.imageBitmap

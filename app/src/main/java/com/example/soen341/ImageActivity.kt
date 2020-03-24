@@ -1,50 +1,18 @@
 package com.example.soen341
 
-import FileDataPart
-import VolleyImageRequest
-import com.android.volley.NetworkResponse
-import javax.xml.transform.ErrorListener
 import android.app.Activity
-import android.app.DownloadManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.text.Layout
-import android.util.Base64
-import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.soen341.*
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_upload_image.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.lang.Exception
-import java.net.URI
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+
 
 //Inherit HomeActivity because I don't want to change my layout.
 class ImageActivity : HomeActivity() {
@@ -76,34 +44,6 @@ class ImageActivity : HomeActivity() {
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
-    fun saveImageToServer(imageData:ByteArray?){
-        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
-                response ->
-            Toast.makeText(this,"Image posted!",Toast.LENGTH_SHORT).show()
-        },
-            Response.ErrorListener {
-                    error ->
-                error("Failure")
-                println(error)
-            }) {
-            override fun getByteData(): MutableMap<String, FileDataPart>? {
-                var params = HashMap<String,FileDataPart>()
-                //filename is just userID--pictureCount for now
-                params["imageFile"] = FileDataPart("imageName", imageData!!,"jpeg")
-                return params
-            }
-
-            override fun getParams(): MutableMap<String, String> {
-                var params = HashMap<String,String>()
-                params.put("likes","1337")
-                params.put("comments", getComments())
-                params.put("authorId", SharedPrefManager.getInstance(applicationContext).getUserID().toString())
-                return params
-            }
-        }
-        RequestHandler.getInstance(applicationContext).addToRequestQueue(req)
-    }
-
     fun getComments() : String{
         return add_comment.text.toString()
     }
@@ -127,7 +67,7 @@ class ImageActivity : HomeActivity() {
             var uri = data?.data
             val imageData : ByteArray? = createImageDataFromURI(uri)
             post_comment.setOnClickListener {
-                saveImageToServer(imageData)
+                RequestHandler.getInstance(this).saveImageToServer(imageData,this)
             }
 
             /*val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)
