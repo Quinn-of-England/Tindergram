@@ -38,6 +38,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         android:autofillHints="@string/enter_comment"
-        android:inputType="text" />
+        android:inputType="textCapSentences" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

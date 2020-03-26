@@ -92,7 +92,7 @@ class RequestHandler constructor(context: Context) {
                             .setContentTitle(textTitle)
                             .setContentText(response.getString("message"))
                             .setContentIntent(pendingIntent)
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
                         with(NotificationManagerCompat.from(context)) {
                             // notificationId is a unique int for each notification that you must define
                             notify(0, builder.build())

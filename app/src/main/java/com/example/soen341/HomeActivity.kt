@@ -85,6 +85,10 @@ open class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+    }
+
     fun updateImage(){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         home_image.setImageBitmap(image?.getImageBitmap())
