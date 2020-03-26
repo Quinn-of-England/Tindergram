@@ -16,7 +16,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".FollowActivity"></activity>
         <activity
             android:name=".ChangePasswordActivity"
             android:screenOrientation="portrait"
@@ -58,7 +57,7 @@
             android:label="@string/tindergram"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="com.exampl.ImageActivity"
+            android:name=".ImageActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             tools:ignore="LockedOrientationActivity" />
