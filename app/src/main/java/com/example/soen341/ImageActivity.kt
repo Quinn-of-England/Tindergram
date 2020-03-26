@@ -63,6 +63,7 @@ class ImageActivity : AppCompatActivity() {
                 RequestHandler.getInstance(this).saveImageToServer(imageData, userImage_comment.text.toString(),this)
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
+                finish()
             }
 
         }
@@ -73,8 +74,9 @@ class ImageActivity : AppCompatActivity() {
         Toast.makeText(this,"image discarded",Toast.LENGTH_SHORT).show()
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-
+        finish()
     }
+
     //this will take care of the case when the user is prompted for permission. In essence, it will really only
     //happen once unless permissions are explicitely reset
     override fun onRequestPermissionsResult(
