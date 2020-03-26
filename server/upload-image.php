@@ -3,16 +3,20 @@ include_once dirname(__FILE__)."/DbOps.php";
 $response = array();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    //$_POST['likes'] not used after all, since it is set to 0
     if(isset($_FILES['imageFile']) and isset($_POST['authorId']) and isset($_POST['likes']) and isset($_POST['comments'])) {
       $db = new DbOps();
  	    $imageData = file_get_contents($_FILES['imageFile']["tmp_name"]);
       //not using name for now, it serves no purpose
       $name = $_FILES['imageFile']["name"];
 			$type = $_FILES['imageFile']["type"];
+      $likes = 0;
 			$null = NULL;
+      $username = $db->getUsernameById($_POST['authorId']);
+      $comments = $db->formatComment($username, $_POST['comments']);
 
       $stmt = $db->conn->prepare("INSERT INTO `pictures` (`image`,`type`, `authorId`, `likes`, `comments`) VALUES (?,?,?,?,?);");
-			$stmt->bind_param("bssis",$null,$type,$_POST['authorId'],$_POST['likes'],$_POST['comments']);
+			$stmt->bind_param("bssis",$null,$type,$_POST['authorId'],$likes,$comments);
 			$stmt->send_long_data(0, $imageData);
       if($stmt->execute()){
           // the image is now on the server, need to notify people that follow the author

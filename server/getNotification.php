@@ -13,7 +13,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
             $response['message'] = $notification." uploaded new pictures!";
         }else{
             $response['error'] = false;
-            $response['message'] = "None of the user(s) you follow has uploaded new content.";
+            $response['message'] = "";
         }
 
 		} else {

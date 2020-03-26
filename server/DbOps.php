@@ -119,6 +119,16 @@
             return $stmt->get_result()->fetch_assoc();
 	      }
 
+        public function getUsernameById($id) {
+            $stmt = $this->conn->prepare("SELECT username FROM users WHERE id = ?");
+            $stmt->bind_param("s", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($username);
+            $stmt->fetch();
+            return $username;
+	      }
+
         public function userAlreadyNotified($authorId, $followerId){
             $stmt = $this->conn->prepare("SELECT followedPostedPictures FROM users WHERE id = ?");
             $stmt->bind_param("s", $followerId);
@@ -207,13 +217,30 @@
           return $stmt->execute();
         }
 
-	      public function addComment($id,$comment,$username){
-          //should pass the comment as $comment = "user,comment|"
+	      public function addComment($imageId,$username,$comment){
+          //should pass the comment to sql as $comment = "user,comment|"
           //storing old value and adding received param to it
-          $toAdd = $username.",".$comment."|";
+          $toAdd = $this->formatComment($username, $comment);
           $stmt = $this->conn->prepare("UPDATE `pictures` SET `comments` = CONCAT(`comments`,?) WHERE `id` = ?");
-          $stmt->bind_param("ss", $toAdd, $id);
+          $stmt->bind_param("ss", $toAdd, $imageId);
           return $stmt->execute();
+        }
+
+        public function formatComment($username, $comment){
+          return $username."~".$comment."|";
+        }
+
+        public function parseComments($comments){
+          //returns 2D array from a string of comments coming from the sql
+          $authorCommentPairs = explode('|', $comments);
+          //last element will be empty
+          array_pop($authorCommentPairs);
+          $formattedComments = array();
+          foreach ($authorCommentPairs as $pair) {
+            $authorAndComment = explode('~', $pair);
+            array_push($formattedComments, array('author'=>$authorAndComment[0],'comment'=>$authorAndComment[1]));
+          }
+          return $formattedComments;
         }
 }
 ?>

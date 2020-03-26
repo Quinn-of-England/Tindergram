@@ -8,8 +8,9 @@ $images = array();
                     $db = new DbOps();
                     $loggedId = $_GET['id'];
                     //get image rows of all pictures that were posted by users that the logged user follow
-                    $regex = "'%".$loggedId.",%'";
-                    $preparedStatement = "SELECT * FROM pictures WHERE authorId IN (SELECT id FROM users WHERE isFollowedBy LIKE $regex)";
+                    $regex1 = "'%,".$loggedId.",%'";
+                    $regex2 = "'".$loggedId.",%'";
+                    $preparedStatement = "SELECT * FROM pictures WHERE authorId IN (SELECT id FROM users WHERE isFollowedBy LIKE $regex1 OR isFollowedBy LIKE $regex2)";
                     //echo $preparedStatement;
                     $stmt = $db->conn->prepare($preparedStatement);
                     if($stmt->execute()){
@@ -29,7 +30,7 @@ $images = array();
                           $response[$imageIndex]['id'] = $row['id'];
                           $response[$imageIndex]['authorId'] = $row['authorId'];
                           $response[$imageIndex]['likes'] = $row['likes'];
-                          $response[$imageIndex]['comments'] = $row['comments'];
+                          $response[$imageIndex]['comments'] = $db->parseComments($row['comments']);
                           $imagesLeft--;
                         }
 
