@@ -2,13 +2,18 @@ package com.example.soen341
 
 import FileDataPart
 import VolleyImageRequest
+import android.app.NotificationManager
 import android.content.Context
 import android.view.Gravity
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONException
 import org.json.JSONObject
@@ -24,6 +29,11 @@ class RequestHandler constructor(context: Context) {
                 }
             }
     }
+
+    // Variables for notification
+    val CHANNEL_ID = "com.example.soen341"
+    val textTitle = "New Picture Uploaded"
+
     // Create requestQueue
     val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
@@ -45,8 +55,8 @@ class RequestHandler constructor(context: Context) {
                     println("Thread : ${Thread.currentThread().name}")
 
                     val size: Int = response.getInt("size")
-                    for(i in 0..size-1){
-                        var array : JSONObject = response.getJSONObject("$i")
+                    for(i in 0 until size){
+                        val array : JSONObject = response.getJSONObject("$i")
                         SharedPrefManager.getInstance(context).addToImageQueue(array)
                     }
                     //when you first an image should appear, regardless of the swipe ( theres pron a better way of doing )
@@ -64,7 +74,7 @@ class RequestHandler constructor(context: Context) {
 
     }
 
-    fun updateNotifications(context : Context){
+    fun updateNotifications(context: Context){
         val req = JsonObjectRequest(Request.Method.GET,
             Constants.GET_NOTIFICATIONS + "?userId=" + SharedPrefManager.getInstance(context).getUserID()
             , null, Response.Listener {
@@ -73,10 +83,15 @@ class RequestHandler constructor(context: Context) {
                     if(response.getString("error") == "true")
                         throw JSONException(response.getString("message"))
                     else {
-
-                        var toast : Toast = Toast.makeText(context, response.getString("message"), Toast.LENGTH_SHORT)
-                            toast.setGravity(Gravity.TOP or Gravity.CENTER,0, 200)
-                        toast.show()
+                        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_whatshot_black_24dp)
+                            .setContentTitle(textTitle)
+                            .setContentText(response.getString("message"))
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        with(NotificationManagerCompat.from(context)) {
+                            // notificationId is a unique int for each notification that you must define
+                            notify(0, builder.build())
+                        }
                     }
                 }
                 catch (e : Exception){
@@ -98,24 +113,55 @@ class RequestHandler constructor(context: Context) {
             Response.ErrorListener {
                     error ->
                 error("Failure")
-                println(error)
             }) {
             override fun getByteData(): MutableMap<String, FileDataPart>? {
-                var params = HashMap<String,FileDataPart>()
+                val params = HashMap<String,FileDataPart>()
                 //filename is just userID--pictureCount for now
                 params["imageFile"] = FileDataPart("imageName", imageData!!,"jpeg")
                 return params
             }
 
             override fun getParams(): MutableMap<String, String> {
-                var params = HashMap<String,String>()
-                 params["likes"] = "1337"
+                val params = HashMap<String,String>()
+                params["likes"] = "1337"
                 params["comments"] = comments
                 params["authorId"] = SharedPrefManager.getInstance(context).getUserID().toString()
                 return params
             }
         }
         this.addToRequestQueue(req)
+    }
+
+    fun followUser(query: String, context: Context){
+        // Variables needed
+        val url = Constants.FOLLOW_URL
+        val user = SharedPrefManager.getInstance(context).getUserUsername().toString()
+
+        // String request created, when created will execute a POST to the SQL server
+        val stringRequest = object : StringRequest(
+            Method.POST, url,
+            Response.Listener<String> { response -> // String response from the server
+                try {
+                    val obj = JSONObject(response)
+                    Toast.makeText(context, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
+                    if (obj.getString("error") == "false") { // Server reports user follow
+                        println("Follow successful")
+                    }// If no response/invalid response received
+                }catch (e: JSONException){
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { volleyError -> Toast.makeText(context, volleyError.message, Toast.LENGTH_LONG).show() }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["followedUser"] = query
+                params["followerUser"] = user
+                return params
+            }
+        }
+        // Request queue
+        this.addToRequestQueue(stringRequest)
     }
 
 }
