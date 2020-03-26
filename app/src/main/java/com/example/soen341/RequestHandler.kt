@@ -2,9 +2,9 @@ package com.example.soen341
 
 import FileDataPart
 import VolleyImageRequest
-import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.view.Gravity
+import android.content.Intent
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -33,6 +33,10 @@ class RequestHandler constructor(context: Context) {
     // Variables for notification
     val CHANNEL_ID = "com.example.soen341"
     val textTitle = "New Picture Uploaded"
+    val intent = Intent(context, HomeActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
     // Create requestQueue
     val requestQueue: RequestQueue by lazy {
@@ -87,6 +91,7 @@ class RequestHandler constructor(context: Context) {
                             .setSmallIcon(R.drawable.ic_whatshot_black_24dp)
                             .setContentTitle(textTitle)
                             .setContentText(response.getString("message"))
+                            .setContentIntent(pendingIntent)
                             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         with(NotificationManagerCompat.from(context)) {
                             // notificationId is a unique int for each notification that you must define
@@ -105,13 +110,10 @@ class RequestHandler constructor(context: Context) {
     }
 
     fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context){
-        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
-                response ->
+        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener { response ->
             Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
-
         },
-            Response.ErrorListener {
-                    error ->
+            Response.ErrorListener { error ->
                 error("Failure")
             }) {
             override fun getByteData(): MutableMap<String, FileDataPart>? {
