@@ -16,12 +16,13 @@
 
     <EditText
         android:id="@+id/add_comment"
-        android:layout_width="272dp"
+        android:layout_width="310dp"
         android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="636dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorWhite"
         android:hint="@string/write_comment"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,10 +35,11 @@
     <Button
         android:id="@+id/post_comment"
         android:layout_width="88dp"
-        android:layout_height="wrap_content"
+        android:layout_height="37dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="Post"
+        android:background="@color/colorWhite"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
         android:textStyle="bold"

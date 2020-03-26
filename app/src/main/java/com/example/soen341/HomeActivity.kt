@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,15 @@ open class HomeActivity : AppCompatActivity() {
             override fun onSwipeLeft() {
                 updateImage()
             }
+            // Swipe from top to bottom must still be given an action
+            override fun onSwipeBottom() {
+                // TODO decide what action it does
+            }
+            // Swipe from bottom to top will add a comment tab
+            override fun onSwipeTop() {
+                addComment(findViewById(add_comment.id))
+                addComment(findViewById(add_comment.id))
+            }
         })
 
         val animDrawable = root_layout.background as AnimationDrawable
@@ -75,6 +85,15 @@ open class HomeActivity : AppCompatActivity() {
         }
     }
 
+
+    fun addComment(view_comment:View){
+        view_comment.visibility = if (view_comment.visibility == View.INVISIBLE){
+            View.VISIBLE
+        } else{
+            View.INVISIBLE
+        }
+    }
+
     fun updateImage(){
         var image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         home_image.setImageBitmap(image?.getImageBitmap())
@@ -88,7 +107,7 @@ open class HomeActivity : AppCompatActivity() {
         while(true) {
 
             RequestHandler.getInstance(this).updateImageList(this)
-            delay(5000)
+            delay(10000)
             if(first) {
                 withContext(Main) {
                     updateImage()
@@ -124,7 +143,7 @@ open class HomeActivity : AppCompatActivity() {
     suspend fun notificationBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateNotifications(this)
-            delay(5000)
+            delay(10000)
 
         }
     }
