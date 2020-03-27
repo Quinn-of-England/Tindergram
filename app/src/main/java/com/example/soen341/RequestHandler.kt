@@ -15,6 +15,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -52,18 +53,21 @@ class RequestHandler constructor(context: Context) {
         //dispatcher thread working here...
         val req = JsonObjectRequest(
             Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(context).getUserID()
-            ,null, Response.Listener {
+            + "&imageIdsAlreadySeen=" + SharedPrefManager.getInstance(context).getViewedImages(),null, Response.Listener {
                     response ->
                 try{
                     //main thread takes over...
-                    println("Thread : ${Thread.currentThread().name}")
 
                     val size: Int = response.getInt("size")
-                    for(i in 0 until size){
-                        val array : JSONObject = response.getJSONObject("$i")
-                        SharedPrefManager.getInstance(context).addToImageQueue(array)
+
+                    for(i in 0..size-1){
+                        var array : JSONObject = response.getJSONObject("$i")
+                        //val coments : JSONArray = array.getJSONArray("comments")
+                        //println(coments)
+                    SharedPrefManager.getInstance(context).addToImageQueue(array)
+
                     }
-                    //when you first an image should appear, regardless of the swipe ( theres pron a better way of doing )
+
                 }
                 catch (e : Exception){
                     e.printStackTrace()
