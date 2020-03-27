@@ -27,13 +27,11 @@ open class HomeActivity : AppCompatActivity() {
 
     var first : Boolean = true
 
-   fun UpdateImage(){
+   fun updateImage(){
         var image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         home_image.setImageBitmap(image?.getImageBitmap())
-        add_comment.setText(image?.comments)
- //       SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
-//        println(SharedPrefManager.getInstance(this).getViewedImages())
-     }
+       //TODO Set commment view once that's merged
+    }
 
 
 
@@ -50,12 +48,17 @@ open class HomeActivity : AppCompatActivity() {
             // Swipe right will like image and switch to next one
             override fun onSwipeRight() {
                 // TODO Add Like Image
+                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
                 updateImage()
+                else println("Image queue empty!")
             }
 
             // Swipe left will switch to next image
             override fun onSwipeLeft() {
-                updateImage()
+                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
+                    updateImage()
+                else println("Image queue empty!")
+
             }
         })
 
@@ -86,22 +89,16 @@ open class HomeActivity : AppCompatActivity() {
         }
     }
 
-    fun updateImage(){
-        var image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
-        home_image.setImageBitmap(image?.getImageBitmap())
-        add_comment.setText(image?.comments)
-        SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
-        println(SharedPrefManager.getInstance(this).getViewedImages())
-     }
 
     suspend fun imageBackgroundProcess(){
 
         while(true) {
+
             RequestHandler.getInstance(this).updateImageList(this)
             delay(5000)
             if(first) {
                 withContext(Main) {
-                    updateImage()
+                     updateImage()
                     first = false
                 }
             }
@@ -133,9 +130,8 @@ open class HomeActivity : AppCompatActivity() {
 
     suspend fun notificationBackgroundProcess(){
         while(true) {
-            RequestHandler.getInstance(this).updateNotifications(this)
             delay(5000)
-
+            RequestHandler.getInstance(this).updateNotifications(this)
         }
     }
 
