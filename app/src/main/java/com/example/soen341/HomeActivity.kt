@@ -54,7 +54,7 @@ open class HomeActivity : AppCompatActivity() {
             // Swipe from bottom to top will add a comment tab
             override fun onSwipeTop() {
                 addComment(findViewById(add_comment.id))
-                addComment(findViewById(add_comment.id))
+                addComment(findViewById(post_comment.id))
             }
         })
 
@@ -87,10 +87,10 @@ open class HomeActivity : AppCompatActivity() {
 
 
     fun addComment(view_comment:View){
-        view_comment.visibility = if (view_comment.visibility == View.INVISIBLE){
-            View.VISIBLE
-        } else{
+        view_comment.visibility = if (view_comment.visibility == View.VISIBLE){
             View.INVISIBLE
+        } else{
+            View.VISIBLE
         }
     }
 
