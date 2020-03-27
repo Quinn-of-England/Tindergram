@@ -9,22 +9,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_image.*
-import kotlinx.android.synthetic.main.activity_upload_image.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.lang.Exception
-import java.net.URI
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 //Inherit HomeActivity because I dont want to change my layout.
 class ImageActivity : AppCompatActivity() {
@@ -69,13 +56,14 @@ class ImageActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-           var uri = data?.data;
+           val uri = data?.data
             val imageData : ByteArray? = createImageDataFromURI(uri)
             userImage_imageview.setImageURI(uri)
             userImage_post.setOnClickListener {
                 RequestHandler.getInstance(this).saveImageToServer(imageData, userImage_comment.text.toString(),this)
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
+                finish()
             }
 
         }
@@ -86,8 +74,9 @@ class ImageActivity : AppCompatActivity() {
         Toast.makeText(this,"image discarded",Toast.LENGTH_SHORT).show()
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
-
+        finish()
     }
+
     //this will take care of the case when the user is prompted for permission. In essence, it will really only
     //happen once unless permissions are explicitely reset
     override fun onRequestPermissionsResult(
