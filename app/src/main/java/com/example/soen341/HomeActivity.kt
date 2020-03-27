@@ -56,6 +56,15 @@ open class HomeActivity : AppCompatActivity() {
             override fun onSwipeLeft() {
                 updateImage()
             }
+            // Swipe from top to bottom must still be given an action
+            override fun onSwipeBottom() {
+                // TODO decide what action it does
+            }
+            // Swipe from bottom to top will add a comment tab
+            override fun onSwipeTop() {
+                addComment(findViewById(add_comment.id))
+                addComment(findViewById(post_comment.id))
+            }
         })
 
         val animDrawable = root_layout.background as AnimationDrawable
@@ -85,6 +94,15 @@ open class HomeActivity : AppCompatActivity() {
         }
     }
 
+
+    fun addComment(view_comment:View){
+        view_comment.visibility = if (view_comment.visibility == View.VISIBLE){
+            View.INVISIBLE
+        } else{
+            View.VISIBLE
+        }
+    }
+
     override fun onBackPressed() {
         moveTaskToBack(true)
     }
@@ -100,7 +118,7 @@ open class HomeActivity : AppCompatActivity() {
     suspend fun imageBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateImageList(this)
-            delay(5000)
+            delay(10000)
             if(first) {
                 withContext(Main) {
                     updateImage()
@@ -137,7 +155,8 @@ open class HomeActivity : AppCompatActivity() {
     private suspend fun notificationBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateNotifications(this)
-            delay(5000)
+            delay(10000)
+
         }
     }
 
@@ -166,8 +185,6 @@ open class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 }
-
 
 
