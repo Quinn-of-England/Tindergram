@@ -1,37 +1,46 @@
 package com.example.soen341
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
-import com.android.volley.AuthFailureError
-import com.android.volley.Response
-import com.android.volley.toolbox.StringRequest
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import org.json.JSONException
-import org.json.JSONObject
-import kotlin.collections.HashMap
 
 open class HomeActivity : AppCompatActivity() {
 
     var first : Boolean = true
+    lateinit var notificationManager: NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    val CHANNEL_ID = "com.example.soen341"
+    val CHANNEL_DESC = "Image Upload Notification"
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        // Setup notifications
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationChannel = NotificationChannel(CHANNEL_ID, CHANNEL_DESC, NotificationManager.IMPORTANCE_DEFAULT)
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor= Color.MAGENTA
+        notificationChannel.enableVibration(true)
+        notificationManager.createNotificationChannel(notificationChannel)
 
         // Swipe between images
         val image = findViewById<ImageView>(R.id.home_image)
@@ -65,7 +74,7 @@ open class HomeActivity : AppCompatActivity() {
 
         // If not logged in, go back to login page
         if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
-            val intent = Intent(this, ImageActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -76,10 +85,10 @@ open class HomeActivity : AppCompatActivity() {
 
         CoroutineScope(IO).launch {
             //launch two concurrent jobs
-            val job1 = launch {
+            launch {
                 imageBackgroundProcess()
             }
-            val job2 = launch {
+            launch {
                 notificationBackgroundProcess()
             }
         }
@@ -95,8 +104,12 @@ open class HomeActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+    }
+
     fun updateImage(){
-        var image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
+        val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         home_image.setImageBitmap(image?.getImageBitmap())
         add_comment.setText(image?.comments)
         SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
@@ -104,9 +117,7 @@ open class HomeActivity : AppCompatActivity() {
      }
 
     suspend fun imageBackgroundProcess(){
-
         while(true) {
-
             RequestHandler.getInstance(this).updateImageList(this)
             delay(10000)
             if(first) {
@@ -134,14 +145,15 @@ open class HomeActivity : AppCompatActivity() {
                 return false
             }
             override fun onQueryTextSubmit(query: String): Boolean {
-                followUser(query)
+                RequestHandler.getInstance(applicationContext).followUser(query, applicationContext)
                 return false
             }
         })
             return true
     }
 
-    suspend fun notificationBackgroundProcess(){
+    // Start background process that will check for new notifications
+    private suspend fun notificationBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateNotifications(this)
             delay(10000)
@@ -174,38 +186,6 @@ open class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    private fun followUser(query: String){
-        // Variables needed
-        val url = Constants.FOLLOW_URL
-        val user = SharedPrefManager.getInstance(applicationContext).getUserUsername().toString()
-
-        // String request created, when created will execute a POST to the SQL server
-        val stringRequest = object : StringRequest(
-            Method.POST, url,
-            Response.Listener<String> { response -> // JSON response from the server
-                try {
-                    val obj = JSONObject(response)
-                    Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false") { // Server reports user follow
-                        println("Follow successful")
-                    }// If no response/invalid response received
-                }catch (e: JSONException){
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener { volleyError -> Toast.makeText(applicationContext, volleyError.message, Toast.LENGTH_LONG).show() }){
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String> { // Parameters added to POST request
-                val params = HashMap<String, String>()
-                params["followedUser"] = query
-                params["followerUser"] = user
-                return params
-            }
-        }
-        // Request queue
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
-    }
-
 }
+
 

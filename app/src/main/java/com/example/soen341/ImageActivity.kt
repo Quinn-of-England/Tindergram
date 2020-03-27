@@ -8,21 +8,19 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_image.*
 
+//Inherit HomeActivity because I dont want to change my layout.
+class ImageActivity : AppCompatActivity() {
 
-//Inherit HomeActivity because I don't want to change my layout.
-class ImageActivity : HomeActivity() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setContentView(R.layout.activity_image)
 
          if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
@@ -44,10 +42,6 @@ class ImageActivity : HomeActivity() {
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
-    fun getComments() : String{
-        return add_comment.text.toString()
-    }
-
     fun createImageDataFromURI(uri : Uri?) : ByteArray?{
         var imageData : ByteArray? = null
         val inputStream = contentResolver.openInputStream(uri!!)
@@ -62,32 +56,25 @@ class ImageActivity : HomeActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if(resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
-
-
-            var uri = data?.data
+           val uri = data?.data
             val imageData : ByteArray? = createImageDataFromURI(uri)
-            post_comment.setOnClickListener {
-                RequestHandler.getInstance(this).saveImageToServer(imageData,this)
+            userImage_imageview.setImageURI(uri)
+            userImage_post.setOnClickListener {
+                RequestHandler.getInstance(this).saveImageToServer(imageData, userImage_comment.text.toString(),this)
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
             }
 
-            /*val home_layout : ConstraintLayout = findViewById<ConstraintLayout>(R.id.root_layout)
-            home_layout.addView(image,200,200)
-
-            val set : ConstraintSet = ConstraintSet()
-            set.clone(home_layout)
-            set.connect(image.id,ConstraintSet.TOP,toolbar.id,ConstraintSet.TOP,100)
-            set.connect(image.id,ConstraintSet.BOTTOM,ConstraintSet.PARENT_ID,ConstraintSet.BOTTOM,100)
-            set.connect(image.id,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,ConstraintSet.LEFT,100)
-            set.connect(image.id,ConstraintSet.RIGHT,ConstraintSet.PARENT_ID,ConstraintSet.RIGHT,100)
-
-
-           // set.createHorizontalChain(ConstraintSet.PARENT_ID,ConstraintSet.LEFT,ConstraintSet.PARENT_ID,
-             //   ConstraintSet.RIGHT,images,null,ConstraintSet.CHAIN_SPREAD)
-            set.applyTo(home_layout)
-                */
         }
-
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onBackPressed() {
+        Toast.makeText(this,"image discarded",Toast.LENGTH_SHORT).show()
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     //this will take care of the case when the user is prompted for permission. In essence, it will really only
