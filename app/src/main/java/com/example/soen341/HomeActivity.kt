@@ -28,8 +28,14 @@ open class HomeActivity : AppCompatActivity() {
     val CHANNEL_ID = "com.example.soen341"
     val CHANNEL_DESC = "Image Upload Notification"
 
+
+
+
+//wtf is this?    @SuppressLint("ClickableViewAccessibility")
+
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -49,12 +55,17 @@ open class HomeActivity : AppCompatActivity() {
             // Swipe right will like image and switch to next one
             override fun onSwipeRight() {
                 // TODO Add Like Image
+                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
                 updateImage()
+                else println("Image queue empty!")
             }
 
             // Swipe left will switch to next image
             override fun onSwipeLeft() {
-                updateImage()
+                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
+                    updateImage()
+                else println("Image queue empty!")
+
             }
         })
 
@@ -92,18 +103,16 @@ open class HomeActivity : AppCompatActivity() {
     fun updateImage(){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         home_image.setImageBitmap(image?.getImageBitmap())
-        add_comment.setText(image?.comments)
-        SharedPrefManager.getInstance(this).updateViewedImages(image?.imageID!!)
-        println(SharedPrefManager.getInstance(this).getViewedImages())
-     }
+         }
 
     suspend fun imageBackgroundProcess(){
         while(true) {
+
             RequestHandler.getInstance(this).updateImageList(this)
             delay(5000)
             if(first) {
                 withContext(Main) {
-                    updateImage()
+                     updateImage()
                     first = false
                 }
             }
@@ -136,8 +145,9 @@ open class HomeActivity : AppCompatActivity() {
     // Start background process that will check for new notifications
     private suspend fun notificationBackgroundProcess(){
         while(true) {
-            RequestHandler.getInstance(this).updateNotifications(this)
             delay(5000)
+
+            RequestHandler.getInstance(this).updateNotifications(this)
         }
     }
 
