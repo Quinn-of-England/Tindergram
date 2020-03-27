@@ -4,13 +4,15 @@
     class DbOps{
         public $conn;
 
-        function __construct(){
+        function __construct()
+        {
             $db = new DbConnect();
 
             $this->conn = $db->connect();
         }
 
-        public function createUser($username, $password, $email){
+        public function createUser($username, $password, $email)
+        {
             if($this->isUserExist($username, $email)) {
                 return 0;
             }else{
@@ -27,7 +29,8 @@
             }
         }
 
-        public function changeUsername($username, $id){
+        public function changeUsername($username, $id)
+        {
             if($this->isUsernameExist($username)) {
                 return 0;
             }else{
@@ -43,7 +46,8 @@
             }
         }
 
-        public function changePassword($password, $id){
+        public function changePassword($password, $id)
+        {
             $encrPassword = md5($password);
             $stmt = $this->conn->prepare("UPDATE `users` SET `password` = ? WHERE `users`.`id` = ?");
             $stmt->bind_param("si", $encrPassword, $id);
@@ -56,7 +60,8 @@
             }
         }
 
-        public function changeEmail($email, $id){
+        public function changeEmail($email, $id)
+        {
             if($this->isEmailExist($email)) {
                 return 0;
             }else{
@@ -72,7 +77,8 @@
             }
         }
 
-        private function isUserExist($username, $email) {
+        private function isUserExist($username, $email)
+        {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? OR email = ?");
             $stmt->bind_param("ss", $username, $email);
             $stmt->execute();
@@ -80,7 +86,8 @@
             return $stmt->num_rows > 0;
         }
 
-        public function isUsernameExist($username) {
+        public function isUsernameExist($username)
+        {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
             $stmt->bind_param("s", $username);
             $stmt->execute();
@@ -88,7 +95,8 @@
             return $stmt->num_rows > 0;
         }
 
-        public function isEmailExist($email) {
+        public function isEmailExist($email)
+        {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
@@ -96,7 +104,8 @@
             return $stmt->num_rows > 0;
         }
 
-        public function loginUser($username, $password) {
+        public function loginUser($username, $password)
+        {
             $encrPassword = md5($password);
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ? AND password = ?");
             $stmt->bind_param("ss", $username, $encrPassword);
@@ -105,21 +114,24 @@
             return $stmt->num_rows > 0;
         }
 
-        public function getUserByUsername($username) {
+        public function getUserByUsername($username)
+        {
             $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ?");
             $stmt->bind_param("s", $username);
             $stmt->execute();
             return $stmt->get_result()->fetch_assoc();
 	      }
 
-        public function getIdByUsername($username) {
+        public function getIdByUsername($username)
+        {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE username = ?");
             $stmt->bind_param("s", $username);
             $stmt->execute();
             return $stmt->get_result()->fetch_assoc();
 	      }
 
-        public function getUsernameById($id) {
+        public function getUsernameById($id)
+        {
             $stmt = $this->conn->prepare("SELECT username FROM users WHERE id = ?");
             $stmt->bind_param("s", $id);
             $stmt->execute();
@@ -129,7 +141,8 @@
             return $username;
 	      }
 
-        public function userAlreadyNotified($authorId, $followerId){
+        public function userAlreadyNotified($authorId, $followerId)
+        {
             $stmt = $this->conn->prepare("SELECT followedPostedPictures FROM users WHERE id = ?");
             $stmt->bind_param("s", $followerId);
             $stmt->execute();
@@ -145,7 +158,8 @@
             return false;
         }
 
-        public function notifyAllThatFollowId($authorId){
+        public function notifyAllThatFollowId($authorId)
+        {
             $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
             $stmt->bind_param("s", $authorId);
             $stmt->execute();
@@ -165,7 +179,8 @@
             }
         }
 
-        public function getAndClearNotification($userId){
+        public function getAndClearNotification($userId)
+        {
             $stmt = $this->conn->prepare("SELECT followedPostedPictures FROM users WHERE id = ?");
             $stmt->bind_param("s", $userId);
             $stmt->execute();
@@ -193,7 +208,8 @@
             return $resultList;
         }
 
-        public function canFollow($followerId,$followedId){
+        public function canFollow($followerId,$followedId)
+        {
           $stmt = $this->conn->prepare("SELECT isFollowedBy FROM users WHERE id = ?");
           $stmt->bind_param("s", $followedId);
           $stmt->execute();
@@ -209,15 +225,56 @@
           return true;
         }
 
-        public function follows($followerId,$followedId){
-          //TODO checking if the user is already being followed, maybe that can be another method
+        public function follows($followerId,$followedId)
+        {
           $stmt = $this->conn->prepare("UPDATE `users` SET `isFollowedBy` = CONCAT(`isFollowedBy`,?) WHERE `id` = ?");
           $formattedfollowerId = $followerId.",";
           $stmt->bind_param("ss", $formattedfollowerId, $followedId);
           return $stmt->execute();
         }
 
-	      public function addComment($imageId,$username,$comment){
+        public function canLike($userId, $imageId)
+        {
+          //get string list of all pictures liked
+          $stmt = $this->conn->prepare("SELECT hasLiked FROM `users` WHERE `id` = ?");
+          $formattedimageId = $imageId.",";
+          $stmt->bind_param("s", $userId);
+          $stmt->execute();
+          $stmt->store_result();
+          $stmt->bind_result($hasLiked);
+          $stmt->fetch();
+          //look in the list to see if the picture was liked already
+          $pattern1 = "/^".$imageId.",/";
+          $pattern2 = "/,".$imageId.",/";
+          return preg_match($pattern1, $hasLiked) == 0 and preg_match($pattern2, $hasLiked) == 0;
+        }
+
+        public function like($userId, $imageId)
+        {
+          //indicate in sql that user has lked the picture
+          $stmt = $this->conn->prepare("UPDATE users SET hasLiked = CONCAT(hasLiked,?) WHERE id = ?");
+          $formattedimageId = $imageId.",";
+          $stmt->bind_param("ss", $formattedimageId, $userId);
+          $finishCondition1 = $stmt->execute();
+          //increment like counter of image
+          $stmt = $this->conn->prepare("UPDATE pictures SET likes = likes + 1 WHERE id = ?");
+          $stmt->bind_param("s", $imageId);
+          return $stmt->execute() and $finishCondition1;
+        }
+
+        public function getLikes($imageId)
+        {
+          $stmt = $this->conn->prepare("SELECT likes FROM pictures WHERE id = ?");
+          $stmt->bind_param("s", $imageId);
+          $stmt->execute();
+          $stmt->store_result();
+          $stmt->bind_result($likeCount);
+          $stmt->fetch();
+          return $likeCount;
+        }
+
+	      public function addComment($imageId,$username,$comment)
+        {
           //should pass the comment to sql as $comment = "user,comment|"
           //storing old value and adding received param to it
           $toAdd = $this->formatComment($username, $comment);
@@ -226,11 +283,13 @@
           return $stmt->execute();
         }
 
-        public function formatComment($username, $comment){
+        public function formatComment($username, $comment)
+        {
           return $username."~".$comment."|";
         }
 
-        public function parseComments($comments){
+        public function parseComments($comments)
+        {
           //returns 2D array from a string of comments coming from the sql
           $authorCommentPairs = explode('|', $comments);
           //last element will be empty
