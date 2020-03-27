@@ -87,10 +87,11 @@ open class HomeActivity : AppCompatActivity() {
 
 
     fun addComment(view_comment:View){
-        view_comment.visibility = if (view_comment.visibility == View.VISIBLE){
-            View.INVISIBLE
-        } else{
+        view_comment.visibility = if (view_comment.visibility == View.INVISIBLE){
             View.VISIBLE
+
+        } else{
+            View.INVISIBLE
         }
     }
 

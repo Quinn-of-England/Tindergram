@@ -25,6 +25,7 @@
         android:background="@color/colorWhite"
         android:hint="@string/write_comment"
         android:padding="8dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/post_comment"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +45,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/add_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/add_comment">
