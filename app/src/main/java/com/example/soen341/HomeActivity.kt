@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
@@ -35,6 +36,14 @@ open class HomeActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        // Code for likes image button to change on click
+        val imgBtn = findViewById<ImageButton>(R.id.imgButton)
+
+        imgBtn.setOnClickListener {
+            
+        }
+
 
         // Adding in toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
