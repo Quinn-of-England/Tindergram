@@ -113,6 +113,7 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun registerUser() {
         // All variables needed imported to method
         val url = Constants.REGISTER_URL
