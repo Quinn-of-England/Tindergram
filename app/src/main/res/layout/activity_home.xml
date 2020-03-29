@@ -14,41 +14,19 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="122dp" />
 
-    <EditText
-        android:id="@+id/add_comment"
-        android:layout_width="250dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="636dp"
-        android:layout_marginBottom="70dp"
-        android:background="@color/colorWhite"
-        android:hint="@string/write_comment"
-        android:padding="8dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/post_comment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.205">
-
-    </EditText>
-
     <Button
         android:id="@+id/post_comment"
-        android:layout_width="88dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="84dp"
+        android:layout_height="38dp"
         android:background="@color/colorWhite"
         android:text="Post"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/add_comment"
+        app:layout_constraintBottom_toBottomOf="@+id/add_comment_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_comment">
+        app:layout_constraintTop_toTopOf="@+id/add_comment_layout">
 
     </Button>
 
@@ -56,11 +34,9 @@
         android:id="@+id/home_image"
         android:layout_width="417dp"
         android:layout_height="365dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/gradient_center" />
 
     <ScrollView
@@ -70,7 +46,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_image"
-        app:layout_constraintVertical_bias="0.321">
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:id="@+id/comment_section_layout"
@@ -78,6 +54,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/add_comment_layout"
+        android:layout_width="305dp"
+        android:layout_height="48dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment_section"
+        app:layout_constraintVertical_bias="0.919">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/add_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter a comment"
+            tools:visibility="invisible" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

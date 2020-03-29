@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.ContactsContract
 import android.util.Base64
 import org.json.JSONArray
 import org.json.JSONObject
@@ -15,6 +16,8 @@ class SharedPrefManager constructor(context: Context) {
     private val KEY_USERNAME = "username"
     private val KEY_USER_ID = "user_id"
     private val KEY_USER_EMAIL = "user_email"
+    private val KEY_CURRENTLY_VIEWED_IMAGE_ID = "image_id"
+
     private var imageQueue : Queue<ImageContainer>? = LinkedList<ImageContainer>()
     val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
@@ -80,6 +83,14 @@ class SharedPrefManager constructor(context: Context) {
         val editor = sharedPref.edit()
         editor.putString(KEY_USER_EMAIL, email)
         editor.apply()
+    }
+    fun setCurrentImageID(id : Int){
+        val editor = sharedPref.edit()
+        editor.putInt(KEY_CURRENTLY_VIEWED_IMAGE_ID, id)
+        editor.apply()
+    }
+    fun getCurrentImageID() : Int{
+        return sharedPref.getInt(KEY_CURRENTLY_VIEWED_IMAGE_ID,0)
     }
 
     fun userLogoutPref() {

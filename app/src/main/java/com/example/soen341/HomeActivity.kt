@@ -1,6 +1,7 @@
 package com.example.soen341
 
 import android.annotation.SuppressLint
+import android.app.ActionBar
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -10,10 +11,12 @@ import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
 import android.widget.TextView
@@ -74,8 +77,22 @@ open class HomeActivity : AppCompatActivity() {
             }
             // Swipe from bottom to top will add a comment tab
             override fun onSwipeTop() {
-                addComment(findViewById(add_comment.id))
+                println("hello bitch ass")
+                addComment(findViewById(add_comment_layout.id))
                 addComment(findViewById(post_comment.id))
+
+                val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
+
+                post_comment.setOnClickListener {
+                    val username : String = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername()!!
+                    val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
+                    val comments : String = add_comment.text.toString()
+                    println("$username -- $imageId -- $comments")
+                    RequestHandler.getInstance(this@HomeActivity).postComment(comments,username,imageId)
+                        println("sucess : $username -- $comments")
+                        updateCommentSection(mutableMapOf<String,String>(Pair(username,comments)))
+
+                }
             }
         })
 
@@ -119,10 +136,14 @@ open class HomeActivity : AppCompatActivity() {
         moveTaskToBack(true)
     }
     fun updateCommentSection(comments : MutableMap<String,String>){
+        println(comments)
         var lambda : (String,String) -> String = { author : String, comment : String -> "$author : $comment" }
         comments.forEach { it ->
             var view : TextView = TextView(this)
+
+            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0F)
             view.setText(lambda(it.key,it.value))
+            view.setPadding(50,0,0,0)
             comment_section_layout.addView(view)
         }
     }
@@ -131,7 +152,8 @@ open class HomeActivity : AppCompatActivity() {
     }
     fun updateImage(){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
-        println(image!!.getComments().toString())
+        SharedPrefManager.getInstance(this).setCurrentImageID(image?.imageID!!)
+
         clearCommentSection()
         updateCommentSection(image!!.getComments())
         if(first){

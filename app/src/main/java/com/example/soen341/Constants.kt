@@ -9,4 +9,5 @@ object Constants {
     const val FOLLOW_URL = ROOT_URL+"follow.php"
     const val BATCH_IMAGES = ROOT_URL + "getBatchImages.php"
     const val GET_NOTIFICATIONS = ROOT_URL + "getNotification.php"
+    const val COMMENT_PICTURE = ROOT_URL + "post-comment.php"
 }

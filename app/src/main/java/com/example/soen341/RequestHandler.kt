@@ -2,10 +2,14 @@ package com.example.soen341
 
 import FileDataPart
 import VolleyImageRequest
+import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.TypedValue
+import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.solver.widgets.ConstraintAnchor
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.android.volley.AuthFailureError
@@ -15,9 +19,11 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.reflect.Method
 
 class RequestHandler constructor(context: Context) {
     companion object {
@@ -171,5 +177,37 @@ class RequestHandler constructor(context: Context) {
         // Request queue
         this.addToRequestQueue(stringRequest)
     }
+    fun postComment(comment : String, username : String , imageId : Int)  {
+        var status : Boolean = false
+        val req = object : StringRequest(
+            Method.POST, Constants.COMMENT_PICTURE,
+            Response.Listener<String> { response -> // String response from the server
+                try {
 
+                    val obj : JSONObject = JSONObject(response)
+                    if (obj.getString("error") == "true") {
+                        throw JSONException(obj.getString("message"))
+                    }
+                    else{
+                        status = true
+                    }
+                }catch (e: JSONException){
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener {
+                    error -> println(error) })
+           {
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["username"] = username
+                params["id"] = imageId.toString()
+                params["comment"] = comment
+                return params
+            }
+        }
+        this.addToRequestQueue(req)
+
+    }
 }
