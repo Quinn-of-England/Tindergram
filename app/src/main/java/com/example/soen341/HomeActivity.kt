@@ -87,9 +87,8 @@ open class HomeActivity : AppCompatActivity() {
                     val username : String = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername()!!
                     val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
                     val comments : String = add_comment.text.toString()
-                    println("$username -- $imageId -- $comments")
+
                     RequestHandler.getInstance(this@HomeActivity).postComment(comments,username,imageId)
-                        println("sucess : $username -- $comments")
                         updateCommentSection(mutableMapOf<String,String>(Pair(username,comments)))
 
                 }
