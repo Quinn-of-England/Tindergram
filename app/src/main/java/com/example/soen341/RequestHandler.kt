@@ -91,6 +91,7 @@ class RequestHandler constructor(context: Context) {
                     if(response.getString("error") == "true")
                         throw JSONException(response.getString("message"))
                     else {
+                        if(! response.getString("message").equals("")){
                         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_whatshot_black_24dp)
                             .setContentTitle(textTitle)
@@ -100,6 +101,7 @@ class RequestHandler constructor(context: Context) {
                         with(NotificationManagerCompat.from(context)) {
                             // notificationId is a unique int for each notification that you must define
                             notify(0, builder.build())
+                        }
                         }
                     }
                 }
