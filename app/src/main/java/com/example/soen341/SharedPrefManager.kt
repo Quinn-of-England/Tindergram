@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 
@@ -15,10 +16,10 @@ class SharedPrefManager constructor(context: Context) {
     private val KEY_USER_ID = "user_id"
     private val KEY_USER_EMAIL = "user_email"
     private var imageQueue : Queue<ImageContainer>? = LinkedList<ImageContainer>()
-
     val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
     private var viewed_images: String?  = ""
+
     companion object {
         @Volatile
         private var INSTANCE: SharedPrefManager? = null
@@ -31,13 +32,18 @@ class SharedPrefManager constructor(context: Context) {
     }
 
     fun getImageContainer() : ImageContainer? {
-             return imageQueue?.poll()
+            return imageQueue?.poll()
     }
-
+    fun isImageQueueEmpty() : Boolean{
+        return imageQueue!!.isEmpty()
+    }
     fun addToImageQueue(container : JSONObject) {
+
         imageQueue?.offer(ImageContainer(container.getString("image"),
-            container.getInt("likes"),container.getString("comments"),
+            container.getInt("likes"),container.getJSONArray("comments"),
             container.getString("authorId"),container.getInt("id")))
+        updateViewedImages(container.getInt("id"))
+
     }
 
     fun userLoginPref(id:Int, username:String, email:String) {
@@ -87,19 +93,28 @@ class SharedPrefManager constructor(context: Context) {
     fun getViewedImages() : String? {
         return this.viewed_images
     }
-}
 
-class ImageContainer(var imageData: String, var likes: Int, var comments: String, var authorID : String, var imageID : Int){
+}
+class ImageContainer(var imageData: String, var likes: Int, var commentArray: JSONArray, var authorID : String, var imageID : Int){
     private var imageBitmap : Bitmap? = null
+    private var commentMap : MutableMap<String,String> = mutableMapOf()
     private fun convertBase64ToBitmap(){
         val imageBytes : ByteArray = Base64.decode(this.imageData, Base64.DEFAULT)
         this.imageBitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
     }
+    private fun convertJsonArrayToMap(){
+        var lambda : (JSONObject) -> Unit = { obj : JSONObject -> commentMap.put(obj.getString("author"),obj.getString("comment"))}
+        (0..(commentArray.length()-1)).forEach { lambda(commentArray.getJSONObject(it)) }
+    }
     init{
         //image is sent as a base64 string, gotta turn that into a bitmap/uri that android can use...
         convertBase64ToBitmap()
+        convertJsonArrayToMap()
     }
     fun getImageBitmap() : Bitmap?{
         return this.imageBitmap
+    }
+    fun getComments() : MutableMap<String,String>{
+        return this.commentMap
     }
 }
