@@ -29,7 +29,7 @@ open class HomeActivity : AppCompatActivity() {
     val CHANNEL_ID = "com.example.soen341"
     val CHANNEL_DESC = "Image Upload Notification"
 
-
+    var ifLiked = false
 
 
 //wtf is this?    @SuppressLint("ClickableViewAccessibility")
@@ -86,9 +86,16 @@ open class HomeActivity : AppCompatActivity() {
         val imgBtn = findViewById<ImageButton>(R.id.imgButton)
 
         imgBtn.setOnClickListener {
+            if (!ifLiked) {
+                ifLiked = true
+                imgBtn.setImageResource(R.drawable.lock_icon)
+            }
+            else {
+                ifLiked = false
+                imgBtn.setImageResource(R.drawable.user_icon)
+            }
 
         }
-
 
         // Adding in toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
