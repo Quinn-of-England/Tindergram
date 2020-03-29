@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -117,10 +118,22 @@ open class HomeActivity : AppCompatActivity() {
     override fun onBackPressed() {
         moveTaskToBack(true)
     }
-
+    fun updateCommentSection(comments : MutableMap<String,String>){
+        var lambda : (String,String) -> String = { author : String, comment : String -> "$author : $comment" }
+        comments.forEach { it ->
+            var view : TextView = TextView(this)
+            view.setText(lambda(it.key,it.value))
+            comment_section_layout.addView(view)
+        }
+    }
+    fun clearCommentSection(){
+        comment_section_layout.removeAllViews()
+    }
     fun updateImage(){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
-
+        println(image!!.getComments().toString())
+        clearCommentSection()
+        updateCommentSection(image!!.getComments())
         if(first){
             home_image.setImageBitmap(image?.getImageBitmap())
             return

@@ -30,7 +30,7 @@
         app:layout_constraintEnd_toStartOf="@+id/post_comment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.205">
 
     </EditText>
 
@@ -54,13 +54,30 @@
 
     <ImageView
         android:id="@+id/home_image"
-        android:layout_width="259dp"
-        android:layout_height="250dp"
+        android:layout_width="417dp"
+        android:layout_height="365dp"
         app:layout_constraintBottom_toTopOf="@+id/add_comment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/gradient_center" />
+
+    <ScrollView
+        android:id="@+id/comment_section"
+        android:layout_width="409dp"
+        android:layout_height="201dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_image"
+        app:layout_constraintVertical_bias="0.321">
+
+        <LinearLayout
+            android:id="@+id/comment_section_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
