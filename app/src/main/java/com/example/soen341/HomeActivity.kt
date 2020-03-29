@@ -7,14 +7,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -48,6 +52,7 @@ open class HomeActivity : AppCompatActivity() {
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
 
+
         // Swipe between images
         val image = findViewById<ImageView>(R.id.home_image)
         image.setOnTouchListener(object : OnSwipeTouchListener(applicationContext) {
@@ -64,6 +69,7 @@ open class HomeActivity : AppCompatActivity() {
             override fun onSwipeLeft() {
                 if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
                     updateImage()
+
                 else println("Image queue empty!")
 
             }
@@ -102,8 +108,32 @@ open class HomeActivity : AppCompatActivity() {
 
     fun updateImage(){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
-        home_image.setImageBitmap(image?.getImageBitmap())
-         }
+
+        if(first){
+            home_image.setImageBitmap(image?.getImageBitmap())
+            return
+        }
+
+        var slide: Animation = AnimationUtils.loadAnimation(this, R.anim.slide)
+
+            slide.setAnimationListener(object : Animation.AnimationListener{
+                override fun onAnimationStart(animation: Animation?) {
+                    findViewById<ImageView>(home_image.id).startAnimation(slide)
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    home_image.setImageBitmap(image?.getImageBitmap())
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            })
+            home_image.startAnimation(slide)
+        //findViewById<ImageView>(home_image.id).clearAnimation()
+        //findViewById<ImageView>(home_image.id).startAnimation(fadeOut)
+
+    }
 
     suspend fun imageBackgroundProcess(){
         while(true) {
