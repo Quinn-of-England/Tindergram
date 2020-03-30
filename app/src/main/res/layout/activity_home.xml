@@ -57,8 +57,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_comment_layout"
-        android:layout_width="305dp"
-        android:layout_height="48dp"
+        android:layout_width="322dp"
+        android:layout_height="71dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
