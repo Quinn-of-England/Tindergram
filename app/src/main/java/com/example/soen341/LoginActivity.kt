@@ -19,7 +19,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         // If already logged in, skip login page
-        if (SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
+        if (SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())     {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()

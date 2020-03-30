@@ -46,5 +46,8 @@
     <string name="cancel">Cancel</string>
     <string name="upload">Upload</string>
     <string name="write_comment">Write your comment here…</string>
+    <string name="enter_comment">Enter Comment</string>
+    <string name="image">Image</string>
+    <string name="post">Post</string>
 
 </resources>
