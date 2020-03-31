@@ -113,8 +113,6 @@ open class HomeActivity : AppCompatActivity() {
             finish()
         }
 
-        // Code for likes image button to change on click
-
 
 
         // Adding in toolbar
