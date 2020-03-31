@@ -1,28 +1,26 @@
 package com.example.soen341
 
 import android.annotation.SuppressLint
-import android.app.ActionBar
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
-import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+
+import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.snackbar.BaseTransientBottomBar
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -35,6 +33,11 @@ open class HomeActivity : AppCompatActivity() {
     lateinit var notificationChannel: NotificationChannel
     val CHANNEL_ID = "com.example.soen341"
     val CHANNEL_DESC = "Image Upload Notification"
+
+    var ifLiked = false
+
+
+//wtf is this?    @SuppressLint("ClickableViewAccessibility")
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
@@ -59,9 +62,13 @@ open class HomeActivity : AppCompatActivity() {
             // Swipe right will like image and switch to next one
             override fun onSwipeRight() {
                 // TODO Add Like Image
-                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
-                updateImage()
-                else println("Image queue empty!")
+                println("swiped right")
+
+                val username : Int = SharedPrefManager.getInstance(this@HomeActivity).getUserID()
+                val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
+                println("$username -- $imageId")
+                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString())
+                onSwipeLeft()
             }
 
             // Swipe left will switch to next image
@@ -77,11 +84,9 @@ open class HomeActivity : AppCompatActivity() {
             }
             // Swipe from bottom to top will add a comment tab
             override fun onSwipeTop() {
-                println("hello bitch ass")
+
                 addComment(findViewById(add_comment_layout.id))
                 addComment(findViewById(post_comment.id))
-
-                val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
 
                 post_comment.setOnClickListener {
                     val username : String = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername()!!
@@ -105,6 +110,21 @@ open class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+        // Code for likes image button to change on click
+        val imgBtn = findViewById<ImageButton>(R.id.imgButton)
+
+        imgBtn.setOnClickListener {
+            if (!ifLiked) {
+                ifLiked = true
+                imgBtn.setImageResource(R.drawable.lock_icon)
+            }
+            else {
+                ifLiked = false
+                imgBtn.setImageResource(R.drawable.user_icon)
+            }
+
         }
 
         // Adding in toolbar
@@ -145,6 +165,7 @@ open class HomeActivity : AppCompatActivity() {
             view.setPadding(50,0,0,0)
             comment_section_layout.addView(view)
         }
+
     }
     fun clearCommentSection(){
         comment_section_layout.removeAllViews()
@@ -154,9 +175,10 @@ open class HomeActivity : AppCompatActivity() {
         SharedPrefManager.getInstance(this).setCurrentImageID(image?.imageID!!)
 
         clearCommentSection()
-        updateCommentSection(image!!.getComments())
+        updateCommentSection(image.getComments())
+      likes_count.setText("${image.likes}")
         if(first){
-            home_image.setImageBitmap(image?.getImageBitmap())
+            home_image.setImageBitmap(image.getImageBitmap())
             return
         }
 
@@ -168,7 +190,7 @@ open class HomeActivity : AppCompatActivity() {
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    home_image.setImageBitmap(image?.getImageBitmap())
+                    home_image.setImageBitmap(image.getImageBitmap())
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {
@@ -176,8 +198,6 @@ open class HomeActivity : AppCompatActivity() {
                 }
             })
             home_image.startAnimation(slide)
-        //findViewById<ImageView>(home_image.id).clearAnimation()
-        //findViewById<ImageView>(home_image.id).startAnimation(fadeOut)
 
     }
 

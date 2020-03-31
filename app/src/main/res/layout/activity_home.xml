@@ -41,8 +41,8 @@
 
     <ScrollView
         android:id="@+id/comment_section"
-        android:layout_width="409dp"
-        android:layout_height="201dp"
+        android:layout_width="411dp"
+        android:layout_height="141dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_image"
@@ -72,6 +72,29 @@
             android:hint="Enter a comment"
             tools:visibility="invisible" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/imgButton"
+        android:layout_width="46dp"
+        android:layout_height="35dp"
+        android:background="#0000"
+        app:layout_constraintBottom_toTopOf="@+id/add_comment_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/comment_section"
+        app:srcCompat="@android:drawable/btn_star_big_off" />
+
+    <TextView
+        android:id="@+id/likes_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgButton"
+        app:layout_constraintEnd_toEndOf="@+id/imgButton"
+        app:layout_constraintStart_toStartOf="@+id/imgButton"
+        app:layout_constraintTop_toTopOf="@+id/imgButton"
+        app:layout_constraintVertical_bias="0.968" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

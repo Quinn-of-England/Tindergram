@@ -137,7 +137,7 @@ class RequestHandler constructor(context: Context) {
 
             override fun getParams(): MutableMap<String, String> {
                 val params = HashMap<String,String>()
-                params["likes"] = "1337"
+                params["likes"] = "0"
                 params["comments"] = comments
                 params["authorId"] = SharedPrefManager.getInstance(context).getUserID().toString()
                 return params
@@ -209,5 +209,34 @@ class RequestHandler constructor(context: Context) {
         }
         this.addToRequestQueue(req)
 
+    }
+
+    fun likeImage(username : String, imageId : String){
+        val req = object  : StringRequest(Method.POST, Constants.LIKE,
+                Response.Listener { response ->
+                    try{
+                        val obj = JSONObject(response)
+                        if(obj.getString("error").equals("true"))
+                            throw JSONException(obj.getString("message"))
+                        else{
+                            println(obj.getString("message"))
+                        }
+                    }
+                    catch (e : JSONException){
+                        e.printStackTrace()
+                    }
+                },
+            Response.ErrorListener { error ->
+                println(error)
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["userId"] = username
+                params["imageId"] = imageId
+                return params
+            }
+        }
+        this.addToRequestQueue(req)
     }
 }
