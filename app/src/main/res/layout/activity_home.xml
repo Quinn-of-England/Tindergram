@@ -73,16 +73,16 @@
             tools:visibility="invisible" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/imgButton"
-        android:layout_width="46dp"
-        android:layout_height="35dp"
+        android:layout_width="63dp"
+        android:layout_height="47dp"
         android:background="#0000"
         app:layout_constraintBottom_toTopOf="@+id/add_comment_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/comment_section"
-        app:srcCompat="@android:drawable/btn_star_big_off" />
+        app:srcCompat="@android:drawable/btn_star_big_on" />
 
     <TextView
         android:id="@+id/likes_count"
@@ -94,7 +94,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imgButton"
         app:layout_constraintStart_toStartOf="@+id/imgButton"
         app:layout_constraintTop_toTopOf="@+id/imgButton"
-        app:layout_constraintVertical_bias="0.968" />
+        app:layout_constraintVertical_bias="0.65" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

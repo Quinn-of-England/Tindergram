@@ -211,7 +211,7 @@ class RequestHandler constructor(context: Context) {
 
     }
 
-    fun likeImage(username : String, imageId : String){
+    fun likeImage(username : String, imageId : String, context: Context){
         val req = object  : StringRequest(Method.POST, Constants.LIKE,
                 Response.Listener { response ->
                     try{
@@ -223,6 +223,8 @@ class RequestHandler constructor(context: Context) {
                         }
                     }
                     catch (e : JSONException){
+
+                        Toast.makeText(context,"You've aleady liked this image",Toast.LENGTH_SHORT).show()
                         e.printStackTrace()
                     }
                 },

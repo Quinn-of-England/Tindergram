@@ -67,7 +67,8 @@ open class HomeActivity : AppCompatActivity() {
                 val username : Int = SharedPrefManager.getInstance(this@HomeActivity).getUserID()
                 val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
                 println("$username -- $imageId")
-                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString())
+                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity)
+                SharedPrefManager.getInstance(this@HomeActivity).setUserHasLikedCurrentImage()
                 onSwipeLeft()
             }
 
@@ -113,19 +114,8 @@ open class HomeActivity : AppCompatActivity() {
         }
 
         // Code for likes image button to change on click
-        val imgBtn = findViewById<ImageButton>(R.id.imgButton)
 
-        imgBtn.setOnClickListener {
-            if (!ifLiked) {
-                ifLiked = true
-                imgBtn.setImageResource(R.drawable.lock_icon)
-            }
-            else {
-                ifLiked = false
-                imgBtn.setImageResource(R.drawable.user_icon)
-            }
 
-        }
 
         // Adding in toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -176,7 +166,8 @@ open class HomeActivity : AppCompatActivity() {
 
         clearCommentSection()
         updateCommentSection(image.getComments())
-      likes_count.setText("${image.likes}")
+        likes_count.setText("${image.likes}")
+
         if(first){
             home_image.setImageBitmap(image.getImageBitmap())
             return
@@ -191,6 +182,7 @@ open class HomeActivity : AppCompatActivity() {
 
                 override fun onAnimationEnd(animation: Animation?) {
                     home_image.setImageBitmap(image.getImageBitmap())
+
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {
@@ -204,7 +196,7 @@ open class HomeActivity : AppCompatActivity() {
     suspend fun imageBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateImageList(this)
-            delay(10000)
+            delay(1500)
             if(first) {
                 withContext(Main) {
                     updateImage()
