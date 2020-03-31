@@ -8,9 +8,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $userId = $_POST['userId'];
       $imageId= $_POST['imageId'];
 
-      if($db->isUsernameExist($userId)){
+      if($db->isUserIdExist($userId)){
           if($db->canLike($userId,$imageId)){
-              if($db->like($imageId)){
+              if($db->like($userId,$imageId)){
                 $response['error'] = false;
                 $response['likeCount'] = $db->getLikes($imageId);
                 $response['message'] = "success";

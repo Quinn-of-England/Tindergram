@@ -95,6 +95,15 @@
             return $stmt->num_rows > 0;
         }
 
+        public function isUserIdExist($id)
+        {
+          $stmt = $this->conn->prepare("SELECT username FROM users WHERE id = ?");
+          $stmt->bind_param("s", $id);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+        }
+
         public function isEmailExist($email)
         {
             $stmt = $this->conn->prepare("SELECT id FROM users WHERE email = ?");
