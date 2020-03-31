@@ -9,10 +9,16 @@ import android.graphics.Color
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_home.*
@@ -28,7 +34,7 @@ open class HomeActivity : AppCompatActivity() {
     val CHANNEL_ID = "com.example.soen341"
     val CHANNEL_DESC = "Image Upload Notification"
 
-
+    var ifLiked = false
 
 
 //wtf is this?    @SuppressLint("ClickableViewAccessibility")
@@ -48,6 +54,7 @@ open class HomeActivity : AppCompatActivity() {
         notificationChannel.enableVibration(true)
         notificationManager.createNotificationChannel(notificationChannel)
 
+
         // Swipe between images
         val image = findViewById<ImageView>(R.id.home_image)
         image.setOnTouchListener(object : OnSwipeTouchListener(applicationContext) {
@@ -55,9 +62,14 @@ open class HomeActivity : AppCompatActivity() {
             // Swipe right will like image and switch to next one
             override fun onSwipeRight() {
                 // TODO Add Like Image
-                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
-                updateImage()
-                else println("Image queue empty!")
+                println("swiped right")
+
+                val username : Int = SharedPrefManager.getInstance(this@HomeActivity).getUserID()
+                val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
+                println("$username -- $imageId")
+                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity)
+                SharedPrefManager.getInstance(this@HomeActivity).setUserHasLikedCurrentImage()
+                onSwipeLeft()
             }
 
             // Swipe left will switch to next image
@@ -66,6 +78,26 @@ open class HomeActivity : AppCompatActivity() {
                     updateImage()
                 else println("Image queue empty!")
 
+            }
+            // Swipe from top to bottom must still be given an action
+            override fun onSwipeBottom() {
+                // TODO decide what action it does
+            }
+            // Swipe from bottom to top will add a comment tab
+            override fun onSwipeTop() {
+
+                addComment(findViewById(add_comment_layout.id))
+                addComment(findViewById(post_comment.id))
+
+                post_comment.setOnClickListener {
+                    val username : String = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername()!!
+                    val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
+                    val comments : String = add_comment.text.toString()
+
+                    RequestHandler.getInstance(this@HomeActivity).postComment(comments,username,imageId)
+                        updateCommentSection(mutableMapOf<String,String>(Pair(username,comments)))
+
+                }
             }
         })
 
@@ -80,6 +112,8 @@ open class HomeActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+
 
         // Adding in toolbar
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -96,23 +130,74 @@ open class HomeActivity : AppCompatActivity() {
         }
     }
 
+
+    fun addComment(view_comment:View){
+        view_comment.visibility = if (view_comment.visibility == View.INVISIBLE){
+            View.VISIBLE
+        } else{
+            View.INVISIBLE
+        }
+    }
+
     override fun onBackPressed() {
         moveTaskToBack(true)
     }
+    fun updateCommentSection(comments : MutableMap<String,String>){
+        println(comments)
+        var lambda : (String,String) -> String = { author : String, comment : String -> "$author : $comment" }
+        comments.forEach { it ->
+            var view : TextView = TextView(this)
 
+            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0F)
+            view.setText(lambda(it.key,it.value))
+            view.setPadding(50,0,0,0)
+            comment_section_layout.addView(view)
+        }
+
+    }
+    fun clearCommentSection(){
+        comment_section_layout.removeAllViews()
+    }
     fun updateImage(){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
-        home_image.setImageBitmap(image?.getImageBitmap())
-         }
+        SharedPrefManager.getInstance(this).setCurrentImageID(image?.imageID!!)
+
+        clearCommentSection()
+        updateCommentSection(image.getComments())
+        likes_count.setText("${image.likes}")
+
+        if(first){
+            home_image.setImageBitmap(image.getImageBitmap())
+            return
+        }
+
+        var slide: Animation = AnimationUtils.loadAnimation(this, R.anim.slide)
+
+            slide.setAnimationListener(object : Animation.AnimationListener{
+                override fun onAnimationStart(animation: Animation?) {
+                    findViewById<ImageView>(home_image.id).startAnimation(slide)
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    home_image.setImageBitmap(image.getImageBitmap())
+
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            })
+            home_image.startAnimation(slide)
+
+    }
 
     suspend fun imageBackgroundProcess(){
         while(true) {
-
             RequestHandler.getInstance(this).updateImageList(this)
-            delay(5000)
+            delay(1500)
             if(first) {
                 withContext(Main) {
-                     updateImage()
+                    updateImage()
                     first = false
                 }
             }
@@ -176,8 +261,4 @@ open class HomeActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 }
-
-
-
