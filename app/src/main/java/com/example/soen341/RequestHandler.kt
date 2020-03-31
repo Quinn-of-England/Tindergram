@@ -2,10 +2,14 @@ package com.example.soen341
 
 import FileDataPart
 import VolleyImageRequest
+import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.util.TypedValue
+import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.solver.widgets.ConstraintAnchor
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.android.volley.AuthFailureError
@@ -15,9 +19,11 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.reflect.Method
 
 class RequestHandler constructor(context: Context) {
     companion object {
@@ -91,6 +97,7 @@ class RequestHandler constructor(context: Context) {
                     if(response.getString("error") == "true")
                         throw JSONException(response.getString("message"))
                     else {
+                        if(! response.getString("message").equals("")){
                         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_whatshot_black_24dp)
                             .setContentTitle(textTitle)
@@ -100,6 +107,7 @@ class RequestHandler constructor(context: Context) {
                         with(NotificationManagerCompat.from(context)) {
                             // notificationId is a unique int for each notification that you must define
                             notify(0, builder.build())
+                        }
                         }
                     }
                 }
@@ -129,7 +137,7 @@ class RequestHandler constructor(context: Context) {
 
             override fun getParams(): MutableMap<String, String> {
                 val params = HashMap<String,String>()
-                params["likes"] = "1337"
+                params["likes"] = "0"
                 params["comments"] = comments
                 params["authorId"] = SharedPrefManager.getInstance(context).getUserID().toString()
                 return params
@@ -169,5 +177,68 @@ class RequestHandler constructor(context: Context) {
         // Request queue
         this.addToRequestQueue(stringRequest)
     }
+    fun postComment(comment : String, username : String , imageId : Int)  {
+        var status : Boolean = false
+        val req = object : StringRequest(
+            Method.POST, Constants.COMMENT_PICTURE,
+            Response.Listener<String> { response -> // String response from the server
+                try {
 
+                    val obj : JSONObject = JSONObject(response)
+                    if (obj.getString("error") == "true") {
+                        throw JSONException(obj.getString("message"))
+                    }
+                    else{
+                        status = true
+                    }
+                }catch (e: JSONException){
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener {
+                    error -> println(error) })
+           {
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["username"] = username
+                params["id"] = imageId.toString()
+                params["comment"] = comment
+                return params
+            }
+        }
+        this.addToRequestQueue(req)
+
+    }
+
+    fun likeImage(username : String, imageId : String, context: Context){
+        val req = object  : StringRequest(Method.POST, Constants.LIKE,
+                Response.Listener { response ->
+                    try{
+                        val obj = JSONObject(response)
+                        if(obj.getString("error").equals("true"))
+                            throw JSONException(obj.getString("message"))
+                        else{
+                            println(obj.getString("message"))
+                        }
+                    }
+                    catch (e : JSONException){
+
+                        Toast.makeText(context,"You've aleady liked this image",Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
+                    }
+                },
+            Response.ErrorListener { error ->
+                println(error)
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["userId"] = username
+                params["imageId"] = imageId
+                return params
+            }
+        }
+        this.addToRequestQueue(req)
+    }
 }

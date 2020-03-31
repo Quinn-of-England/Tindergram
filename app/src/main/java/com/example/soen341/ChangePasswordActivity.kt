@@ -30,7 +30,7 @@ class ChangePasswordActivity : AppCompatActivity() {
             val inPassword: String = newPass.text.toString()
             val inConfirmPassword: String = newConf.text.toString()
             // Check if new password meets requirements
-            var canChange = true
+                var canChange = true
             when {
                 inPassword.trim().isEmpty() -> {
                     Toast.makeText(

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.provider.ContactsContract
 import android.util.Base64
 import org.json.JSONArray
 import org.json.JSONObject
@@ -15,6 +16,8 @@ class SharedPrefManager constructor(context: Context) {
     private val KEY_USERNAME = "username"
     private val KEY_USER_ID = "user_id"
     private val KEY_USER_EMAIL = "user_email"
+    private val KEY_CURRENTLY_VIEWED_IMAGE_ID = "image_id"
+    private val KEY_HAS_LIKED_CURRENT_IMAGE = "false"
     private var imageQueue : Queue<ImageContainer>? = LinkedList<ImageContainer>()
     val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
@@ -57,7 +60,9 @@ class SharedPrefManager constructor(context: Context) {
     fun isUserLoggedIn() : Boolean {
         return sharedPref.getString(KEY_USERNAME, null) != null
     }
-
+    fun isUserLikedCurrentImage() : Boolean{
+        return sharedPref.getBoolean(KEY_HAS_LIKED_CURRENT_IMAGE,false)
+    }
     fun getUserUsername() : String? {
         return sharedPref.getString(KEY_USERNAME, null)
     }
@@ -75,11 +80,24 @@ class SharedPrefManager constructor(context: Context) {
         editor.putString(KEY_USERNAME, username)
         editor.apply()
     }
+    fun setUserHasLikedCurrentImage(){
+        val editor = sharedPref.edit()
+        editor.putBoolean(KEY_HAS_LIKED_CURRENT_IMAGE, true)
+        editor.apply()
 
+    }
     fun setUserEmail(email:String) {
         val editor = sharedPref.edit()
         editor.putString(KEY_USER_EMAIL, email)
         editor.apply()
+    }
+    fun setCurrentImageID(id : Int){
+        val editor = sharedPref.edit()
+        editor.putInt(KEY_CURRENTLY_VIEWED_IMAGE_ID, id)
+        editor.apply()
+    }
+    fun getCurrentImageID() : Int{
+        return sharedPref.getInt(KEY_CURRENTLY_VIEWED_IMAGE_ID,0)
     }
 
     fun userLogoutPref() {

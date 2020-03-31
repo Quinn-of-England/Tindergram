@@ -9,4 +9,6 @@
     <color name="gradientStart"> #9370F6 </color>
     <color name="gradientMiddle"> #E280E9 </color>
     <color name="gradientEnd"> #F7B69B </color>
+
+    <color name="colorWhite">#FAF8F8</color>
 </resources>
