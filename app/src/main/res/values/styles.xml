@@ -7,6 +7,16 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="commentStyle">
+        <item name="android:fontFamily">casual</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="authorStyle">
+        <item name="android:fontFamily">casual</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
