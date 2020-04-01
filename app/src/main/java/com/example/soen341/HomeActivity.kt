@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.AnimationDrawable
 import android.os.Build
 import android.os.Bundle
@@ -153,6 +154,8 @@ open class HomeActivity : AppCompatActivity() {
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0F)
             view.setText(lambda(it.key,it.value))
             view.setPadding(50,0,0,0)
+            view.setTypeface(Typeface.create("casual",Typeface.NORMAL))
+
             comment_section_layout.addView(view)
         }
 
