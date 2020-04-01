@@ -14,12 +14,9 @@ import android.util.TypedValue
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.*
 
-import android.widget.ImageButton
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import android.widget.SearchView
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import kotlinx.android.synthetic.main.activity_home.*
@@ -147,16 +144,23 @@ open class HomeActivity : AppCompatActivity() {
     }
     fun updateCommentSection(comments : MutableMap<String,String>){
         println(comments)
-        var lambda : (String,String) -> String = { author : String, comment : String -> "$author : $comment" }
+       // var lambda : (String,String) -> String = { author : String, comment : String -> "$author : $comment" }
         comments.forEach { it ->
-            var view : TextView = TextView(this)
+            var author : TextView = TextView(this)
+            var layout : LinearLayout = LinearLayout(this)
 
-            view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0F)
-            view.setText(lambda(it.key,it.value))
-            view.setPadding(50,0,0,0)
-            view.setTypeface(Typeface.create("casual",Typeface.NORMAL))
+            author.setText("${it.key} : ")
+            author.setPadding(50,0,0,0)
+            author.setTextAppearance(R.style.authorStyle)
 
-            comment_section_layout.addView(view)
+            var comment : TextView= TextView(this)
+            comment.setText(it.value)
+            comment.setTextAppearance(R.style.commentStyle)
+
+            layout.addView(author)
+            layout.addView(comment)
+
+            comment_section_layout.addView(layout)
         }
 
     }
