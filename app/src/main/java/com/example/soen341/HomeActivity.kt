@@ -36,8 +36,9 @@ open class HomeActivity : AppCompatActivity() {
 
     var ifLiked = false
 
-
-//wtf is this?    @SuppressLint("ClickableViewAccessibility")
+    enum class Swipe(val swipe : Int){
+        LEFT(0),RIGHT(1),TOP(2),BOTTOM(3),NONE(4)
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
@@ -61,21 +62,22 @@ open class HomeActivity : AppCompatActivity() {
 
             // Swipe right will like image and switch to next one
             override fun onSwipeRight() {
-                // TODO Add Like Image
-                println("swiped right")
-
                 val username : Int = SharedPrefManager.getInstance(this@HomeActivity).getUserID()
                 val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
-                println("$username -- $imageId")
+
                 RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity)
                 SharedPrefManager.getInstance(this@HomeActivity).setUserHasLikedCurrentImage()
-                onSwipeLeft()
+
+                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
+                    updateImage(Swipe.RIGHT)
+
             }
 
             // Swipe left will switch to next image
             override fun onSwipeLeft() {
-                if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
-                    updateImage()
+
+              if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
+                    updateImage(Swipe.LEFT)
                 else println("Image queue empty!")
 
             }
@@ -158,7 +160,32 @@ open class HomeActivity : AppCompatActivity() {
     fun clearCommentSection(){
         comment_section_layout.removeAllViews()
     }
-    fun updateImage(){
+
+    fun animateHomeImage(context: Context, image : ImageContainer, currentSwipe: Swipe){
+        var slideAnimation: Animation? = null
+        when(currentSwipe) {
+            Swipe.LEFT -> slideAnimation = AnimationUtils.loadAnimation(context, R.anim.slide)
+            Swipe.RIGHT -> slideAnimation = AnimationUtils.loadAnimation(context, R.anim.slideleft)
+            }
+
+        slideAnimation?.setAnimationListener(object : Animation.AnimationListener{
+            override fun onAnimationStart(animation: Animation?) {
+                findViewById<ImageView>(R.id.home_image).startAnimation(slideAnimation)
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+                home_image.setImageBitmap(image.getImageBitmap())
+
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
+        home_image.startAnimation(slideAnimation)
+    }
+
+    fun updateImage(currentSwipe: Swipe){
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         SharedPrefManager.getInstance(this).setCurrentImageID(image?.imageID!!)
 
@@ -166,38 +193,21 @@ open class HomeActivity : AppCompatActivity() {
         updateCommentSection(image.getComments())
         likes_count.setText("${image.likes}")
 
-        if(first){
+        if(currentSwipe.equals(Swipe.NONE)){
             home_image.setImageBitmap(image.getImageBitmap())
             return
         }
-
-        var slide: Animation = AnimationUtils.loadAnimation(this, R.anim.slide)
-
-            slide.setAnimationListener(object : Animation.AnimationListener{
-                override fun onAnimationStart(animation: Animation?) {
-                    findViewById<ImageView>(home_image.id).startAnimation(slide)
-                }
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    home_image.setImageBitmap(image.getImageBitmap())
-
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-            })
-            home_image.startAnimation(slide)
+        animateHomeImage(this,image,currentSwipe)
 
     }
 
     suspend fun imageBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateImageList(this)
-            delay(1500)
+            delay(4000)
             if(first) {
                 withContext(Main) {
-                    updateImage()
+                    updateImage(Swipe.NONE)
                     first = false
                 }
             }
