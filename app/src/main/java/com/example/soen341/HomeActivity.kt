@@ -194,7 +194,7 @@ open class HomeActivity : AppCompatActivity() {
     suspend fun imageBackgroundProcess(){
         while(true) {
             RequestHandler.getInstance(this).updateImageList(this)
-            delay(1500)
+            delay(2500)
             if(first) {
                 withContext(Main) {
                     updateImage()
