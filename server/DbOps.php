@@ -13,16 +13,20 @@
 
         public function createUser($username, $password, $email)
         {
-            if($this->isUserExist($username, $email)) {
+            if($this->isUserExist($username, $email))
+            {
                 return 0;
-            }else{
+            }else
+            {
                 $encrPassword = md5($password);
                 $stmt = $this->conn->prepare("INSERT INTO `users`(`username`, `email`, `password`) VALUES (?,?,?);");
                 $stmt->bind_param("sss", $username, $email, $encrPassword);
 
-                if($stmt->execute()){
+                if($stmt->execute())
+                {
                     return 1;
-                }else{
+                }else
+                {
                     echo $this->conn->error;
                     return 2;
                 }
@@ -31,15 +35,19 @@
 
         public function changeUsername($username, $id)
         {
-            if($this->isUsernameExist($username)) {
+            if($this->isUsernameExist($username))
+            {
                 return 0;
-            }else{
+            }else
+            {
                 $stmt = $this->conn->prepare("UPDATE `users` SET `username` = ? WHERE `users`.`id` = ?");
                 $stmt->bind_param("si", $username, $id);
 
-                if($stmt->execute()){
+                if($stmt->execute())
+                {
                     return 1;
-                }else{
+                }else
+                {
                     echo $this->conn->error;
                     return 2;
                 }
@@ -52,9 +60,11 @@
             $stmt = $this->conn->prepare("UPDATE `users` SET `password` = ? WHERE `users`.`id` = ?");
             $stmt->bind_param("si", $encrPassword, $id);
 
-            if($stmt->execute()){
+            if($stmt->execute())
+            {
                 return true;
-            }else{
+            }else
+            {
                 echo $this->conn->error;
                 return false;
             }
@@ -64,13 +74,16 @@
         {
             if($this->isEmailExist($email)) {
                 return 0;
-            }else{
+            }else
+            {
                 $stmt = $this->conn->prepare("UPDATE `users` SET `email` = ? WHERE `users`.`id` = ?");
                 $stmt->bind_param("si", $email, $id);
 
-                if($stmt->execute()){
+                if($stmt->execute())
+                {
                     return 1;
-                }else{
+                }else
+                {
                     echo $this->conn->error;
                     return 2;
                 }
@@ -159,8 +172,10 @@
             $stmt->bind_result($followedString);
             $stmt->fetch();
             $notificationArr = explode(',', $followedString);
-            foreach ($notificationArr as $notif) {
-              if ($notif == $authorId) {
+            foreach ($notificationArr as $notif)
+            {
+              if ($notif == $authorId)
+              {
                 return true;
               }
             }
@@ -177,9 +192,11 @@
     			  $stmt->fetch();
             $followersArr = explode(',', $followers);
             //for each follower in followers, change their update column
-            foreach ($followersArr as $follower) {
+            foreach ($followersArr as $follower)
+            {
               //notify the follower once.
-              if (!$this->userAlreadyNotified($authorId, $follower)){
+              if (!$this->userAlreadyNotified($authorId, $follower))
+              {
                 $stmt = $this->conn->prepare("UPDATE users SET followedPostedPictures = CONCAT(followedPostedPictures,?) WHERE id = ?");
                 $formattedAuthorId = $authorId.",";
                 $stmt->bind_param("ss", $formattedAuthorId, $follower);
@@ -205,7 +222,8 @@
             array_pop($followedArr);
             $resultList = "";
             //for each of the followed user ids, get their usernames and add them to the list
-            foreach ($followedArr as $followed) {
+            foreach ($followedArr as $followed)
+            {
               $stmt = $this->conn->prepare("SELECT username FROM users WHERE id = ?");
               $stmt->bind_param("s", $followed);
               $stmt->execute();
@@ -226,8 +244,10 @@
           $stmt->bind_result($followers);
           $stmt->fetch();
           $followersArr = explode(',', $followers);
-          foreach ($followersArr as $follower) {
-            if($follower == $followerId){
+          foreach ($followersArr as $follower)
+          {
+            if($follower == $followerId)
+            {
               return false;
             }
           }
@@ -304,7 +324,8 @@
           //last element will be empty
           array_pop($authorCommentPairs);
           $formattedComments = array();
-          foreach ($authorCommentPairs as $pair) {
+          foreach ($authorCommentPairs as $pair)
+          {
             $authorAndComment = explode('~', $pair);
             array_push($formattedComments, array('author'=>$authorAndComment[0],'comment'=>$authorAndComment[1]));
           }
