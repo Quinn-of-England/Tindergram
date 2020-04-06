@@ -13,9 +13,11 @@ import androidx.appcompat.widget.Toolbar
 
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity()
+{
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
@@ -23,7 +25,8 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         // If not logged in, go back to login page
-        if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
+        if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
+        {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
@@ -59,16 +62,20 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     // Adding in main menu in top right
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean
+    {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_settings, menu)
         return true
     }
 
     // Handling main menu options
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_log_out -> {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        return when (item.itemId)
+        {
+            R.id.action_log_out ->
+            {
                 SharedPrefManager.getInstance(applicationContext).userLogoutPref()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
