@@ -26,7 +26,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 
-open class HomeActivity : AppCompatActivity() {
+open class HomeActivity : AppCompatActivity()
+{
 
     var first : Boolean = true
     lateinit var notificationManager: NotificationManager
@@ -42,7 +43,8 @@ open class HomeActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
@@ -57,10 +59,12 @@ open class HomeActivity : AppCompatActivity() {
 
         // Swipe between images
         val image = findViewById<ImageView>(R.id.home_image)
-        image.setOnTouchListener(object : OnSwipeTouchListener(applicationContext) {
+        image.setOnTouchListener(object : OnSwipeTouchListener(applicationContext)
+        {
 
             // Swipe right will like image and switch to next one
-            override fun onSwipeRight() {
+            override fun onSwipeRight()
+            {
                 // TODO Add Like Image
                 println("swiped right")
 
@@ -73,23 +77,26 @@ open class HomeActivity : AppCompatActivity() {
             }
 
             // Swipe left will switch to next image
-            override fun onSwipeLeft() {
+            override fun onSwipeLeft()
+            {
                 if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
                     updateImage()
                 else println("Image queue empty!")
 
             }
             // Swipe from top to bottom must still be given an action
-            override fun onSwipeBottom() {
+            override fun onSwipeBottom()
+            {
                 // TODO decide what action it does
             }
             // Swipe from bottom to top will add a comment tab
-            override fun onSwipeTop() {
+            override fun onSwipeTop()
+            {
 
                 addComment(findViewById(add_comment_layout.id))
                 addComment(findViewById(post_comment.id))
 
-                post_comment.setOnClickListener {
+                post_comment.setOnClickListener{
                     val username : String = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername()!!
                     val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
                     val comments : String = add_comment.text.toString()
@@ -107,7 +114,8 @@ open class HomeActivity : AppCompatActivity() {
         animDrawable.start()
 
         // If not logged in, go back to login page
-        if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn()) {
+        if (!SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
+        {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
@@ -119,7 +127,7 @@ open class HomeActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        CoroutineScope(IO).launch {
+        CoroutineScope(IO).launch{
             //launch two concurrent jobs
             launch {
                 imageBackgroundProcess()
@@ -131,18 +139,23 @@ open class HomeActivity : AppCompatActivity() {
     }
 
 
-    fun addComment(view_comment:View){
-        view_comment.visibility = if (view_comment.visibility == View.INVISIBLE){
+    fun addComment(view_comment:View)
+    {
+        view_comment.visibility = if (view_comment.visibility == View.INVISIBLE)
+        {
             View.VISIBLE
-        } else{
+        } else
+        {
             View.INVISIBLE
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed()
+    {
         moveTaskToBack(true)
     }
-    fun updateCommentSection(comments : MutableMap<String,String>){
+    fun updateCommentSection(comments : MutableMap<String,String>)
+    {
         println(comments)
         var lambda : (String,String) -> String = { author : String, comment : String -> "$author : $comment" }
         comments.forEach { it ->
@@ -155,10 +168,12 @@ open class HomeActivity : AppCompatActivity() {
         }
 
     }
-    fun clearCommentSection(){
+    fun clearCommentSection()
+    {
         comment_section_layout.removeAllViews()
     }
-    fun updateImage(){
+    fun updateImage()
+    {
         val image  : ImageContainer? = SharedPrefManager.getInstance(this).getImageContainer()
         SharedPrefManager.getInstance(this).setCurrentImageID(image?.imageID!!)
 
@@ -166,7 +181,8 @@ open class HomeActivity : AppCompatActivity() {
         updateCommentSection(image.getComments())
         likes_count.setText("${image.likes}")
 
-        if(first){
+        if(first)
+        {
             home_image.setImageBitmap(image.getImageBitmap())
             return
         }
@@ -174,16 +190,19 @@ open class HomeActivity : AppCompatActivity() {
         var slide: Animation = AnimationUtils.loadAnimation(this, R.anim.slide)
 
             slide.setAnimationListener(object : Animation.AnimationListener{
-                override fun onAnimationStart(animation: Animation?) {
+                override fun onAnimationStart(animation: Animation?)
+                {
                     findViewById<ImageView>(home_image.id).startAnimation(slide)
                 }
 
-                override fun onAnimationEnd(animation: Animation?) {
+                override fun onAnimationEnd(animation: Animation?)
+                {
                     home_image.setImageBitmap(image.getImageBitmap())
 
                 }
 
-                override fun onAnimationRepeat(animation: Animation?) {
+                override fun onAnimationRepeat(animation: Animation?)
+                {
                     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
             })
@@ -191,12 +210,16 @@ open class HomeActivity : AppCompatActivity() {
 
     }
 
-    suspend fun imageBackgroundProcess(){
-        while(true) {
+    suspend fun imageBackgroundProcess()
+    {
+        while(true)
+        {
             RequestHandler.getInstance(this).updateImageList(this)
             delay(2500)
-            if(first) {
-                withContext(Main) {
+            if(first)
+            {
+                withContext(Main)
+                {
                     updateImage()
                     first = false
                 }
@@ -205,7 +228,8 @@ open class HomeActivity : AppCompatActivity() {
     }
 
     // Adding in main menu in top right
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean
+    {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
 
@@ -215,11 +239,14 @@ open class HomeActivity : AppCompatActivity() {
 
         searchView.queryHint = "Enter User to Follow"
         searchView.maxWidth = Integer.MAX_VALUE
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String): Boolean {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener
+        {
+            override fun onQueryTextChange(newText: String): Boolean
+            {
                 return false
             }
-            override fun onQueryTextSubmit(query: String): Boolean {
+            override fun onQueryTextSubmit(query: String): Boolean
+            {
                 RequestHandler.getInstance(applicationContext).followUser(query, applicationContext)
                 return false
             }
@@ -228,8 +255,10 @@ open class HomeActivity : AppCompatActivity() {
     }
 
     // Start background process that will check for new notifications
-    private suspend fun notificationBackgroundProcess(){
-        while(true) {
+    private suspend fun notificationBackgroundProcess()
+    {
+        while(true)
+        {
             delay(5000)
 
             RequestHandler.getInstance(this).updateNotifications(this)
@@ -238,20 +267,25 @@ open class HomeActivity : AppCompatActivity() {
 
     // Handling main menu options
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_upload -> {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        return when (item.itemId)
+        {
+            R.id.action_upload ->
+            {
                 val intent = Intent(this, ImageActivity::class.java)
                 startActivity(intent)
                 return true
 
             }
-            R.id.action_settings -> {
+            R.id.action_settings ->
+            {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
                 return true
             }
-            R.id.action_log_out -> {
+            R.id.action_log_out ->
+            {
                 SharedPrefManager.getInstance(applicationContext).userLogoutPref()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)

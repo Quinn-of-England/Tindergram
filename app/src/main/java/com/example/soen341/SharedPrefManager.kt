@@ -11,7 +11,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 
-class SharedPrefManager constructor(context: Context) {
+class SharedPrefManager constructor(context: Context)
+{
     private val PREF_NAME = "userSharedPref"
     private val KEY_USERNAME = "username"
     private val KEY_USER_ID = "user_id"
@@ -23,24 +24,28 @@ class SharedPrefManager constructor(context: Context) {
 
     private var viewed_images: String?  = ""
 
-    companion object {
+    companion object
+    {
         @Volatile
         private var INSTANCE: SharedPrefManager? = null
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SharedPrefManager(context).also {
+                INSTANCE ?: SharedPrefManager(context).also{
                     INSTANCE = it
                 }
             }
     }
 
-    fun getImageContainer() : ImageContainer? {
+    fun getImageContainer() : ImageContainer?
+    {
             return imageQueue?.poll()
     }
-    fun isImageQueueEmpty() : Boolean{
+    fun isImageQueueEmpty() : Boolean
+    {
         return imageQueue!!.isEmpty()
     }
-    fun addToImageQueue(container : JSONObject) {
+    fun addToImageQueue(container : JSONObject)
+    {
 
         imageQueue?.offer(ImageContainer(container.getString("image"),
             container.getInt("likes"),container.getJSONArray("comments"),
@@ -49,7 +54,8 @@ class SharedPrefManager constructor(context: Context) {
 
     }
 
-    fun userLoginPref(id:Int, username:String, email:String) {
+    fun userLoginPref(id:Int, username:String, email:String)
+    {
         val editor = sharedPref.edit()
         editor.putInt(KEY_USER_ID, id)
         editor.putString(KEY_USERNAME, username)
@@ -57,82 +63,101 @@ class SharedPrefManager constructor(context: Context) {
         editor.apply()
     }
 
-    fun isUserLoggedIn() : Boolean {
+    fun isUserLoggedIn() : Boolean
+    {
         return sharedPref.getString(KEY_USERNAME, null) != null
     }
-    fun isUserLikedCurrentImage() : Boolean{
+    fun isUserLikedCurrentImage() : Boolean
+    {
         return sharedPref.getBoolean(KEY_HAS_LIKED_CURRENT_IMAGE,false)
     }
-    fun getUserUsername() : String? {
+    fun getUserUsername() : String?
+    {
         return sharedPref.getString(KEY_USERNAME, null)
     }
 
-    fun getUserEmail() : String? {
+    fun getUserEmail() : String?
+    {
         return sharedPref.getString(KEY_USER_EMAIL, null)
     }
 
-    fun getUserID() : Int {
+    fun getUserID() : Int
+    {
         return sharedPref.getInt(KEY_USER_ID, 0)
     }
 
-    fun setUserUsername(username:String) {
+    fun setUserUsername(username:String)
+    {
         val editor = sharedPref.edit()
         editor.putString(KEY_USERNAME, username)
         editor.apply()
     }
-    fun setUserHasLikedCurrentImage(){
+    fun setUserHasLikedCurrentImage()
+    {
         val editor = sharedPref.edit()
         editor.putBoolean(KEY_HAS_LIKED_CURRENT_IMAGE, true)
         editor.apply()
 
     }
-    fun setUserEmail(email:String) {
+    fun setUserEmail(email:String)
+    {
         val editor = sharedPref.edit()
         editor.putString(KEY_USER_EMAIL, email)
         editor.apply()
     }
-    fun setCurrentImageID(id : Int){
+    fun setCurrentImageID(id : Int)
+    {
         val editor = sharedPref.edit()
         editor.putInt(KEY_CURRENTLY_VIEWED_IMAGE_ID, id)
         editor.apply()
     }
-    fun getCurrentImageID() : Int{
+    fun getCurrentImageID() : Int
+    {
         return sharedPref.getInt(KEY_CURRENTLY_VIEWED_IMAGE_ID,0)
     }
 
-    fun userLogoutPref() {
+    fun userLogoutPref()
+    {
         val editor = sharedPref.edit()
         editor.clear()
         editor.apply()
     }
-    fun updateViewedImages(id : Int) {
+    fun updateViewedImages(id : Int)
+    {
             this.viewed_images += ((id).toString() + ",")
     }
-    fun getViewedImages() : String? {
+    fun getViewedImages() : String?
+    {
         return this.viewed_images
     }
 
 }
-class ImageContainer(var imageData: String, var likes: Int, var commentArray: JSONArray, var authorID : String, var imageID : Int){
+class ImageContainer(var imageData: String, var likes: Int, var commentArray: JSONArray, var authorID : String, var imageID : Int)
+{
     private var imageBitmap : Bitmap? = null
     private var commentMap : MutableMap<String,String> = mutableMapOf()
-    private fun convertBase64ToBitmap(){
+    private fun convertBase64ToBitmap()
+    {
         val imageBytes : ByteArray = Base64.decode(this.imageData, Base64.DEFAULT)
         this.imageBitmap = BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
     }
-    private fun convertJsonArrayToMap(){
+    private fun convertJsonArrayToMap()
+    {
         var lambda : (JSONObject) -> Unit = { obj : JSONObject -> commentMap.put(obj.getString("author"),obj.getString("comment"))}
         (0..(commentArray.length()-1)).forEach { lambda(commentArray.getJSONObject(it)) }
     }
-    init{
+    init
+    {
         //image is sent as a base64 string, gotta turn that into a bitmap/uri that android can use...
         convertBase64ToBitmap()
         convertJsonArrayToMap()
     }
-    fun getImageBitmap() : Bitmap?{
+    fun getImageBitmap() : Bitmap?
+    {
         return this.imageBitmap
     }
-    fun getComments() : MutableMap<String,String>{
+    fun getComments() : MutableMap<String,String>
+    {
         return this.commentMap
     }
 }
