@@ -24,6 +24,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.reflect.Method
+import java.nio.charset.Charset
 
 class RequestHandler constructor(context: Context)
 {
@@ -96,7 +97,7 @@ class RequestHandler constructor(context: Context)
                     error ->
                 callback.onResponse(mutableMapOf("error" to "1","message" to error.toString()))
 
-                println(error.toString())
+
             })
         this.addToRequestQueue(req)
 
@@ -141,15 +142,18 @@ class RequestHandler constructor(context: Context)
         this.addToRequestQueue(req)
     }
 
-    fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context)
+    fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context, callback: VolleyCallback)
     {
-        var res = ""
         val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
-            res = response.toString()
+            val obj = JSONObject(response.data.toString(Charsets.UTF_8))
+            callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message") ))
+
+
             Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
         },
             Response.ErrorListener { error ->
+                callback.onResponse(mutableMapOf("error" to "1","message" to error.toString() ))
 
             }) {
             override fun getByteData(): MutableMap<String, FileDataPart>?
@@ -169,7 +173,7 @@ class RequestHandler constructor(context: Context)
             }
         }
         this.addToRequestQueue(req)
-        println(res)
+
     }
 
     fun followUser(query: String, context: Context)

@@ -227,6 +227,7 @@ open class HomeActivity : AppCompatActivity()
             {
                 withContext(Main)
                 {
+                    if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
                     updateImage()
                     first = false
                 }
