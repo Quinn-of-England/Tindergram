@@ -59,7 +59,7 @@ class RequestHandler constructor(context: Context)
         requestQueue.add(req)
     }
 
-    fun updateImageList(context: Context)
+    fun updateImageList(context: Context, callback : VolleyCallback)
     {
         //dispatcher thread working here...
         val req = JsonObjectRequest(
@@ -69,14 +69,18 @@ class RequestHandler constructor(context: Context)
                 try
                 {
                     //main thread takes over...
-
+                    if(response.getString("error").equals(true)){
+                        throw JSONException(response.getString("message"))
+                    }
+                    else {
+                        callback.onResponse(mutableMapOf("error" to "0","message" to response.getString("message")))
+                    }
                     val size: Int = response.getInt("size")
 
                     for(i in 0..size-1)
                     {
                         var array : JSONObject = response.getJSONObject("$i")
-                        //val coments : JSONArray = array.getJSONArray("comments")
-                        //println(coments)
+
                     SharedPrefManager.getInstance(context).addToImageQueue(array)
 
                     }
@@ -84,12 +88,14 @@ class RequestHandler constructor(context: Context)
                 }
                 catch (e : Exception)
                 {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                     e.printStackTrace()
                 }
             },
             Response.ErrorListener {
                     error ->
-                println("ERROR")
+                callback.onResponse(mutableMapOf("error" to "1","message" to error.toString()))
+
                 println(error.toString())
             })
         this.addToRequestQueue(req)
@@ -137,16 +143,18 @@ class RequestHandler constructor(context: Context)
 
     fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context)
     {
-        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener { response ->
+        var res = ""
+        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
+                response ->
+            res = response.toString()
             Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
         },
             Response.ErrorListener { error ->
-                error("Failure")
+
             }) {
             override fun getByteData(): MutableMap<String, FileDataPart>?
             {
                 val params = HashMap<String,FileDataPart>()
-                //filename is just userID--pictureCount for now
                 params["imageFile"] = FileDataPart("imageName", imageData!!,"jpeg")
                 return params
             }
@@ -161,6 +169,7 @@ class RequestHandler constructor(context: Context)
             }
         }
         this.addToRequestQueue(req)
+        println(res)
     }
 
     fun followUser(query: String, context: Context)

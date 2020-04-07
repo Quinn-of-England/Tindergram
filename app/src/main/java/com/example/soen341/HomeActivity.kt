@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import org.json.JSONObject
 
 open class HomeActivity : AppCompatActivity()
 {
@@ -214,8 +215,14 @@ open class HomeActivity : AppCompatActivity()
     {
         while(true)
         {
-            RequestHandler.getInstance(this).updateImageList(this)
-            delay(2500)
+            val response : Unit =
+                RequestHandler.getInstance(this).updateImageList(this, object : VolleyCallback{
+                    override fun onResponse(response: MutableMap<String, String>?) {
+                        println("hello $response")
+                    }
+            })
+
+            delay(3500)
             if(first)
             {
                 withContext(Main)
