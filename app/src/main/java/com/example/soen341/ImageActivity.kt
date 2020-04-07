@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.SyncStateContract
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +25,8 @@ class ImageActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image)
 
-         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
+
+        if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)
             {
                 println("Permission denied")
                 ActivityCompat.requestPermissions(this,
@@ -52,7 +54,7 @@ class ImageActivity : AppCompatActivity()
         val inputStream = contentResolver.openInputStream(uri!!)
         inputStream?.buffered()?.use{
             imageData = it.readBytes()
-            println("Image in bytes is : " + imageData)
+            println("IMAGE IN BYTES : $imageData")
         }
         return imageData
     }

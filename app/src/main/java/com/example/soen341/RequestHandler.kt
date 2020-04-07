@@ -6,6 +6,7 @@ import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.provider.SyncStateContract
 import android.util.TypedValue
 import android.widget.TextView
 import android.widget.Toast
@@ -62,6 +63,7 @@ class RequestHandler constructor(context: Context)
 
     fun updateImageList(context: Context, callback : VolleyCallback)
     {
+
         //dispatcher thread working here...
         val req = JsonObjectRequest(
             Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(context).getUserID()
@@ -70,7 +72,7 @@ class RequestHandler constructor(context: Context)
                 try
                 {
                     //main thread takes over...
-                    if(response.getString("error").equals(true)){
+                    if(response.getString("error").equals("1")){
                         throw JSONException(response.getString("message"))
                     }
                     else {
@@ -96,8 +98,6 @@ class RequestHandler constructor(context: Context)
             Response.ErrorListener {
                     error ->
                 callback.onResponse(mutableMapOf("error" to "1","message" to error.toString()))
-
-
             })
         this.addToRequestQueue(req)
 
@@ -146,11 +146,21 @@ class RequestHandler constructor(context: Context)
     {
         val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
+
             val obj = JSONObject(response.data.toString(Charsets.UTF_8))
-            callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message") ))
-
-
-            Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
+            try{
+                 if(obj.getString("error").equals("1"))
+                    throw JSONException(obj.getString("message"))
+                else {
+                    Toast.makeText(context, "Image posted!", Toast.LENGTH_SHORT).show()
+                    callback.onResponse(
+                        mutableMapOf("error" to "0", "message" to obj.getString("message"))
+                    )
+                    }
+            }
+            catch (e : JSONException){
+                callback.onResponse(mutableMapOf("error" to "1","message" to e.toString() ))
+            }
         },
             Response.ErrorListener { error ->
                 callback.onResponse(mutableMapOf("error" to "1","message" to error.toString() ))

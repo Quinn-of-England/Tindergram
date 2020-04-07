@@ -29,6 +29,7 @@ class LoginTests {
     @Test
     fun user_is_logged_out() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
+
         SharedPrefManager.getInstance(applicationContext).userLogoutPref()
         assertFalse(SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
     }
