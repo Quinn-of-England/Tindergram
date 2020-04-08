@@ -1,8 +1,16 @@
-# SOEN 341  
+# Tindergram  
+
+## Source Code
+
+[Android App Kotlin Source Code](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/main/java/com/example/soen341)\
+[Android App View Resources (XML)](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/main/res/layout)\
+[Server-Side code (PHP)](https://github.com/Quinn-of-England/SOEN341/tree/master/server)\
+[Unit Tests](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/androidTest/java/com/example/soen341)
+
 
 ## Objective
 
-Develop a simplified version of the Instagram application.
+Develop a simplified version of the Instagram application incorporating the touch gestures of Tinder.
 
 ## Project Description
 
@@ -22,6 +30,7 @@ down = blacklist a.k.a stops seeing that specific user`s pictures.
     - Users can follow each other. 
     - When a user posts a picture, all users who follow them will receive a notification.
     - Include ability for users to leave comments on other users pictures.
+    - Ability to navigate pictures using the Tinder swiping motions
 
 ## Team Members / GitHub Username
 
@@ -33,6 +42,6 @@ down = blacklist a.k.a stops seeing that specific user`s pictures.
 
 ## Technologies Used
 
-Frontend(app): Android studio (XML is already a part of it), Kotlin
+App: Android app, Android Studio with Kotlin
 
-Backend(server): SQL (some sort of database language)
+Server: PHP, SQL, XAMPP Server
