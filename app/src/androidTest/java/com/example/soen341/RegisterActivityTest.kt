@@ -13,6 +13,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
+import java.util.concurrent.TimeUnit
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -34,11 +35,19 @@ import org.junit.Rule
     @Test
     fun user_can_register() {
         onView(withId(R.id.username)).perform(typeText("test123"))
+        closeSoftKeyboard()
+        TimeUnit.SECONDS.sleep(1)
         onView(withId(R.id.email)).perform(typeText("valid@email.com"))
+        closeSoftKeyboard()
+        TimeUnit.SECONDS.sleep(1)
         onView(withId(R.id.enterPass)).perform(typeText("test123"))
+        closeSoftKeyboard()
+        TimeUnit.SECONDS.sleep(1)
         onView(withId(R.id.confirmPass)).perform(typeText("test123"))
         closeSoftKeyboard()
+        TimeUnit.SECONDS.sleep(1)
         onView(withId(R.id.register)).perform(click())
+        TimeUnit.SECONDS.sleep(1)
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertFalse(SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
     }

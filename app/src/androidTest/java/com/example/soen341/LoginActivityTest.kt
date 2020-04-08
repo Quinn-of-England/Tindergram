@@ -39,8 +39,11 @@ class LoginActivityTest {
     @Test
     fun user_can_login() {
         onView(withId(R.id.username)).perform(typeText("test123"))
+        closeSoftKeyboard()
+        TimeUnit.SECONDS.sleep(1)
         onView(withId(R.id.pass)).perform(typeText("test123"))
         closeSoftKeyboard()
+        TimeUnit.SECONDS.sleep(1)
         onView(withId(R.id.login)).perform(click())
         TimeUnit.SECONDS.sleep(1)
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext

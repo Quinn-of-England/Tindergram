@@ -8,7 +8,7 @@ class SharedPrefManagerTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(ChangePasswordActivity::class.java)
+    var activityTestRule = ActivityTestRule(HomeActivity::class.java)
 
     @Before
     fun user_is_logged_in() {
