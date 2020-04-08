@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -52,8 +53,19 @@ class ChangeEmailActivity : AppCompatActivity()
                 }
             }// If new email address matches requirements, email address will be changed
             if (canChange)
-            {
-                changeEmail()
+            {         val newEmail = findViewById<EditText>(R.id.new_email)
+                val inEmail: String = newEmail.text.toString()
+                val id = SharedPrefManager.getInstance(applicationContext).getUserID().toString()
+
+                RequestHandler.getInstance(this@ChangeEmailActivity).changeEmail(this@ChangeEmailActivity,inEmail,id,object :VolleyCallback{
+                    override fun onResponse(response: MutableMap<String, String>?) {
+                        assert(response!!["error"].equals("0"))
+
+                        val intent = Intent(this@ChangeEmailActivity, SettingsActivity::class.java)
+                        startActivity(intent) // User goes back to the settings page
+
+                    }
+                })
             }
         }
 
@@ -64,48 +76,7 @@ class ChangeEmailActivity : AppCompatActivity()
         }
     }
 
-    private fun changeEmail()
-    {
-        // Variables needed
-        val url = Constants.CHANGE_URL
-        val newEmail = findViewById<EditText>(R.id.new_email)
-        val inEmail: String = newEmail.text.toString()
-        val id = SharedPrefManager.getInstance(applicationContext).getUserID().toString()
 
-        // String request created, when created will execute a POST to the SQL server
-        val stringRequest = object : StringRequest(
-            Method.POST, url,
-            Response.Listener<String>
-            { response -> // JSON response from the server
-                try
-                {
-                    val obj = JSONObject(response)
-                    Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false")
-                    { // Server reports successful email address change
-                        SharedPrefManager.getInstance(applicationContext).setUserEmail(
-                            inEmail
-                        )
-                        val intent = Intent(this, SettingsActivity::class.java)
-                        startActivity(intent) // User goes back to the settings page
-                    }// If no response/invalid response received
-                }catch (e: JSONException){
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener { volleyError -> Toast.makeText(applicationContext, volleyError.message, Toast.LENGTH_LONG).show() }){
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String>
-            { // Parameters added to POST request
-                val params = HashMap<String, String>()
-                params["email"] = inEmail
-                params["id"] = id
-                return params
-            }
-        }
-        // Request queue
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
-    }
     // Check if email address is of valid format
     private fun String.isEmailValid(): Boolean
     {

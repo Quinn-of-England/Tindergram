@@ -52,33 +52,34 @@ class SharedPrefManagerTest {
     }
 
     @Test
-    fun user_can_change_password() {
+    fun user_can_change_username() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        SharedPrefManager.getInstance(applicationContext).setUserEmail("new@email.org")
+        RequestHandler.getInstance(applicationContext).changeUsername(applicationContext,"testAccountChange","26",object :VolleyCallback{
+            override fun onResponse(response: MutableMap<String, String>?) {
+                Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
+            }
+        })
+        /*
+        SharedPrefManager.getInstance(applicationContext).setUserUsername("newtest")
         Assert.assertEquals(
-            "new@email.org",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
+            "newtest",
+            SharedPrefManager.getInstance(applicationContext).getUserUsername()
         )
-        SharedPrefManager.getInstance(applicationContext).setUserEmail("test123@test.net")
+        SharedPrefManager.getInstance(applicationContext).setUserUsername("test123")
         Assert.assertEquals(
-            "test123@test.net",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
-        )
-    }
+            "test123",
+            SharedPrefManager.getInstance(applicationContext).getUserUsername()
+        )*/
+ }
 
     @Test
     fun user_can_change_email() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        SharedPrefManager.getInstance(applicationContext).setUserEmail("new@email.org")
-        Assert.assertEquals(
-            "new@email.org",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
-        )
-        SharedPrefManager.getInstance(applicationContext).setUserEmail("test123@test.net")
-        Assert.assertEquals(
-            "test123@test.net",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
-        )
+        RequestHandler.getInstance(applicationContext).changeEmail(applicationContext,"changetest@email.com","26",object :VolleyCallback{
+            override fun onResponse(response: MutableMap<String, String>?) {
+                Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
+            }
+        })
     }
 
     @After
