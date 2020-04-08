@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.android.volley.AuthFailureError
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -121,58 +122,28 @@ class RegisterActivity : AppCompatActivity()
             }// If all entries match requirements, account will be created
             if (canRegister)
             {
-                registerUser()
+                val name = findViewById<EditText>(R.id.username)
+                val email = findViewById<EditText>(R.id.email)
+                val password = findViewById<EditText>(R.id.enterPass)
+                val inName: String = name.text.toString()
+                val inEmail: String = email.text.toString()
+                val inPassword: String = password.text.toString()
+
+                RequestHandler.getInstance(this@RegisterActivity).registerUser(this@RegisterActivity,inName,inEmail,inPassword
+                , object : VolleyCallback{
+                        override fun onResponse(response: MutableMap<String, String>?) {
+                            assert(response!!["error"].equals("0"))
+                            //if no error is present from the response, we continue on and go to home activity.
+                            val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    })
             }
         }
     }
 
-    private fun registerUser()
-    {
-        // All variables needed imported to method
-        val url = Constants.REGISTER_URL
-        val name = findViewById<EditText>(R.id.username)
-        val email = findViewById<EditText>(R.id.email)
-        val password = findViewById<EditText>(R.id.enterPass)
-        val inName: String = name.text.toString()
-        val inEmail: String = email.text.toString()
-        val inPassword: String = password.text.toString()
 
-        // String request created, when created will execute a POST to the SQL server
-        val stringRequest = object : StringRequest(Method.POST, url,
-            Response.Listener<String> { response -> // JSON response from the server
-                try
-                {
-                    val obj = JSONObject(response)
-                    Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false")
-                    { // Server reports successful account addition
-                        SharedPrefManager.getInstance(applicationContext).userLoginPref(
-                            obj.getInt("id"),
-                            obj.getString("username"),
-                            obj.getString("email")
-                        )
-                        val intent = Intent(this, HomeActivity::class.java)
-                        startActivity(intent) // User goes to the home page
-                        finish()
-                    }// If no response/invalid response received
-                }catch (e: JSONException)
-                {
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener { volleyError -> Toast.makeText(applicationContext, volleyError.message, Toast.LENGTH_LONG).show() }){
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String> { // Parameters added to POST request
-                val params = HashMap<String, String>()
-                params["username"] = inName
-                params["email"] = inEmail
-                params["password"] = inPassword
-                return params
-            }
-        }
-        // Request queue
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
-    }
     // Check if email address is of valid format
     private fun String.isEmailValid(): Boolean
     {

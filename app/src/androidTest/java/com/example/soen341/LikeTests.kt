@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LikeTests{
 
-    @Test
+    /*@Test
     fun canUserLikeImage(){
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         RequestHandler.getInstance(applicationContext).likeImage("3","120",applicationContext,object :VolleyCallback{
@@ -20,8 +20,8 @@ class LikeTests{
             }
         })
     }
-
-    @Test
+    */
+    /*@Test
     fun canUserLikeTwice(){
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         RequestHandler.getInstance(applicationContext).likeImage("3","120",applicationContext,object :VolleyCallback{
@@ -30,5 +30,5 @@ class LikeTests{
 
             }
         })
-    }
+    }*/
 }

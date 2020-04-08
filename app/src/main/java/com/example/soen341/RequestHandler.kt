@@ -8,11 +8,13 @@ import android.content.Context
 import android.content.Intent
 import android.provider.SyncStateContract
 import android.util.TypedValue
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.solver.widgets.ConstraintAnchor
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -60,7 +62,52 @@ class RequestHandler constructor(context: Context)
     {
         requestQueue.add(req)
     }
+    fun registerUser(context: Context, name : String, email : String, password : String, callback: VolleyCallback)
+    {
+        // All variables needed imported to method
+        val url = Constants.REGISTER_URL
 
+
+        // String request created, when created will execute a POST to the SQL server
+        val stringRequest = object : StringRequest(Method.POST, url,
+            Response.Listener<String> { response -> // JSON response from the server
+                try
+                {
+                    val obj = JSONObject(response)
+                    if(obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+
+                    else { // Server reports successful account addition
+                        SharedPrefManager.getInstance(context).userLoginPref(
+                            obj.getInt("id"),
+                            obj.getString("username"),
+                            obj.getString("email")
+                        )
+                        callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+
+                    }// If no response/invalid response received
+                }catch (e: JSONException)
+                {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+
+            })
+        {
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["username"] = name
+                params["email"] = email
+                params["password"] = password
+                return params
+            }
+        }
+
+        this.addToRequestQueue(stringRequest)
+    }
     fun updateImageList(context: Context, callback : VolleyCallback)
     {
 
