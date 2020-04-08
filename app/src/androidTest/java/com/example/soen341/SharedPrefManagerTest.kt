@@ -59,17 +59,7 @@ class SharedPrefManagerTest {
                 Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
             }
         })
-        /*
-        SharedPrefManager.getInstance(applicationContext).setUserUsername("newtest")
-        Assert.assertEquals(
-            "newtest",
-            SharedPrefManager.getInstance(applicationContext).getUserUsername()
-        )
-        SharedPrefManager.getInstance(applicationContext).setUserUsername("test123")
-        Assert.assertEquals(
-            "test123",
-            SharedPrefManager.getInstance(applicationContext).getUserUsername()
-        )*/
+
  }
 
     @Test

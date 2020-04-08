@@ -43,13 +43,6 @@ import org.junit.Rule
                     assertTrue(response!!["message"],response!!["error"].equals("0"))
                 }
             })
-        /*onView(withId(R.id.username)).perform(typeText("test123"))
-        onView(withId(R.id.email)).perform(typeText("valid@email.com"))
-        onView(withId(R.id.enterPass)).perform(typeText("test123"))
-        onView(withId(R.id.confirmPass)).perform(typeText("test123"))
-        closeSoftKeyboard()
-        onView(withId(R.id.register)).perform(click())
-        */
 
         assertFalse(SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
     }

@@ -278,11 +278,10 @@ class RequestHandler constructor(context: Context)
 
     }
 
-    fun followUser(query: String, context: Context)
+    fun followUser(followerUser: String, followedUser : String , context: Context, callback: VolleyCallback)
     {
         // Variables needed
         val url = Constants.FOLLOW_URL
-        val user = SharedPrefManager.getInstance(context).getUserUsername().toString()
 
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(
@@ -292,22 +291,25 @@ class RequestHandler constructor(context: Context)
                 {
                     val obj = JSONObject(response)
                     Toast.makeText(context, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false")
-                    { // Server reports user follow
-                        println("Follow successful")
-                    }// If no response/invalid response received
+                    if (obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+                    else
+                    {    callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+                    }
                 }catch (e: JSONException)
                 {
-                    e.printStackTrace()
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                 }
             },
-            Response.ErrorListener { volleyError -> Toast.makeText(context, volleyError.message, Toast.LENGTH_LONG).show() }){
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+            }){
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String>
             { // Parameters added to POST request
                 val params = HashMap<String, String>()
-                params["followedUser"] = query
-                params["followerUser"] = user
+                params["followedUser"] = followedUser
+                params["followerUser"] = followerUser
                 return params
             }
         }
