@@ -14,9 +14,11 @@ import com.android.volley.toolbox.StringRequest
 import org.json.JSONException
 import org.json.JSONObject
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity()
+{
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
@@ -45,8 +47,10 @@ class RegisterActivity : AppCompatActivity() {
             // canRegister will go to false if any condition is not met
             // Text field entries will be checked to ensure they follow requirements
             var canRegister = true
-            when {
-                inName.trim().isEmpty() -> {
+            when
+            {
+                inName.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Username field is empty",
@@ -54,7 +58,8 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                inName.trim().length < 4 -> {
+                inName.trim().length < 4 ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Username must be 4 characters or greater",
@@ -62,7 +67,8 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                inEmail.trim().isEmpty() -> {
+                inEmail.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Email address field is empty",
@@ -70,7 +76,8 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                !inEmail.trim().isEmailValid() -> {
+                !inEmail.trim().isEmailValid() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Email address is not valid",
@@ -78,7 +85,8 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                inPassword.trim().isEmpty() -> {
+                inPassword.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Password field is empty",
@@ -86,7 +94,8 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                inPassword.trim().length < 6 -> {
+                inPassword.trim().length < 6 ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Password must be 6 characters or greater",
@@ -94,7 +103,8 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                inConfirmPassword.trim().isEmpty() -> {
+                inConfirmPassword.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Password confirmation field is empty",
@@ -102,19 +112,22 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                     canRegister = false
                 }
-                inPassword != inConfirmPassword -> {
+                inPassword != inConfirmPassword ->
+                {
                     Toast.makeText(applicationContext, "Passwords do not match", Toast.LENGTH_SHORT)
                         .show()
                     canRegister = false
                 }
             }// If all entries match requirements, account will be created
-            if (canRegister) {
+            if (canRegister)
+            {
                 registerUser()
             }
         }
     }
 
-    private fun registerUser() {
+    private fun registerUser()
+    {
         // All variables needed imported to method
         val url = Constants.REGISTER_URL
         val name = findViewById<EditText>(R.id.username)
@@ -127,10 +140,12 @@ class RegisterActivity : AppCompatActivity() {
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(Method.POST, url,
             Response.Listener<String> { response -> // JSON response from the server
-                try {
+                try
+                {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false") { // Server reports successful account addition
+                    if (obj.getString("error") == "false")
+                    { // Server reports successful account addition
                         SharedPrefManager.getInstance(applicationContext).userLoginPref(
                             obj.getInt("id"),
                             obj.getString("username"),
@@ -140,7 +155,8 @@ class RegisterActivity : AppCompatActivity() {
                         startActivity(intent) // User goes to the home page
                         finish()
                     }// If no response/invalid response received
-                }catch (e: JSONException){
+                }catch (e: JSONException)
+                {
                     e.printStackTrace()
                 }
             },
@@ -158,7 +174,8 @@ class RegisterActivity : AppCompatActivity() {
         RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
     }
     // Check if email address is of valid format
-    private fun String.isEmailValid(): Boolean {
+    private fun String.isEmailValid(): Boolean
+    {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
     }
 }

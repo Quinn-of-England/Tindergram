@@ -13,9 +13,11 @@ import com.android.volley.toolbox.StringRequest
 import org.json.JSONException
 import org.json.JSONObject
 
-class ChangePasswordActivity : AppCompatActivity() {
+class ChangePasswordActivity : AppCompatActivity()
+{
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_password)
 
@@ -31,7 +33,8 @@ class ChangePasswordActivity : AppCompatActivity() {
             val inConfirmPassword: String = newConf.text.toString()
             // Check if new password meets requirements
                 var canChange = true
-            when {
+            when
+            {
                 inPassword.trim().isEmpty() -> {
                     Toast.makeText(
                         applicationContext,
@@ -62,7 +65,8 @@ class ChangePasswordActivity : AppCompatActivity() {
                     canChange = false
                 }
             }// If new passwords matches requirements, password will be changed
-            if (canChange) {
+            if (canChange)
+            {
                 changePassword()
             }
         }
@@ -74,7 +78,8 @@ class ChangePasswordActivity : AppCompatActivity() {
         }
     }
 
-    private fun changePassword() {
+    private fun changePassword()
+    {
         // Variables needed
         val url = Constants.CHANGE_URL
         val newPass = findViewById<EditText>(R.id.new_password)
@@ -84,21 +89,25 @@ class ChangePasswordActivity : AppCompatActivity() {
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(
             Method.POST, url,
-            Response.Listener<String> { response -> // JSON response from the server
-                try {
+            Response.Listener<String>
+            { response -> // JSON response from the server
+                try
+                {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
                     if (obj.getString("error") == "false") { // Server reports successful password change
                         val intent = Intent(this, SettingsActivity::class.java)
                         startActivity(intent) // User goes back to the settings page
                     }// If no response/invalid response received
-                }catch (e: JSONException){
+                }catch (e: JSONException)
+                {
                     e.printStackTrace()
                 }
             },
             Response.ErrorListener { volleyError -> Toast.makeText(applicationContext, volleyError.message, Toast.LENGTH_LONG).show() }){
             @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String> { // Parameters added to POST request
+            override fun getParams(): Map<String, String>
+            { // Parameters added to POST request
                 val params = HashMap<String, String>()
                 params["password"] = inPassword
                 params["id"] = id

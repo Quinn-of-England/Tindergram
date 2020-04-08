@@ -9,55 +9,70 @@ import android.view.View
 import android.view.View.OnTouchListener
 import kotlin.math.abs
 
-open class OnSwipeTouchListener(ctx: Context) : OnTouchListener {
+open class OnSwipeTouchListener(ctx: Context) : OnTouchListener
+{
 
     private val gestureDetector: GestureDetector
 
-    companion object {
+    companion object
+    {
 
         private val SWIPE_THRESHOLD = 100
         private val SWIPE_VELOCITY_THRESHOLD = 100
     }
 
-    init {
+    init
+    {
         gestureDetector = GestureDetector(ctx, GestureListener())
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
+    override fun onTouch(v: View, event: MotionEvent): Boolean
+    {
         return gestureDetector.onTouchEvent(event)
     }
 
-    private inner class GestureListener : SimpleOnGestureListener() {
+    private inner class GestureListener : SimpleOnGestureListener()
+    {
 
 
-        override fun onDown(e: MotionEvent): Boolean {
+        override fun onDown(e: MotionEvent): Boolean
+        {
             return true
         }
 
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean
+        {
             var result = false
             try {
                 val diffY = e2.y - e1.y
                 val diffX = e2.x - e1.x
-                if (abs(diffX) > abs(diffY)) {
-                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffX > 0) {
+                if (abs(diffX) > abs(diffY))
+                {
+                    if (abs(diffX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD)
+                    {
+                        if (diffX > 0)
+                        {
                             onSwipeRight()
-                        } else {
+                        } else
+                        {
                             onSwipeLeft()
                         }
                         result = true
                     }
-                } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
+                } else if (abs(diffY) > SWIPE_THRESHOLD && abs(velocityY) > SWIPE_VELOCITY_THRESHOLD)
+                {
+                    if (diffY > 0)
+                    {
                         onSwipeBottom()
-                    } else {
+                    } else
+                    {
                         onSwipeTop()
                     }
                     result = true
                 }
-            } catch (exception: Exception) {
+            } catch (exception: Exception)
+            {
                 exception.printStackTrace()
             }
 
@@ -67,19 +82,23 @@ open class OnSwipeTouchListener(ctx: Context) : OnTouchListener {
 
     }
 
-    open fun onSwipeRight() {
+    open fun onSwipeRight()
+    {
         println("Swipe Right")
     }
 
-    open fun onSwipeLeft() {
+    open fun onSwipeLeft()
+    {
         println("Swipe Right")
     }
 
-    open fun onSwipeTop() {
+    open fun onSwipeTop()
+    {
         println("Swipe Up")
     }
 
-    open fun onSwipeBottom() {
+    open fun onSwipeBottom()
+    {
         println("Swipe Down")
     }
 }

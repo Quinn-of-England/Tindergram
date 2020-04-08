@@ -12,14 +12,17 @@ import com.android.volley.toolbox.StringRequest
 import org.json.JSONException
 import org.json.JSONObject
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity()
+{
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         // If already logged in, skip login page
-        if (SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())     {
+        if (SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
+        {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
@@ -43,8 +46,10 @@ class LoginActivity : AppCompatActivity() {
             val pas: String = pass.text.toString()
 
             var canLogin = true
-            when {
-                user.trim().isEmpty() -> {
+            when
+            {
+                user.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Username field is empty",
@@ -52,7 +57,8 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                     canLogin = false
                 }
-                user.trim().length < 4 -> {
+                user.trim().length < 4 ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Username must be 4 characters or greater",
@@ -60,7 +66,8 @@ class LoginActivity : AppCompatActivity() {
                     ).show()
                     canLogin = false
                 }
-                pas.trim().isEmpty() -> {
+                pas.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Password field is empty",
@@ -69,7 +76,8 @@ class LoginActivity : AppCompatActivity() {
                     canLogin = false
 
                 }
-                pas.trim().length < 6 -> {
+                pas.trim().length < 6 ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Password must be 6 characters or greater",
@@ -78,7 +86,8 @@ class LoginActivity : AppCompatActivity() {
                     canLogin = false
 
                 }
-                user.trim().isEmpty() && pas.trim().isEmpty() -> {
+                user.trim().isEmpty() && pas.trim().isEmpty() ->
+                {
                     Toast.makeText(
                         applicationContext,
                         "Username and Password fields are empty",
@@ -87,19 +96,22 @@ class LoginActivity : AppCompatActivity() {
                     canLogin = false
                 }
             }
-            if (canLogin) {
+            if (canLogin)
+            {
                 loginUser()
             }
         }
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed()
+    {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         super.onBackPressed()
     }
 
-    private fun loginUser() {
+    private fun loginUser()
+    {
         // All variables needed imported to method
         val url = Constants.LOGIN_URL
         val name = findViewById<EditText>(R.id.username)
@@ -109,13 +121,16 @@ class LoginActivity : AppCompatActivity() {
 
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(Method.POST, url,
-            Response.Listener<String> { response ->
+            Response.Listener<String>
+            { response ->
                 // JSON response from the server
-                try {
+                try
+                {
                     val obj = JSONObject(response)
                     Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG)
                         .show() // Server output printed to user
-                    if (obj.getString("error") == "false") { // Server reports successful login
+                    if (obj.getString("error") == "false")
+                    { // Server reports successful login
                         SharedPrefManager.getInstance(applicationContext).userLoginPref(
                             obj.getInt("id"),
                             obj.getString("username"),
@@ -125,7 +140,8 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent) // User goes to the homepage
                         finish()
                     }// If no response/invalid response received
-                } catch (e: JSONException) {
+                } catch (e: JSONException)
+                {
                     e.printStackTrace()
                 }
             },
