@@ -72,7 +72,7 @@ class ImageActivity : AppCompatActivity()
                 RequestHandler.getInstance(this).saveImageToServer(imageData, userImage_comment.text.toString(),this, object :
                 VolleyCallback{
                     override fun onResponse(response: MutableMap<String, String>?) {
-                        println(response)
+                        assert(response!!["error"].equals("0"))
                     }
                 })
                 val intent = Intent(this, HomeActivity::class.java)
