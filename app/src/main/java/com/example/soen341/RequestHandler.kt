@@ -144,7 +144,7 @@ class RequestHandler constructor(context: Context)
 
     fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context, callback: VolleyCallback)
     {
-        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
+        val req = object: VolleyImageRequest(Method.GET, Constants.IMAGE_URL , Response.Listener {
                 response ->
 
             val obj = JSONObject(response.data.toString(Charsets.UTF_8))
@@ -262,7 +262,7 @@ class RequestHandler constructor(context: Context)
 
     }
 
-    fun likeImage(username : String, imageId : String, context: Context)
+    fun likeImage(userId : String, imageId : String, context: Context, callback: VolleyCallback)
     {
         val req = object  : StringRequest(Method.POST, Constants.LIKE,
                 Response.Listener { response ->
@@ -273,24 +273,24 @@ class RequestHandler constructor(context: Context)
                             throw JSONException(obj.getString("message"))
                         else
                         {
-                            println(obj.getString("message"))
+                            callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
                         }
                     }
                     catch (e : JSONException)
                     {
 
                         Toast.makeText(context,"You've aleady liked this image",Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
+                        callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                     }
                 },
             Response.ErrorListener { error ->
-                println(error)
+                callback.onResponse(mutableMapOf("error" to "1","message" to error.toString()))
             }){
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String>
             {
                 val params = HashMap<String, String>()
-                params["userId"] = username
+                params["userId"] = userId
                 params["imageId"] = imageId
                 return params
             }

@@ -66,13 +66,16 @@ open class HomeActivity : AppCompatActivity()
             // Swipe right will like image and switch to next one
             override fun onSwipeRight()
             {
-                // TODO Add Like Image
-                println("swiped right")
-
                 val username : Int = SharedPrefManager.getInstance(this@HomeActivity).getUserID()
                 val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
-                println("$username -- $imageId")
-                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity)
+
+                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity,
+                    object : VolleyCallback{
+                        override fun onResponse(response: MutableMap<String, String>?) {
+                            assert(response!!["error"].equals("0"))
+                        }
+                    })
+
                 SharedPrefManager.getInstance(this@HomeActivity).setUserHasLikedCurrentImage()
                 onSwipeLeft()
             }
