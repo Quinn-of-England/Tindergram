@@ -126,6 +126,15 @@
             return $stmt->num_rows > 0;
         }
 
+        public function pictureExists($id)
+        {
+          $stmt = $this->conn->prepare("SELECT image FROM pictures WHERE id = ?");
+          $stmt->bind_param("s", $id);
+          $stmt->execute();
+          $stmt->store_result();
+          return $stmt->num_rows > 0;
+        }
+
         public function loginUser($username, $password)
         {
             $encrPassword = md5($password);
@@ -330,6 +339,42 @@
             array_push($formattedComments, array('author'=>$authorAndComment[0],'comment'=>$authorAndComment[1]));
           }
           return $formattedComments;
+        }
+
+        public function deleteUser($userId)
+        {
+          if($this->isUserIdExist($userId))
+          {
+            $stmt = $this->conn->prepare("DELETE FROM users WHERE id = ?");
+            $stmt->bind_param("i", $userId);
+          }else
+          {
+            return 2;
+          }
+
+          if($stmt->execute())
+          {
+              return 0;
+          }else
+          {
+              echo $this->conn->error;
+              return 1;
+          }
+        }
+
+        public function deletePictureFromAuthor($userId)
+        {
+          $stmt = $this->conn->prepare("DELETE FROM pictures WHERE authorId = ?");
+          $stmt->bind_param("i", $userId);
+
+          if($stmt->execute())
+          {
+              return 0;
+          }else
+          {
+              echo $this->conn->error;
+              return 1;
+          }
         }
 }
 ?>
