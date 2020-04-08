@@ -6,12 +6,15 @@ import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.provider.SyncStateContract
 import android.util.TypedValue
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.solver.widgets.ConstraintAnchor
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -24,6 +27,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.lang.reflect.Method
+import java.nio.charset.Charset
 
 class RequestHandler constructor(context: Context)
 {
@@ -58,9 +62,55 @@ class RequestHandler constructor(context: Context)
     {
         requestQueue.add(req)
     }
-
-    fun updateImageList(context: Context)
+    fun registerUser(context: Context, name : String, email : String, password : String, callback: VolleyCallback)
     {
+        // All variables needed imported to method
+        val url = Constants.REGISTER_URL
+
+
+        // String request created, when created will execute a POST to the SQL server
+        val stringRequest = object : StringRequest(Method.POST, url,
+            Response.Listener<String> { response -> // JSON response from the server
+                try
+                {
+                    val obj = JSONObject(response)
+                    if(obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+
+                    else { // Server reports successful account addition
+                        SharedPrefManager.getInstance(context).userLoginPref(
+                            obj.getInt("id"),
+                            obj.getString("username"),
+                            obj.getString("email")
+                        )
+                        callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+
+                    }// If no response/invalid response received
+                }catch (e: JSONException)
+                {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+
+            })
+        {
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["username"] = name
+                params["email"] = email
+                params["password"] = password
+                return params
+            }
+        }
+
+        this.addToRequestQueue(stringRequest)
+    }
+    fun updateImageList(context: Context, callback : VolleyCallback)
+    {
+
         //dispatcher thread working here...
         val req = JsonObjectRequest(
             Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(context).getUserID()
@@ -69,14 +119,18 @@ class RequestHandler constructor(context: Context)
                 try
                 {
                     //main thread takes over...
-
+                    if(response.getString("error").equals("1")){
+                        throw JSONException(response.getString("message"))
+                    }
+                    else {
+                        callback.onResponse(mutableMapOf("error" to "0","message" to response.getString("message")))
+                    }
                     val size: Int = response.getInt("size")
 
                     for(i in 0..size-1)
                     {
                         var array : JSONObject = response.getJSONObject("$i")
-                        //val coments : JSONArray = array.getJSONArray("comments")
-                        //println(coments)
+
                     SharedPrefManager.getInstance(context).addToImageQueue(array)
 
                     }
@@ -84,13 +138,13 @@ class RequestHandler constructor(context: Context)
                 }
                 catch (e : Exception)
                 {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                     e.printStackTrace()
                 }
             },
             Response.ErrorListener {
                     error ->
-                println("ERROR")
-                println(error.toString())
+                callback.onResponse(mutableMapOf("error" to "1","message" to error.toString()))
             })
         this.addToRequestQueue(req)
 
@@ -135,18 +189,33 @@ class RequestHandler constructor(context: Context)
         this.addToRequestQueue(req)
     }
 
-    fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context)
+    fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context, callback: VolleyCallback)
     {
-        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener { response ->
-            Toast.makeText(context,"Image posted!",Toast.LENGTH_SHORT).show()
+        val req = object: VolleyImageRequest(Method.GET, Constants.IMAGE_URL , Response.Listener {
+                response ->
+
+            val obj = JSONObject(response.data.toString(Charsets.UTF_8))
+            try{
+                 if(obj.getString("error").equals("1"))
+                    throw JSONException(obj.getString("message"))
+                else {
+                    Toast.makeText(context, "Image posted!", Toast.LENGTH_SHORT).show()
+                    callback.onResponse(
+                        mutableMapOf("error" to "0", "message" to obj.getString("message"))
+                    )
+                    }
+            }
+            catch (e : JSONException){
+                callback.onResponse(mutableMapOf("error" to "1","message" to e.toString() ))
+            }
         },
             Response.ErrorListener { error ->
-                error("Failure")
+                callback.onResponse(mutableMapOf("error" to "1","message" to error.toString() ))
+
             }) {
             override fun getByteData(): MutableMap<String, FileDataPart>?
             {
                 val params = HashMap<String,FileDataPart>()
-                //filename is just userID--pictureCount for now
                 params["imageFile"] = FileDataPart("imageName", imageData!!,"jpeg")
                 return params
             }
@@ -161,6 +230,7 @@ class RequestHandler constructor(context: Context)
             }
         }
         this.addToRequestQueue(req)
+
     }
 
     fun followUser(query: String, context: Context)
@@ -239,7 +309,7 @@ class RequestHandler constructor(context: Context)
 
     }
 
-    fun likeImage(username : String, imageId : String, context: Context)
+    fun likeImage(userId : String, imageId : String, context: Context, callback: VolleyCallback)
     {
         val req = object  : StringRequest(Method.POST, Constants.LIKE,
                 Response.Listener { response ->
@@ -250,24 +320,24 @@ class RequestHandler constructor(context: Context)
                             throw JSONException(obj.getString("message"))
                         else
                         {
-                            println(obj.getString("message"))
+                            callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
                         }
                     }
                     catch (e : JSONException)
                     {
 
                         Toast.makeText(context,"You've aleady liked this image",Toast.LENGTH_SHORT).show()
-                        e.printStackTrace()
+                        callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                     }
                 },
             Response.ErrorListener { error ->
-                println(error)
+                callback.onResponse(mutableMapOf("error" to "1","message" to error.toString()))
             }){
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String>
             {
                 val params = HashMap<String, String>()
-                params["userId"] = username
+                params["userId"] = userId
                 params["imageId"] = imageId
                 return params
             }

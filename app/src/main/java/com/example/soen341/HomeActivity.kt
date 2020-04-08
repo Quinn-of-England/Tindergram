@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import org.json.JSONObject
 
 open class HomeActivity : AppCompatActivity()
 {
@@ -65,13 +66,16 @@ open class HomeActivity : AppCompatActivity()
             // Swipe right will like image and switch to next one
             override fun onSwipeRight()
             {
-                // TODO Add Like Image
-                println("swiped right")
-
                 val username : Int = SharedPrefManager.getInstance(this@HomeActivity).getUserID()
                 val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
-                println("$username -- $imageId")
-                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity)
+
+                RequestHandler.getInstance(this@HomeActivity).likeImage(username.toString(),imageId.toString(),this@HomeActivity,
+                    object : VolleyCallback{
+                        override fun onResponse(response: MutableMap<String, String>?) {
+                            assert(response!!["error"].equals("0"))
+                        }
+                    })
+
                 SharedPrefManager.getInstance(this@HomeActivity).setUserHasLikedCurrentImage()
                 onSwipeLeft()
             }
@@ -214,12 +218,19 @@ open class HomeActivity : AppCompatActivity()
     {
         while(true)
         {
-            RequestHandler.getInstance(this).updateImageList(this)
-            delay(2500)
+            val response : Unit =
+                RequestHandler.getInstance(this).updateImageList(this, object : VolleyCallback{
+                    override fun onResponse(response: MutableMap<String, String>?) {
+                        println("hello $response")
+                    }
+            })
+
+            delay(3500)
             if(first)
             {
                 withContext(Main)
                 {
+                    if(! SharedPrefManager.getInstance(this@HomeActivity).isImageQueueEmpty())
                     updateImage()
                     first = false
                 }
