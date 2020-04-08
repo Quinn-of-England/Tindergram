@@ -8,7 +8,7 @@ class SharedPrefManagerTest {
 
     @Rule
     @JvmField
-    var activityTestRule = ActivityTestRule(ChangePasswordActivity::class.java)
+    var activityTestRule = ActivityTestRule(HomeActivity::class.java)
 
     @Before
     fun user_is_logged_in() {
@@ -52,14 +52,25 @@ class SharedPrefManagerTest {
     }
 
     @Test
-    fun user_can_change_password() {
+    fun user_can_change_username() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        RequestHandler.getInstance(applicationContext).changePassword(applicationContext,"changepass123","26",object :VolleyCallback{
+        RequestHandler.getInstance(applicationContext).changeUsername(applicationContext,"testAccountChange","26",object :VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
                 Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
             }
         })
-    }
+        /*
+        SharedPrefManager.getInstance(applicationContext).setUserUsername("newtest")
+        Assert.assertEquals(
+            "newtest",
+            SharedPrefManager.getInstance(applicationContext).getUserUsername()
+        )
+        SharedPrefManager.getInstance(applicationContext).setUserUsername("test123")
+        Assert.assertEquals(
+            "test123",
+            SharedPrefManager.getInstance(applicationContext).getUserUsername()
+        )*/
+ }
 
     @Test
     fun user_can_change_email() {
