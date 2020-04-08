@@ -13,6 +13,6 @@ object Constants
     const val GET_NOTIFICATIONS = ROOT_URL + "getNotification.php"
     const val COMMENT_PICTURE = ROOT_URL + "postComment.php"
     const val LIKE = ROOT_URL + "like.php"
-
+    const val DELETE = ROOT_URL + "deleteUser.php"
     const val SAMPLE_IMAGE_BYTES = "[B@d056fcf"
 }

@@ -40,7 +40,9 @@ class LoginActivityTest {
     @Test
     fun user_can_login() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        RequestHandler.getInstance(applicationContext).loginUser(applicationContext,"test_account","test123",object : VolleyCallback{
+
+        RequestHandler.getInstance(applicationContext).loginUser(applicationContext,
+            testAccount1.getValue("username"), testAccount1.getValue("password"),object : VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
                 assertTrue(response!!["message"],response["error"].equals("0"))
             }

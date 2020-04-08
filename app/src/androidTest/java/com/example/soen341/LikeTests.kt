@@ -13,7 +13,8 @@ class LikeTests{
     @Test
     fun canUserLikeImage(){
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        RequestHandler.getInstance(applicationContext).likeImage("3","120",applicationContext,object :VolleyCallback{
+        val userID : String = SharedPrefManager.getInstance(applicationContext).getUserID().toString()
+        RequestHandler.getInstance(applicationContext).likeImage(userID,"120",applicationContext,object :VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
                 Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
                 canUserLikeTwice()

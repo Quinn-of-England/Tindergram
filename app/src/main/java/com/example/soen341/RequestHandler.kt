@@ -278,7 +278,7 @@ class RequestHandler constructor(context: Context)
 
     }
 
-    fun followUser(followerUser: String, followedUser : String , context: Context, callback: VolleyCallback)
+    fun followUser(context: Context, followerUser: String, followedUser : String , callback: VolleyCallback)
     {
         // Variables needed
         val url = Constants.FOLLOW_URL
@@ -512,6 +512,39 @@ class RequestHandler constructor(context: Context)
                 val params = HashMap<String, String>()
                 params["username"] = username
                 params["id"] = userId
+                return params
+            }
+        }
+        // Request queue
+        this.addToRequestQueue(stringRequest)
+    }
+    fun deleteUser(context: Context, userId : String , callback: VolleyCallback)
+    {
+        val stringRequest = object : StringRequest(
+            Method.POST, Constants.DELETE,
+            Response.Listener<String> { response ->
+                try
+                {
+                    val obj = JSONObject(response)
+
+                    if (obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+                    else{
+                       callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+                    }
+                }catch (e: JSONException)
+                {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String>
+            { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["userId"] = userId
                 return params
             }
         }

@@ -260,7 +260,7 @@ open class HomeActivity : AppCompatActivity()
             {
                 val user = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername().toString()
 
-                RequestHandler.getInstance(applicationContext).followUser(user, query, applicationContext, object : VolleyCallback{
+                RequestHandler.getInstance(applicationContext).followUser(this@HomeActivity, user, query, object : VolleyCallback{
                     override fun onResponse(response: MutableMap<String, String>?) {
                         assert(response!!["error"].equals("0"))
                     }

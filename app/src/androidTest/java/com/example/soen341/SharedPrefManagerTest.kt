@@ -59,8 +59,7 @@ class SharedPrefManagerTest {
                 Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
             }
         })
-
- }
+    }
 
     @Test
     fun user_can_change_email() {
