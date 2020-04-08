@@ -52,17 +52,17 @@ class SharedPrefManagerTest {
     }
 
     @Test
-    fun user_can_change_password() {
+    fun user_can_change_username() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        SharedPrefManager.getInstance(applicationContext).setUserEmail("new@email.org")
+        SharedPrefManager.getInstance(applicationContext).setUserUsername("newtest")
         Assert.assertEquals(
-            "new@email.org",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
+            "newtest",
+            SharedPrefManager.getInstance(applicationContext).getUserUsername()
         )
-        SharedPrefManager.getInstance(applicationContext).setUserEmail("test123@test.net")
+        SharedPrefManager.getInstance(applicationContext).setUserUsername("test123")
         Assert.assertEquals(
-            "test123@test.net",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
+            "test123",
+            SharedPrefManager.getInstance(applicationContext).getUserUsername()
         )
     }
 
