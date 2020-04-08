@@ -74,6 +74,7 @@ open class VolleyImageRequest(
         return try
         {
             Response.success(response, HttpHeaderParser.parseCacheHeaders(response))
+
         } catch (e: Exception)
         {
             Response.error(ParseError(e))
