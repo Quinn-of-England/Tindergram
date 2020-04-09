@@ -102,7 +102,14 @@ open class HomeActivity : AppCompatActivity()
                     val imageId : Int = SharedPrefManager(this@HomeActivity).getCurrentImageID()
                     val comments : String = add_comment.text.toString()
 
-                    RequestHandler.getInstance(this@HomeActivity).postComment(comments,username,imageId)
+                    RequestHandler.getInstance(this@HomeActivity).postComment(comments,username,imageId, object : VolleyCallback{
+                        override fun onResponse(response: MutableMap<String, String>?) {
+                            assert(response!!.get("error").equals("0"))
+
+                        }
+                    })
+
+
                         updateCommentSection(mutableMapOf<String,String>(Pair(username,comments)))
 
                 }
@@ -216,9 +223,10 @@ open class HomeActivity : AppCompatActivity()
         while(true)
         {
             val response : Unit =
-                RequestHandler.getInstance(this).updateImageList(this, object : VolleyCallback{
+                RequestHandler.getInstance(this).updateImageList(this, SharedPrefManager.getInstance(this@HomeActivity).getUserID().toString(),
+                    object : VolleyCallback{
                     override fun onResponse(response: MutableMap<String, String>?) {
-                        println("hello $response")
+
                     }
             })
 
@@ -275,7 +283,12 @@ open class HomeActivity : AppCompatActivity()
         {
             delay(5000)
 
-            RequestHandler.getInstance(this).updateNotifications(this)
+            RequestHandler.getInstance(this).updateNotifications(this , SharedPrefManager.getInstance(this@HomeActivity).getUserID().toString(),
+                object : VolleyCallback {
+                override fun onResponse(response: MutableMap<String, String>?) {
+                    assert(response!!.get("error").equals("0"))
+                }
+            })
         }
     }
 

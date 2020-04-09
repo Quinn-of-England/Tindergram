@@ -89,6 +89,7 @@ class RequestHandler constructor(context: Context)
                     }// If no response/invalid response received
                 } catch (e: JSONException)
                 {
+                    Toast.makeText(context,e.toString(),Toast.LENGTH_SHORT).show()
                     callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
 
                 }
@@ -153,12 +154,12 @@ class RequestHandler constructor(context: Context)
 
         this.addToRequestQueue(stringRequest)
     }
-    fun updateImageList(context: Context, callback : VolleyCallback)
+    fun updateImageList(context: Context, userId: String, callback : VolleyCallback)
     {
 
         //dispatcher thread working here...
         val req = JsonObjectRequest(
-            Request.Method.GET,Constants.BATCH_IMAGES+"?id="+SharedPrefManager.getInstance(context).getUserID()
+            Request.Method.GET,Constants.BATCH_IMAGES+"?id="+userId
             + "&imageIdsAlreadySeen=" + SharedPrefManager.getInstance(context).getViewedImages(),null, Response.Listener {
                     response ->
                 try
@@ -195,10 +196,10 @@ class RequestHandler constructor(context: Context)
 
     }
 
-    fun updateNotifications(context: Context)
+    fun updateNotifications(context: Context , userId: String , callback: VolleyCallback)
     {
         val req = JsonObjectRequest(Request.Method.GET,
-            Constants.GET_NOTIFICATIONS + "?userId=" + SharedPrefManager.getInstance(context).getUserID()
+            Constants.GET_NOTIFICATIONS + "?userId=" + userId
             , null, Response.Listener {
                     response ->
                 try
@@ -209,6 +210,8 @@ class RequestHandler constructor(context: Context)
                     {
                         if(! response.getString("message").equals(""))
                         {
+                            callback.onResponse(mutableMapOf("error" to "0","message" to response.getString("message")))
+
                         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_whatshot_black_24dp)
                             .setContentTitle(textTitle)
@@ -221,22 +224,24 @@ class RequestHandler constructor(context: Context)
                             notify(0, builder.build())
                         }
                         }
+                        else{
+                        }
                     }
                 }
                 catch (e : Exception)
                 {
-                    e.printStackTrace()
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                 }
 
             }, Response.ErrorListener {
-                    error -> error.printStackTrace()
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
             })
         this.addToRequestQueue(req)
     }
 
-    fun saveImageToServer(imageData:ByteArray? , comments : String ,context: Context, callback: VolleyCallback)
+    fun saveImageToServer(imageData:ByteArray? , userId: String , comments : String ,context: Context, callback: VolleyCallback)
     {
-        val req = object: VolleyImageRequest(Method.GET, Constants.IMAGE_URL , Response.Listener {
+        val req = object: VolleyImageRequest(Method.POST, Constants.IMAGE_URL , Response.Listener {
                 response ->
 
             val obj = JSONObject(response.data.toString(Charsets.UTF_8))
@@ -270,7 +275,7 @@ class RequestHandler constructor(context: Context)
                 val params = HashMap<String,String>()
                 params["likes"] = "0"
                 params["comments"] = comments
-                params["authorId"] = SharedPrefManager.getInstance(context).getUserID().toString()
+                params["authorId"] = userId
                 return params
             }
         }
@@ -290,11 +295,12 @@ class RequestHandler constructor(context: Context)
                 try
                 {
                     val obj = JSONObject(response)
-                    Toast.makeText(context, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error").equals("true"))
+                   if (obj.getString("error").equals("true"))
                         throw JSONException(obj.getString("message"))
                     else
-                    {    callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+                    {
+                        Toast.makeText(context, "$followerUser followed! ", Toast.LENGTH_LONG).show() // Server output printed to user
+                        callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
                     }
                 }catch (e: JSONException)
                 {
@@ -316,9 +322,8 @@ class RequestHandler constructor(context: Context)
         // Request queue
         this.addToRequestQueue(stringRequest)
     }
-    fun postComment(comment : String, username : String , imageId : Int)
+    fun postComment(comment : String, username : String , imageId : Int, callback: VolleyCallback)
     {
-        var status : Boolean = false
         val req = object : StringRequest(
             Method.POST, Constants.COMMENT_PICTURE,
             Response.Listener<String> { response -> // String response from the server
@@ -332,15 +337,18 @@ class RequestHandler constructor(context: Context)
                     }
                     else
                     {
-                        status = true
+                       callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
                     }
                 }catch (e: JSONException)
                 {
                     e.printStackTrace()
+                    callback.onResponse(mutableMapOf("error" to "0","message" to e.toString()))
+
                 }
             },
             Response.ErrorListener {
-                    error -> println(error) })
+                callback.onResponse(mutableMapOf("error" to "0","message" to it.toString()))
+            })
            {
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String>

@@ -103,9 +103,11 @@ class LoginActivity : AppCompatActivity()
                 val inName: String = name.text.toString()
                 val inPassword: String = password.text.toString()
 
-                RequestHandler.getInstance(this).loginUser(this,inName,inPassword , object : VolleyCallback{
+                RequestHandler.getInstance(this@LoginActivity).loginUser(this@LoginActivity,inName,inPassword , object : VolleyCallback{
                     override fun onResponse(response: MutableMap<String, String>?) {
                         assert(response!!["error"].equals("0"))
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                        startActivity(intent)
                     }
                 })
             }
