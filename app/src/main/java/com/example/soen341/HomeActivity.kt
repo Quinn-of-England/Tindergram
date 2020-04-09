@@ -38,9 +38,6 @@ open class HomeActivity : AppCompatActivity()
 
     var ifLiked = false
 
-
-//wtf is this?    @SuppressLint("ClickableViewAccessibility")
-
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
 
