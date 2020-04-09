@@ -17,7 +17,7 @@ class PostCommentTest
         sampleImage.forEach {
             sampleImageData += it.toByte()
         }
-        RequestHandler.getInstance(applicationContext).saveImageToServer(sampleImageData,"test",applicationContext,object : VolleyCallback {
+        RequestHandler.getInstance(applicationContext).saveImageToServer(sampleImageData,"testcomment",applicationContext,object : VolleyCallback {
             override fun onResponse(response: MutableMap<String, String>?) {
                 Assert.assertTrue(response!!["message"], response!!["error"].equals("0"))
             }
