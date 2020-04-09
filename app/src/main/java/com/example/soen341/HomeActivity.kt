@@ -255,7 +255,13 @@ open class HomeActivity : AppCompatActivity()
             }
             override fun onQueryTextSubmit(query: String): Boolean
             {
-                RequestHandler.getInstance(applicationContext).followUser(query, applicationContext)
+                val user = SharedPrefManager.getInstance(this@HomeActivity).getUserUsername().toString()
+
+                RequestHandler.getInstance(applicationContext).followUser(this@HomeActivity, user, query, object : VolleyCallback{
+                    override fun onResponse(response: MutableMap<String, String>?) {
+                        assert(response!!["error"].equals("0"))
+                    }
+                })
                 return false
             }
         })
