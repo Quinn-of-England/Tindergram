@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
 @RunWith(AndroidJUnit4::class)
-class CleanUp() {
+class CleanUpTest() {
 
     @Test
     fun delete(){

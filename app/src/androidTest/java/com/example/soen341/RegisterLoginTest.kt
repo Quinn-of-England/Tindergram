@@ -8,11 +8,11 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.junit.runners.MethodSorters
 import org.junit.runners.Parameterized
-public var testId1 = ""
-public var testId2 = ""
+var testId1 = ""
+var testId2 = ""
 
 @RunWith(Parameterized::class)
-class RegisterLogin(private val testAccount: MutableMap<String,String>) {
+class RegisterLoginTest(private val testAccount: MutableMap<String,String>) {
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivity::class.java)
@@ -35,7 +35,7 @@ class RegisterLogin(private val testAccount: MutableMap<String,String>) {
     }
 
     @Test
-    fun register() {
+    fun canUserRegister() {
 
         val applicationContext = activityRule.activity.applicationContext
         RequestHandler.getInstance(applicationContext).registerUser(applicationContext, testAccount.getValue("username"),
@@ -52,8 +52,9 @@ class RegisterLogin(private val testAccount: MutableMap<String,String>) {
                 }
             })
     }
+
     @Test
-    fun login() {
+    fun canUserLogin() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         RequestHandler.getInstance(applicationContext).loginUser(applicationContext,

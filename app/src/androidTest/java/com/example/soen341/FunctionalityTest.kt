@@ -12,9 +12,9 @@ import org.junit.runners.MethodSorters
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
-class Functionality{
-    private val testAccount1 : MutableMap<String,String> = RegisterLogin.data()[0]
-    private val testAccount2 : MutableMap<String,String> = RegisterLogin.data()[1]
+class FunctionalityTest{
+    private val testAccount1 : MutableMap<String,String> = RegisterLoginTest.data()[0]
+    private val testAccount2 : MutableMap<String,String> = RegisterLoginTest.data()[1]
 
     @Test
     fun a_canUserFollow(){
@@ -79,5 +79,15 @@ class Functionality{
                 Assert.assertTrue(response!!["message"], response!!["error"].equals("0"))
             }
         })
+    }
+    @Test
+    fun g_canUserGetNotifications(){
+        val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
+        RequestHandler.getInstance(applicationContext).updateNotifications(applicationContext, testId1 , object : VolleyCallback{
+            override fun onResponse(response: MutableMap<String, String>?) {
+                Assert.assertFalse(response!!["message"].equals(""))
+            }
+        })
+
     }
 }

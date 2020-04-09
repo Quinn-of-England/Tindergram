@@ -4,5 +4,5 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite::class)
-@Suite.SuiteClasses(RegisterLogin::class, Functionality::class, SharedPrefManagerTest::class, CleanUp::class)
+@Suite.SuiteClasses(RegisterLoginTest::class, FunctionalityTest::class, SharedPrefManagerTest::class, CleanUpTest::class)
 class TestSuite
