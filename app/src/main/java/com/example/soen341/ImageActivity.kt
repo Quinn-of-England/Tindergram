@@ -69,15 +69,16 @@ class ImageActivity : AppCompatActivity()
             val imageData : ByteArray? = createImageDataFromURI(uri)
             userImage_imageview.setImageURI(uri)
             userImage_post.setOnClickListener {
-                RequestHandler.getInstance(this).saveImageToServer(imageData, userImage_comment.text.toString(),this, object :
+                RequestHandler.getInstance(this@ImageActivity).saveImageToServer(imageData, SharedPrefManager.getInstance(this@ImageActivity).getUserID().toString() , userImage_comment.text.toString(),this, object :
                 VolleyCallback{
                     override fun onResponse(response: MutableMap<String, String>?) {
                         assert(response!!["error"].equals("0"))
+                        val intent = Intent(this@ImageActivity, HomeActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
                 })
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-                finish()
+
             }
 
         }

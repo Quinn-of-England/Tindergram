@@ -6,55 +6,22 @@ import org.junit.*
 
 class SharedPrefManagerTest {
 
-    @Rule
-    @JvmField
-    var activityTestRule = ActivityTestRule(HomeActivity::class.java)
+    private val testAccount1 : MutableMap<String,String> = RegisterLogin.data()[0]
+    private val testAccount2 : MutableMap<String,String> = RegisterLogin.data()[1]
 
-    @Before
-    fun user_is_logged_in() {
+   @Before
+    fun userIsLoggedIn() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         SharedPrefManager.getInstance(applicationContext)
-            .userLoginPref(20, "test123", "test123@test.net")
+            .userLoginPref(testId2.toInt(), testId2, testAccount2.getValue("email"))
         Assert.assertTrue(SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
     }
 
-    @Test
-    fun get_username() {
-        val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        SharedPrefManager.getInstance(applicationContext)
-            .getUserUsername()
-        Assert.assertEquals(
-            "test123",
-            SharedPrefManager.getInstance(applicationContext).getUserUsername()
-        )
-    }
-
-    @Test
-    fun get_email() {
-        val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        SharedPrefManager.getInstance(applicationContext)
-            .getUserUsername()
-        Assert.assertEquals(
-            "test123@test.net",
-            SharedPrefManager.getInstance(applicationContext).getUserEmail()
-        )
-    }
-
-    @Test
-    fun get_user_id() {
-        val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        SharedPrefManager.getInstance(applicationContext)
-            .getUserUsername()
-        Assert.assertEquals(
-            20,
-            SharedPrefManager.getInstance(applicationContext).getUserID()
-        )
-    }
 
     @Test
     fun user_can_change_username() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        RequestHandler.getInstance(applicationContext).changeUsername(applicationContext,"testAccountChange","26",object :VolleyCallback{
+        RequestHandler.getInstance(applicationContext).changeUsername(applicationContext,"testAccountChange", testId2,object :VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
                 Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
             }
@@ -64,12 +31,13 @@ class SharedPrefManagerTest {
     @Test
     fun user_can_change_email() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        RequestHandler.getInstance(applicationContext).changeEmail(applicationContext,"changetest@email.com","26",object :VolleyCallback{
+        RequestHandler.getInstance(applicationContext).changeEmail(applicationContext,"changetest@email.com", testId2,object :VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
                 Assert.assertTrue(response!!["message"],response!!["error"].equals("0"))
             }
         })
     }
+
 
     @After
     fun user_can_logout() {
