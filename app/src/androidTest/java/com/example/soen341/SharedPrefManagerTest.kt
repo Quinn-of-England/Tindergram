@@ -6,8 +6,8 @@ import org.junit.*
 
 class SharedPrefManagerTest {
 
-    private val testAccount1 : MutableMap<String,String> = RegisterLogin.data()[0]
-    private val testAccount2 : MutableMap<String,String> = RegisterLogin.data()[1]
+    private val testAccount1 : MutableMap<String,String> = RegisterLoginTest.data()[0]
+    private val testAccount2 : MutableMap<String,String> = RegisterLoginTest.data()[1]
 
    @Before
     fun userIsLoggedIn() {
@@ -19,7 +19,7 @@ class SharedPrefManagerTest {
 
 
     @Test
-    fun user_can_change_username() {
+    fun userCanChangeUsername() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         RequestHandler.getInstance(applicationContext).changeUsername(applicationContext,"testAccountChange", testId2,object :VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
@@ -29,7 +29,7 @@ class SharedPrefManagerTest {
     }
 
     @Test
-    fun user_can_change_email() {
+    fun userCanChangeEmail() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         RequestHandler.getInstance(applicationContext).changeEmail(applicationContext,"changetest@email.com", testId2,object :VolleyCallback{
             override fun onResponse(response: MutableMap<String, String>?) {
@@ -40,7 +40,7 @@ class SharedPrefManagerTest {
 
 
     @After
-    fun user_can_logout() {
+    fun userCanLogout() {
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
         SharedPrefManager.getInstance(applicationContext).userLogoutPref()
         Assert.assertFalse(SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
