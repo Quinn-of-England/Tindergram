@@ -5,7 +5,8 @@
 [Android App Kotlin Source Code](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/main/java/com/example/soen341)\
 [Android App View Resources (XML)](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/main/res/layout)\
 [Server-Side Code (PHP)](https://github.com/Quinn-of-England/SOEN341/tree/master/server)\
-[Unit Tests](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/androidTest/java/com/example/soen341)
+[Unit Tests](https://github.com/Quinn-of-England/SOEN341/tree/master/app/src/androidTest/java/com/example/soen341)\
+[Project Architecture Diagram](https://github.com/Quinn-of-England/SOEN341/blob/master/Tindergram%20MVC%20Diagram.pdf)
 
 ## Wiki Locations
 
