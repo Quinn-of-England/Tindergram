@@ -51,7 +51,20 @@ class ChangeUsernameActivity : AppCompatActivity()
             }// If new username matches requirements, username will be changed
             if (canChange)
             {
-                changeUser()
+                val url = Constants.CHANGE_URL
+                val newName = findViewById<EditText>(R.id.new_name)
+                val inName: String = newName.text.toString()
+                val id = SharedPrefManager.getInstance(applicationContext).getUserID().toString()
+
+                RequestHandler.getInstance(this@ChangeUsernameActivity).changeUsername(this@ChangeUsernameActivity,inName,id,object : VolleyCallback{
+                    override fun onResponse(response: MutableMap<String, String>?) {
+                        assert(response!!["error"].equals("0"))
+
+                        val intent = Intent(this@ChangeUsernameActivity, SettingsActivity::class.java)
+                        startActivity(intent)
+
+                    }
+                })
             }
         }
 
@@ -61,46 +74,5 @@ class ChangeUsernameActivity : AppCompatActivity()
             finish()
         }
     }
-    private fun changeUser()
-        {
-        // Variables needed
-        val url = Constants.CHANGE_URL
-        val newName = findViewById<EditText>(R.id.new_name)
-        val inName: String = newName.text.toString()
-        val id = SharedPrefManager.getInstance(applicationContext).getUserID().toString()
 
-        // String request created, when created will execute a POST to the SQL server
-        val stringRequest = object : StringRequest(
-            Method.POST, url,
-            Response.Listener<String>
-                { response -> // JSON response from the server
-                try {
-                    val obj = JSONObject(response)
-                    Toast.makeText(applicationContext, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false")
-                    { // Server reports successful username change
-                        SharedPrefManager.getInstance(applicationContext).setUserUsername(
-                            inName
-                        )
-                        val intent = Intent(this, SettingsActivity::class.java)
-                        startActivity(intent) // User goes back to the settings page
-                    }// If no response/invalid response received
-                }catch (e: JSONException)
-                {
-                    e.printStackTrace()
-                }
-            },
-            Response.ErrorListener { volleyError -> Toast.makeText(applicationContext, volleyError.message, Toast.LENGTH_LONG).show() }){
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String>
-            { // Parameters added to POST request
-                val params = HashMap<String, String>()
-                params["username"] = inName
-                params["id"] = id
-                return params
-            }
-        }
-        // Request queue
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest)
-    }
 }

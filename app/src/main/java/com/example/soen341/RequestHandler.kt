@@ -62,6 +62,51 @@ class RequestHandler constructor(context: Context)
     {
         requestQueue.add(req)
     }
+     fun loginUser(context : Context , name: String, password: String, callback: VolleyCallback)
+    {
+        // All variables needed imported to method
+        val url = Constants.LOGIN_URL
+
+        // String request created, when created will execute a POST to the SQL server
+        val stringRequest = object : StringRequest(Method.POST, url,
+            Response.Listener<String>
+            { response ->
+                try
+                {
+                    val obj = JSONObject(response)
+
+                    if (obj.getString("error").equals("true")){
+                        throw JSONException(obj.getString("message"))
+                    }
+                    else { // Server reports successful login
+                        SharedPrefManager.getInstance(context).userLoginPref(
+                            obj.getInt("id"),
+                            obj.getString("username"),
+                            obj.getString("email")
+                        )
+                        callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+
+                    }// If no response/invalid response received
+                } catch (e: JSONException)
+                {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["username"] = name
+                params["password"] = password
+                return params
+            }
+        }
+        // Request queue
+        this.addToRequestQueue(stringRequest)
+    }
     fun registerUser(context: Context, name : String, email : String, password : String, callback: VolleyCallback)
     {
         // All variables needed imported to method
@@ -233,11 +278,10 @@ class RequestHandler constructor(context: Context)
 
     }
 
-    fun followUser(query: String, context: Context)
+    fun followUser(context: Context, followerUser: String, followedUser : String , callback: VolleyCallback)
     {
         // Variables needed
         val url = Constants.FOLLOW_URL
-        val user = SharedPrefManager.getInstance(context).getUserUsername().toString()
 
         // String request created, when created will execute a POST to the SQL server
         val stringRequest = object : StringRequest(
@@ -247,22 +291,25 @@ class RequestHandler constructor(context: Context)
                 {
                     val obj = JSONObject(response)
                     Toast.makeText(context, obj.getString("message"), Toast.LENGTH_LONG).show() // Server output printed to user
-                    if (obj.getString("error") == "false")
-                    { // Server reports user follow
-                        println("Follow successful")
-                    }// If no response/invalid response received
+                    if (obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+                    else
+                    {    callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+                    }
                 }catch (e: JSONException)
                 {
-                    e.printStackTrace()
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                 }
             },
-            Response.ErrorListener { volleyError -> Toast.makeText(context, volleyError.message, Toast.LENGTH_LONG).show() }){
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+            }){
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String>
             { // Parameters added to POST request
                 val params = HashMap<String, String>()
-                params["followedUser"] = query
-                params["followerUser"] = user
+                params["followedUser"] = followedUser
+                params["followerUser"] = followerUser
                 return params
             }
         }
@@ -343,5 +390,165 @@ class RequestHandler constructor(context: Context)
             }
         }
         this.addToRequestQueue(req)
+    }
+     fun changeEmail(context: Context, email : String, userId : String , callback: VolleyCallback)
+    {
+        // Variables needed
+        val url = Constants.CHANGE_URL
+
+        // String request created, when created will execute a POST to the SQL server
+        val stringRequest = object : StringRequest(
+            Method.POST, url,
+            Response.Listener<String>
+            { response -> // JSON response from the server
+                try
+                {
+                    val obj = JSONObject(response)
+                    if (obj.getString("error").equals("true")){
+                        throw JSONException(obj.getString("message"))
+                    }
+                    else
+                    { // Server reports successful email address change
+                        SharedPrefManager.getInstance(context).setUserEmail(email)
+                        callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+
+                    }// If no response/invalid response received
+                }catch (e: JSONException){
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String>
+            { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["email"] = email
+                params["id"] = userId
+                return params
+            }
+        }
+        // Request queue
+        this.addToRequestQueue(stringRequest)
+    }
+
+    fun changePassword(context: Context, password : String, userId : String, callback: VolleyCallback)
+    {
+    // Variables needed
+    val url = Constants.CHANGE_URL
+
+    // String request created, when created will execute a POST to the SQL server
+    val stringRequest = object : StringRequest(
+        Method.POST, url,
+        Response.Listener<String>
+        { response -> // JSON response from the server
+            try
+            {
+                val obj = JSONObject(response)
+
+                if (obj.getString("error").equals("true"))
+                    throw JSONException(obj.getString("message"))
+                else{
+
+                    callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+
+                }// If no response/invalid response received
+            }catch (e: JSONException)
+            {
+                callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+            }
+        },
+        Response.ErrorListener {
+            callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+
+        }){
+        @Throws(AuthFailureError::class)
+        override fun getParams(): Map<String, String>
+        { // Parameters added to POST request
+            val params = HashMap<String, String>()
+            params["password"] = password
+            params["id"] = userId
+            return params
+        }
+    }
+    // Request queue
+    this.addToRequestQueue(stringRequest)
+}
+    fun changeUsername(context: Context, username : String, userId : String, callback: VolleyCallback)
+    {
+        // Variables needed
+        val url = Constants.CHANGE_URL
+
+        // String request created, when created will execute a POST to the SQL server
+        val stringRequest = object : StringRequest(
+            Method.POST, url,
+            Response.Listener<String>
+            { response -> // JSON response from the server
+                try
+                {
+                    val obj = JSONObject(response)
+
+                    if (obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+                    else{
+                        SharedPrefManager.getInstance(context).setUserUsername(username)
+                        callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+
+                    }// If no response/invalid response received
+                }catch (e: JSONException)
+                {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String>
+            { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["username"] = username
+                params["id"] = userId
+                return params
+            }
+        }
+        // Request queue
+        this.addToRequestQueue(stringRequest)
+    }
+    fun deleteUser(context: Context, userId : String , callback: VolleyCallback)
+    {
+        val stringRequest = object : StringRequest(
+            Method.POST, Constants.DELETE,
+            Response.Listener<String> { response ->
+                try
+                {
+                    val obj = JSONObject(response)
+
+                    if (obj.getString("error").equals("true"))
+                        throw JSONException(obj.getString("message"))
+                    else{
+                       callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
+                    }
+                }catch (e: JSONException)
+                {
+                    callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
+                }
+            },
+            Response.ErrorListener {
+                callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+            }){
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String>
+            { // Parameters added to POST request
+                val params = HashMap<String, String>()
+                params["userId"] = userId
+                return params
+            }
+        }
+        // Request queue
+        this.addToRequestQueue(stringRequest)
     }
 }

@@ -39,16 +39,15 @@ class LoginActivityTest {
 
     @Test
     fun user_can_login() {
-        onView(withId(R.id.username)).perform(typeText("test123"))
-        closeSoftKeyboard()
-        TimeUnit.SECONDS.sleep(1)
-        onView(withId(R.id.pass)).perform(typeText("test123"))
-        closeSoftKeyboard()
-        TimeUnit.SECONDS.sleep(1)
-        onView(withId(R.id.login)).perform(click())
-        TimeUnit.SECONDS.sleep(1)
         val applicationContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertTrue(SharedPrefManager.getInstance(applicationContext).isUserLoggedIn())
+
+        RequestHandler.getInstance(applicationContext).loginUser(applicationContext,
+            testAccount1.getValue("username"), testAccount1.getValue("password"),object : VolleyCallback{
+            override fun onResponse(response: MutableMap<String, String>?) {
+                assertTrue(response!!["message"],response["error"].equals("0"))
+            }
+        })
+
         SharedPrefManager.getInstance(applicationContext).userLogoutPref()
     }
 }
