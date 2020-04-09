@@ -96,6 +96,7 @@ class RequestHandler constructor(context: Context)
             },
             Response.ErrorListener {
                 callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+                error(it.toString())
             }){
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String> { // Parameters added to POST request
@@ -299,16 +300,18 @@ class RequestHandler constructor(context: Context)
                         throw JSONException(obj.getString("message"))
                     else
                     {
-                        Toast.makeText(context, "$followerUser followed! ", Toast.LENGTH_LONG).show() // Server output printed to user
+                        Toast.makeText(context, "$followedUser followed! ", Toast.LENGTH_LONG).show() // Server output printed to user
                         callback.onResponse(mutableMapOf("error" to "0","message" to obj.getString("message")))
                     }
                 }catch (e: JSONException)
                 {
+                    Toast.makeText(context,e.toString(),Toast.LENGTH_SHORT).show()
                     callback.onResponse(mutableMapOf("error" to "1","message" to e.toString()))
                 }
             },
             Response.ErrorListener {
                 callback.onResponse(mutableMapOf("error" to "1","message" to it.toString()))
+                error(it.toString())
             }){
             @Throws(AuthFailureError::class)
             override fun getParams(): Map<String, String>
